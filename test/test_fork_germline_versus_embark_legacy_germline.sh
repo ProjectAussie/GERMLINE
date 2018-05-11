@@ -46,8 +46,11 @@ report_matches_for_bits_homoz_only () {
 }
 
 echo 'Testing embark fork of germline with -homoz-only -w_extend on a range of bits values'
+rm -f compiled_germline_homoz_match_tracts.match
 report_matches_for_bits_homoz_only ../germline compiled_germline_homoz_match_tracts.match
+
 echo 'Testing embark legacy germline (already in the PATH on an embark EC2) with -homoz-only -w_extend on a range of bits values'
+rm -f embark_germline_homoz_match_tracts.match
 report_matches_for_bits_homoz_only germline embark_germline_homoz_match_tracts.match
 
 echo 'DIFF OF FORK-GERMLINE VS. LEGACY GERMLINE IN HAPLOID MATCH TRACTS:'
