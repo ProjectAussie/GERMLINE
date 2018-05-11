@@ -31,7 +31,7 @@ void PEDIndividualsExtractor::loadInput()
 	ALL_SNPS.beginChromosome();
 	numberOfMarkers = ALL_SNPS.size();
 
-	while (!stream.eof() )
+	while (stream)  // Adam G. changed this to get germline 1.5.1 from columbia's website to run on ubuntu
 	{
 		getIndividuals();
 		stream.seekg(numberOfMarkers*4 + 1,ios::cur);
