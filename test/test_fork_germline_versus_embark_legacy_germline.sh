@@ -13,8 +13,8 @@ report_matches_for_bits_haploid () {
 
   for bits in 1 11 21 31 41 51 61 71 81 91 101 111 121; do
     ${germline_bin} -haploid -min_m 0.5 -err_hom 0 -err_het 0 -bits ${bits} -w_extend < ${germline_params_file} 2>&1 | tee haploid_germline_log.txt || echo "Germline exit code: $?"
-    awk '{$2=$2};1' ${output_prefix}.match | cut -f5-7 -d' ' > ${output_prefix}.match.bed
-    awk -v bits=${bits} '{ print bits, $1, $2, $3 }' ${output_prefix}.match.bed >> ${output_file}
+    awk '{$2=$2};1' haploid_test.match | cut -f5-7 -d' ' > haploid_test.match.bed
+    awk -v bits=${bits} '{ print bits, $1, $2, $3 }' haploid_test.match.bed >> ${output_file}
   done
 }
 
@@ -45,7 +45,7 @@ report_matches_for_bits_homoz_only () {
     echo "running germline"
     ${germline_bin} -homoz-only -min_m 0.5 -err_hom 0 -err_het 0 -bits ${bits} -w_extend < ${germline_params_file} 2>&1 | tee homoz_germline_log.txt || echo "Germline exit code: $?"
     echo "catting output file"
-    cat ${output_prefix}.match >> ${output_file}
+    cat homoz_test.match >> ${output_file}
   done
 }
 
