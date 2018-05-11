@@ -28,8 +28,6 @@ echo 'Testing embark legacy germline (already in the PATH on an embark EC2) with
 echo 'bits chr start end' > embark_germline_haploid_match_tracts_by_bits_parameter.txt
 report_matches_for_bits_haploid germline embark_germline_haploid_match_tracts_by_bits_parameter.txt
 
-diff compiled_germline_haploid_match_tracts_by_bits_parameter.txt embark_germline_haploid_match_tracts_by_bits_parameter.txt
-
 report_matches_for_bits_homoz_only () {
   germline_bin=$1
   output_file=$2
@@ -42,16 +40,18 @@ report_matches_for_bits_homoz_only () {
   echo homoz_test >> ${germline_params_file}
 
   for bits in 1 11 21 31 41 51 61 71 81 91 101 111 121; do
-    echo "running germline"
     ${germline_bin} -homoz-only -min_m 0.5 -err_hom 0 -err_het 0 -bits ${bits} -w_extend < ${germline_params_file} 2>&1 | tee homoz_germline_log.txt || echo "Germline exit code: $?"
-    echo "catting output file"
     cat homoz_test.match >> ${output_file}
   done
 }
 
 echo 'Testing embark fork of germline with -homoz-only -w_extend on a range of bits values'
-report_matches_for_bits_homoz_only ./locally_compiled_germline compiled_germline_homoz_match_tracts.match
+report_matches_for_bits_homoz_only ../germline compiled_germline_homoz_match_tracts.match
 echo 'Testing embark legacy germline (already in the PATH on an embark EC2) with -homoz-only -w_extend on a range of bits values'
 report_matches_for_bits_homoz_only germline embark_germline_homoz_match_tracts.match
 
+echo 'DIFF OF FORK-GERMLINE VS. LEGACY GERMLINE IN HAPLOID MATCH TRACTS:'
+diff compiled_germline_haploid_match_tracts_by_bits_parameter.txt embark_germline_haploid_match_tracts_by_bits_parameter.txt
+
+echo 'DIFF OF FORK-GERMLINE VS. LEGACY GERMLINE IN HOMOZ MATCH TRACTS:'
 diff compiled_germline_homoz_match_tracts.match embark_germline_homoz_match_tracts.match
