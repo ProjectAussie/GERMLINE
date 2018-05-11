@@ -161,10 +161,20 @@ bool Match::isHom( int n , unsigned int ms )
 void Match::print( ostream& fout )
 {
 	// extend this match from both ends
+	cout << "Match::print" << endl;
+	cout << "start_ms:" << endl;
+	cout << start_ms << endl;
+	cout << "MARKER_SET_SIZE:" << endl;
+	cout << MARKER_SET_SIZE << endl;
 	unsigned int snp_start = ALL_SNPS.getROIStart().getMarkerNumber() + start_ms * MARKER_SET_SIZE;
 	unsigned int snp_end = ALL_SNPS.getROIStart().getMarkerNumber() + ( end_ms + 1 ) * MARKER_SET_SIZE - 1;
-	int marker;
 
+	cout << "snp_start:" << endl;
+	cout << snp_start << endl;
+	cout << "snp_end:" << endl;
+	cout << snp_end << endl;
+
+	int marker;
 	
 	if ( WIN_EXT )
 	{
@@ -175,6 +185,8 @@ void Match::print( ostream& fout )
 			cout << "scanLeft marker:" << endl;
 			cout << marker << endl;
 			snp_start -= (MARKER_SET_SIZE - marker - 2);
+			cout << "snp_start after reassigning:" << endl;
+			cout << snp_start << endl;
 		}
 	}
 	if ( WIN_EXT || end_ms == num_sets - 2 )
