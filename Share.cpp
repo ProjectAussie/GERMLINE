@@ -6,10 +6,6 @@ Share::Share( Individual * cip )
 	add( cip );
 }
 
-unsigned int Share::size()
-{
-	return matches.size();
-}
 void Share::assertMatches()
 {
 	list<Individual*>::iterator i , ii;
@@ -49,8 +45,7 @@ Match * Share::createMatch(Individual * c1 , Individual * c2)
 
 	new_match->node[0] = c1;
 	new_match->node[1] = c2;
-	
-	mem_all_matches+= sizeof(Match);
+
 	return new_match;
 }
 

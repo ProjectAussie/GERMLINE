@@ -30,7 +30,7 @@ public:
 	// Precondition: None.
 	// Postcondition: Input has been stored in the
 	//  memory pointed to by inds
-    virtual void getInput(string map, string ped) = 0;
+    virtual void getInput() = 0;
 	virtual void loadInput() = 0;
 	virtual void getCompleteMarkerSet(Individual *) = 0;
 	virtual void getCompleteMarkerSet(Individual * , Individual *) = 0;
@@ -38,12 +38,6 @@ public:
 	void setPhased(bool);
 	bool valid();
 
-	
-	/////////////////////////////////////////////////////////////
-	virtual void updateMarkerSet(Individual *,unsigned int,unsigned int)=0;
-	virtual void appendMarkerSet(Individual *,unsigned int, int)=0;
-
-	
 protected:
 
 	// pointer to individuals
@@ -54,7 +48,6 @@ protected:
 	bool phased;
 	// stores flag for valid input
 	bool valid_flag;
-
 
 };
 

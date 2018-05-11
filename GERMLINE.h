@@ -6,7 +6,6 @@
 #include "InputManager.h"
 #include "Individuals.h"
 #include "MatchesBuilder.h"
-#include "WindowsList.h"
 #include "BasicDefinitions.h"
 #include <iostream>
 #include <ctime>
@@ -25,7 +24,7 @@ public:
 	// Precondition: Input files are in standard formats.
 	// Postcondition: Matching chromosome segments have been
 	//  printed to matches.dat in a readable format.
-	void mine( string params, string map, string ped, string outfile );
+	void mine( string params );
 
 private:
 

@@ -21,15 +21,11 @@ public:
 	// Precondition: Input is a .haps file in a valid format
 	// Postcondition: inds points to individuals from
 	//   .haps file
-    void getInput(string map, string ped);
+    void getInput();
 	void loadInput();
 	void getCompleteMarkerSet(Individual * p);
 	void getCompleteMarkerSet(Individual * p0 , Individual * p1 );
 
-
-	////////////////////////////////////////////////////////////////////////////////
-	void updateMarkerSet(Individual * p,unsigned int start,unsigned int end);
-	void appendMarkerSet(Individual * p,unsigned int, int );
 private:
 
     void getIndividuals();
