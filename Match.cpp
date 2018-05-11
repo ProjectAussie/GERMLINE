@@ -172,7 +172,7 @@ void Match::print( ostream& fout )
 		if( start_ms > 0 )
 		{
 			marker = scanLeft( start_ms - 1 );
-			cout << 'scanLeft marker:' << endl;
+			cout << "scanLeft marker:" << endl;
 			cout << marker << endl;
 			snp_start -= (MARKER_SET_SIZE - marker - 2);
 		}
@@ -182,7 +182,7 @@ void Match::print( ostream& fout )
 		// forwards
 		if( end_ms < num_sets - 1 )
 		{
-			cout << 'scanRight marker:' << endl;
+			cout << "scanRight marker:" << endl;
 			cout << marker << endl;
 			marker = scanRight( end_ms + 1 );
 			snp_end += marker - 1;
