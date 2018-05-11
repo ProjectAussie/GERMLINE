@@ -30,7 +30,7 @@ void PEDIndividualsExtractor::loadInput()
 	ALL_SNPS.processMAPFile();
 	ALL_SNPS.beginChromosome();
 	numberOfMarkers = ALL_SNPS.size();	
-	while (!stream.eof() )
+	while (stream)
 	{
 		loadIndividuals();  
 		stream.seekg(4*(numberOfMarkers-ALL_SNPS.getROIEnd().getMarkerNumber() -1)+1,ios::cur);

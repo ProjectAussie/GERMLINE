@@ -13,15 +13,14 @@ InputManager::InputManager()
 {
 	// get map of genetic distance
 	string choice;
-	choice = "1" ;			// 1-> Indicates PED/PLink Data
-	/*normalPrompt();
+	normalPrompt();
 	cin >> choice;
 	while (!validChoice(choice))
 	{
 		invalidChoiceMessage();
 		normalPrompt();
 		cin >> choice;
-	}*/
+	}
 	setFileFormat(choice);
 	instantiatePie();
 }
