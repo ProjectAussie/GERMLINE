@@ -24,6 +24,7 @@ void MarkerSet::clear()
 
 boost::dynamic_bitset<>& MarkerSet::getMarkerBits()
 {
+	// cout << "getMarkerBits called. returning: " << markers << endl;
 	return markers;
 }
 

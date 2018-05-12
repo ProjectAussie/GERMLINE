@@ -1,4 +1,7 @@
 #!/bin/bash
+cd ..
+make
+cd test
 
 report_matches_for_bits_haploid () {
   germline_bin=$1

@@ -4,6 +4,7 @@ void Match::extendBack()
 {
 	// save old position values
 	unsigned int SAVE_pms = position_ms;
+	cout << "extendBack called. position_ms: " << position_ms << endl;
 	
 	// iterate backwards through genome
 	while(position_ms > 0)
@@ -15,6 +16,7 @@ void Match::extendBack()
 			break;
 		}
 	}
+	cout << "assigning start_ms value: " << position_ms << endl;
 	start_ms = position_ms;
 	// restore saved values
 	position_ms = SAVE_pms;
@@ -74,15 +76,30 @@ int Match::scanLeft( unsigned int ms )
 {
 	bool err = false;
 	int marker = MARKER_SET_SIZE - 1; // e.g. 40
+	cout << "initial marker in scanLeft: " << marker << endl;
 
 	if ( HAPLOID ) {
 		cout << "SCANNING LEFT IN HAPLOID MODE BUT NOT HAP_EXT" << endl;
-		for ( marker = MARKER_SET_SIZE - 1 ; marker >= 0 && ! err; marker-- )
-			if ( node[0]->getChromosome( 0 )->getMarkerSet()->getMarkerBits()[marker] != node[1]->getChromosome( 0 )->getMarkerSet()->getMarkerBits()[marker] )
+		cout << "for marker from 41 to 0 (or error)" << endl;
+		for ( marker = MARKER_SET_SIZE - 1 ; marker >= 0 && ! err; marker-- ) {
+			cout << "for-loop; marker (updated with brackets): " << marker << endl;
+			// AG: scanLeft goes all the way to the end here, rather than stopping where the match tract goes het
+			cout << "node 0 markerBits:" << endl;	
+			cout << node[0]->getChromosome( 0 )->getMarkerSet()->getMarkerBits() << endl;
+			cout << "node 0 markerBits[" << marker << "]" << endl;
+			cout << node[0]->getChromosome( 0 )->getMarkerSet()->getMarkerBits()[marker] << endl;
+			cout << "node 1 markerBits:" << endl;
+			cout << node[1]->getChromosome( 0 )->getMarkerSet()->getMarkerBits() << endl;
+			cout << "node 1 markerBits[" << marker << "]" << endl;
+			cout << node[1]->getChromosome( 0 )->getMarkerSet()->getMarkerBits()[marker] << endl;
+			if ( node[0]->getChromosome( 0 )->getMarkerSet()->getMarkerBits()[marker] != node[1]->getChromosome( 0 )->getMarkerSet()->getMarkerBits()[marker] ) {
+				cout << "setting error to true at marker " << marker << endl;
 				err = true;
+			}
+		}
 	} else if ( HAP_EXT )
 	{
-		cout << "SCANNING LEFT IN HAP_EXT" << endl;
+		// cout << "SCANNING LEFT IN HAP_EXT" << endl;
 		int cur_marker;
 		// AG: looks like we run a function here over 0,0, 0,1, 1,0, 1,1
 		for ( int a = 0 ; a < 2 ; a++ ) {
@@ -100,15 +117,18 @@ int Match::scanLeft( unsigned int ms )
 		}
 	} else
 	{
-	boost::dynamic_bitset<> mask
-		= ( node[0]->getChromosome( 0 )->getMarkerSet(ms)->getMarkerBits() ^ node[0]->getChromosome( 1 )->getMarkerSet(ms)->getMarkerBits() ).flip()
-		& ( node[1]->getChromosome( 0 )->getMarkerSet(ms)->getMarkerBits() ^ node[1]->getChromosome( 1 )->getMarkerSet(ms)->getMarkerBits() ).flip();
-	mask = ( node[0]->getChromosome( 0 )->getMarkerSet(ms)->getMarkerBits() ^ node[1]->getChromosome( 0 )->getMarkerSet(ms)->getMarkerBits()) & mask;
+		boost::dynamic_bitset<> mask
+			= ( node[0]->getChromosome( 0 )->getMarkerSet(ms)->getMarkerBits() ^ node[0]->getChromosome( 1 )->getMarkerSet(ms)->getMarkerBits() ).flip()
+			& ( node[1]->getChromosome( 0 )->getMarkerSet(ms)->getMarkerBits() ^ node[1]->getChromosome( 1 )->getMarkerSet(ms)->getMarkerBits() ).flip();
+		mask = ( node[0]->getChromosome( 0 )->getMarkerSet(ms)->getMarkerBits() ^ node[1]->getChromosome( 0 )->getMarkerSet(ms)->getMarkerBits()) & mask;
 
-	for( marker = MARKER_SET_SIZE - 1 ; marker >= 0 && !err ; marker-- )
-		if ( mask[marker] ) err = true;
+		for( marker = MARKER_SET_SIZE - 1 ; marker >= 0 && !err ; marker-- )
+			if ( mask[marker] ) err = true;
 	}
-	
+
+	// AG hypothesis: marker gets set to -1 by the for-loop marker--, then the loop quits
+	// so we return -1 as marker
+	// cout << "returning marker: " << marker << endl;	
 	return marker;
 }
 
