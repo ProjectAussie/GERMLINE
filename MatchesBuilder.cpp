@@ -52,7 +52,13 @@ void MatchesBuilder::readAllMarkers()
 	for (position_ms = ms_start; position_ms < ms_end; position_ms++)
 	{
 		if ( !SILENT ) cerr << "\rReading Markers - " << position_ms*100/ms_end << "%" << flush;
-		if ( HAPLOID ) readHaploidMarkerSet(); else readMarkerSet();
+		if ( HAPLOID ) {
+			cout << "readHaploidMarkerSet(); position_ms: " << position_ms << endl;
+			readHaploidMarkerSet();
+		} else {
+			cout << "readMarkerSet()" << endl;
+			readMarkerSet();
+		}
 	}
 	if ( !SILENT ) cerr << '\r' << "Reading Markers Complete" << endl;
 }
@@ -64,8 +70,11 @@ void MatchesBuilder::readHaploidMarkerSet()
 	Individual * i[2];
 	for(individualsP->begin();individualsP->more();)
 	{
+		cout << "looping individualsP (pointer?) from begin() to more()" << endl;
 		i[0] = individualsP->next();
+		// cout << "i[0]: " << &(i[0]) << endl;
 		i[1] = individualsP->next();
+		// cout << "i[1]: " << &(i[1]) << endl;
 		pieP->getCompleteMarkerSet( i[0] , i[1] );
 	}
 }

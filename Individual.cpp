@@ -144,11 +144,16 @@ Chromosome * Individual::getAlternateChromosome( Chromosome * c)
 	}
 }
 
+// returns a pointer to a chromosome?
 Chromosome * Individual::getChromosome(int ct)
 {
-	if ( HAPLOID ) ct = 0;
-
-	return &(h[ct]);
+	if ( HAPLOID ) {
+		// AG: if haploid, hardcode "ct" to zero. Not sure why.
+		// return memory address of h[0] ?
+		return &(h[0]);
+	} else {
+		return &(h[ct]);
+	}
 }
 
 unsigned int Individual::getNumericID()

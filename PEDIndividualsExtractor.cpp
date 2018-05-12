@@ -44,8 +44,6 @@ void PEDIndividualsExtractor::loadInput()
 // getInput(): gets individuals from .ped file
 void PEDIndividualsExtractor::getInput()
 {
-	
-	
 	cout << "Please enter the MAP file name" << endl;
 	cin >> map_file;
 	cout << "Please enter the PED file name" << endl;
@@ -96,28 +94,37 @@ void PEDIndividualsExtractor::getIndividuals()
 
 void PEDIndividualsExtractor::getCompleteMarkerSet(Individual * p)
 {
+	cout << "PEDIndividualsExtractor::getCompleteMarkerSet" << endl;
 	stream.seekg(p->getOffset() + 4*ALL_SNPS.getROIStart().getMarkerNumber() + 4*position_ms*MARKER_SET_SIZE + 1);
-	MarkerSet * ms[2];
-	ms[0] = new MarkerSet();
-	ms[1] = new MarkerSet();
+	MarkerSet * marker_sets[2];
+	marker_sets[0] = new MarkerSet();
+	marker_sets[1] = new MarkerSet();
 
-	readMarkerSet( ms );
+	readMarkerSet( marker_sets );
 
-	p->addMarkerSet(UNTRANS,ms[0]);
-	p->addMarkerSet(TRANS,ms[1]);
+	p->addMarkerSet(UNTRANS, marker_sets[0]);
+	p->addMarkerSet(TRANS, marker_sets[1]);
 }
 
-void PEDIndividualsExtractor::readMarkerSet( MarkerSet ** ms )
+void PEDIndividualsExtractor::readMarkerSet( MarkerSet ** marker_set )
 {
 	unsigned int maxsize = ALL_SNPS.currentSize();
+	cout << "PEDIndividualsExtractor::readMarkerSet; max_size: " << maxsize << " MARKER_SET_SIZE: " << MARKER_SET_SIZE << endl;
+
 	for (int position = 0; position < MARKER_SET_SIZE; position++)
 	{
-		if(position_ms*MARKER_SET_SIZE+position >= maxsize) break;
-		for(int al=0;al<2;al++){
+		if (position_ms * MARKER_SET_SIZE + position >= maxsize) {
+			break;
+		}
+		int overall_position = position_ms * MARKER_SET_SIZE + position;
+		cout << "position " << position << "; overall position: " << overall_position << endl;
+		for (int allele = 0; allele < 2; allele++) { // AG: what is "al"?
 			stripWhitespace();
 			char marker = stream.peek();
-			if ( ALL_SNPS.mapNucleotideToBinary(marker,position_ms*MARKER_SET_SIZE+position) == 1 )
-				ms[al]->set(position , true );
+			cout << "allele " << allele << ": " << marker << endl;
+			if ( ALL_SNPS.mapNucleotideToBinary(marker, overall_position) == 1 ) {
+				marker_set[allele]->set(position, true);
+			}
 			stream.get();
 		}
 	}
@@ -125,15 +132,20 @@ void PEDIndividualsExtractor::readMarkerSet( MarkerSet ** ms )
 
 void PEDIndividualsExtractor::getCompleteMarkerSet(Individual * p0 , Individual * p1 )
 {
+	cout << "PEDIndividualsExtractor::getCompleteMarkerSet with two params" << endl;
 	stream.seekg(p0->getOffset() + 4*ALL_SNPS.getROIStart().getMarkerNumber() + 4*position_ms*MARKER_SET_SIZE + 1);
-	MarkerSet * ms[2];
-	ms[0] = new MarkerSet();
-	ms[1] = new MarkerSet();
+	MarkerSet * marker_sets[2];
+	marker_sets[0] = new MarkerSet();
+	marker_sets[1] = new MarkerSet();
 
-	readMarkerSet( ms );
+	cout << "readMarkerSet(marker_sets)" << endl;
+	readMarkerSet(marker_sets);
 
-	p0->addMarkerSet(TRANS,ms[0]);
-	p1->addMarkerSet(TRANS,ms[1]);
+	cout << "addMarkerSet marker_sets[0]" << endl;
+	p0->addMarkerSet(TRANS, marker_sets[0]);
+
+	cout << "addMarkerSet marker_sets[1]" << endl;
+	p1->addMarkerSet(TRANS, marker_sets[1]);
 }
 
 // end PEDIndividualsExtractor.cpp

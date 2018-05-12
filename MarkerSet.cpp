@@ -36,6 +36,7 @@ bool MarkerSet::getMarker(int index) const
 
 void MarkerSet::set(int index , bool bit )
 {
+	cout << "markers.set ( " << index << ", " << bit << " )" << endl;
 	markers.set( index , bit );
 }
 

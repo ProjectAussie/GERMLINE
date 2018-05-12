@@ -27,7 +27,7 @@ report_matches_for_bits_haploid () {
 echo 'Testing embark fork of germline with -haploid -w_extend on a range of bits values'
 echo 'bits chr start end' > compiled_germline_haploid_match_tracts_by_bits_parameter.txt
 report_matches_for_bits_haploid ../germline compiled_germline_haploid_match_tracts_by_bits_parameter.txt
-
+cat compiled_germline_haploid_match_tracts_by_bits_parameter.txt
 # The embark distribution of germline is in the PATH on an embark EC2
 # echo 'Testing embark legacy germline (already in the PATH on an embark EC2) with -haploid -w_extend on a range of bits values'
 # echo 'bits chr start end' > embark_germline_haploid_match_tracts_by_bits_parameter.txt

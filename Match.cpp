@@ -81,18 +81,25 @@ int Match::scanLeft( unsigned int ms )
 	if ( HAPLOID ) {
 		cout << "SCANNING LEFT IN HAPLOID MODE BUT NOT HAP_EXT" << endl;
 		cout << "for marker from 41 to 0 (or error)" << endl;
+
+		// when HAPLOID is true, getChromosome resets its parameter to zero, so the input argument doesn't matter
+		boost::dynamic_bitset<>& node_zero_bits = node[0]->getChromosome(999)->getMarkerSet()->getMarkerBits();
+		boost::dynamic_bitset<>& node_one_bits = node[1]->getChromosome(999)->getMarkerSet()->getMarkerBits();
+
+		cout << "node 0 markerBits: " << node_zero_bits << endl;
+		cout << "node 1 markerBits: " << node_one_bits << endl;
+
 		for ( marker = MARKER_SET_SIZE - 1 ; marker >= 0 && ! err; marker-- ) {
 			cout << "for-loop; marker (updated with brackets): " << marker << endl;
+
 			// AG: scanLeft goes all the way to the end here, rather than stopping where the match tract goes het
-			cout << "node 0 markerBits:" << endl;	
-			cout << node[0]->getChromosome( 0 )->getMarkerSet()->getMarkerBits() << endl;
-			cout << "node 0 markerBits[" << marker << "]" << endl;
-			cout << node[0]->getChromosome( 0 )->getMarkerSet()->getMarkerBits()[marker] << endl;
-			cout << "node 1 markerBits:" << endl;
-			cout << node[1]->getChromosome( 0 )->getMarkerSet()->getMarkerBits() << endl;
-			cout << "node 1 markerBits[" << marker << "]" << endl;
-			cout << node[1]->getChromosome( 0 )->getMarkerSet()->getMarkerBits()[marker] << endl;
-			if ( node[0]->getChromosome( 0 )->getMarkerSet()->getMarkerBits()[marker] != node[1]->getChromosome( 0 )->getMarkerSet()->getMarkerBits()[marker] ) {
+			int node_zero_marker = node_zero_bits[marker];
+			int node_one_marker = node_one_bits[marker];
+
+			cout << "node 0 markerBits[" << marker << "]: " << node_zero_marker << endl;
+			cout << "node 1 markerBits[" << marker << "]: " <<  node_one_marker << endl;
+
+			if ( node_zero_marker != node_one_marker ) {
 				cout << "setting error to true at marker " << marker << endl;
 				err = true;
 			}
