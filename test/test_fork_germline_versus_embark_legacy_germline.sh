@@ -12,7 +12,7 @@ report_matches_for_bits_haploid () {
   echo haploid_test >> ${germline_params_file}
 
   # for bits in 1 11 21 31 41 51 61 71 81 91 101 111 121; do
-  for bits in 1 41 71; do
+  for bits in 1 41; do
     echo "BITS: ${bits}"
     ${germline_bin} -haploid -min_m 0.5 -err_hom 0 -err_het 0 -bits ${bits} -w_extend < ${germline_params_file} 2>&1 | tee haploid_germline_log.txt || echo "Germline exit code: $?"
     awk '{$2=$2};1' haploid_test.match | cut -f5-7 -d' ' > haploid_test.match.bed
