@@ -73,23 +73,28 @@ bool Match::approxEqual()
 int Match::scanLeft( unsigned int ms )
 {
 	bool err = false;
-	int marker = MARKER_SET_SIZE - 1;
+	int marker = MARKER_SET_SIZE - 1; // e.g. 40
 
 	if ( HAPLOID ) {
+		cout << "SCANNING LEFT IN HAPLOID MODE BUT NOT HAP_EXT" << endl;
 		for ( marker = MARKER_SET_SIZE - 1 ; marker >= 0 && ! err; marker-- )
 			if ( node[0]->getChromosome( 0 )->getMarkerSet()->getMarkerBits()[marker] != node[1]->getChromosome( 0 )->getMarkerSet()->getMarkerBits()[marker] )
 				err = true;
 	} else if ( HAP_EXT )
 	{
+		cout << "SCANNING LEFT IN HAP_EXT" << endl;
 		int cur_marker;
+		// AG: looks like we run a function here over 0,0, 0,1, 1,0, 1,1
 		for ( int a = 0 ; a < 2 ; a++ ) {
 			for ( int b = 0 ; b < 2 ; b++ ) { 
 				err = false;
 				for ( cur_marker = MARKER_SET_SIZE - 1 ; cur_marker >= 0 && ! err; cur_marker-- )
 				{
 					if ( node[0]->getChromosome( a )->getMarkerSet()->getMarkerBits()[cur_marker] != node[1]->getChromosome( b )->getMarkerSet()->getMarkerBits()[cur_marker] )
-						err = true;
+						err = true; // err may actually mean end-of-homozygous-tract?
 				}
+				// So looks like we start at 40 and advance cur_marker (reducing it?), reassigning marker along the way, and returning it
+				// in bits=41 world, we get down to marker=24 and then return it
 				if ( cur_marker < marker ) marker = cur_marker;
 			}
 		}
@@ -185,6 +190,23 @@ void Match::print( ostream& fout )
 			cout << "scanLeft marker:" << endl;
 			cout << marker << endl;
 			snp_start -= (MARKER_SET_SIZE - marker - 2);
+			// marker e.g. 24 (how do we get 24? start_ms = 1, so we may be doing scanLeft(0))
+			// scanLeft(0) returns 24..?
+			// then doing snp_start = 41 - (41 - 24 - 2) -> 41 - 15 -> 26
+			// start_ms:
+			// 1
+			// MARKER_SET_SIZE:
+			// 41
+			// snp_start:
+			// 41
+			// snp_end:
+			// 163
+			// scanLeft marker:
+			// 24
+			// snp_start after reassigning:
+			// 26
+			// The homozygous interval stops there -- germline does not seek again to the left of SNP 26
+			// This is why the homoz outputs vary by bits-parameter
 			cout << "snp_start after reassigning:" << endl;
 			cout << snp_start << endl;
 		}
@@ -194,8 +216,6 @@ void Match::print( ostream& fout )
 		// forwards
 		if( end_ms < num_sets - 1 )
 		{
-			cout << "scanRight marker:" << endl;
-			cout << marker << endl;
 			marker = scanRight( end_ms + 1 );
 			snp_end += marker - 1;
 		}
