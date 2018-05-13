@@ -100,7 +100,7 @@ private:
 	string ID;
 	unsigned int numeric_id;
 
-	Chromosome * h;
+	Chromosome * chromosome;
 	// sequence start in file
 	streamoff offset;
 	

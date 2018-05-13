@@ -28,9 +28,11 @@ void Chromosome::clear()
 }
 
 // addMarkerSet(): adds a MarkerSet
-void Chromosome::addMarkerSet(MarkerSet * ms)
+void Chromosome::addMarkerSet(MarkerSet * marker_set)
 {
-	chromosome.push_back(ms);
+	cout << "Chromosome.addMarkerSet called" << endl;
+	chromosome.push_back(marker_set);
+	// cout << chromosome << endl;
 }
 
 void Chromosome::print_snps(ostream& out, unsigned int start, unsigned int end)

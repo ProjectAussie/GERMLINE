@@ -122,8 +122,9 @@ void PEDIndividualsExtractor::readMarkerSet( MarkerSet ** marker_set )
 			stripWhitespace();
 			char marker = stream.peek();
 			cout << "allele " << allele << ": " << marker << endl;
-			if ( ALL_SNPS.mapNucleotideToBinary(marker, overall_position) == 1 ) {
-				marker_set[allele]->set(position, true);
+			int allele_as_binary = ALL_SNPS.mapNucleotideToBinary(marker, overall_position);
+			if ( allele_as_binary == 1 ) {
+				marker_set[allele]->set(position, true); // AG: are we collapsing the sets here?
 			}
 			stream.get();
 		}
