@@ -12,7 +12,7 @@ Chromosome::Chromosome()
 // returns a pointer to a marker set?
 MarkerSet * Chromosome::getMarkerSet()
 {
-	cout << "Chromosome.getMarkerSet() called without params; position_ms is " << position_ms << endl;
+	if (DEBUG) cout << "Chromosome.getMarkerSet() called without params; position_ms is " << position_ms << endl;
 	return chromosome[position_ms];
 }
 
@@ -30,9 +30,8 @@ void Chromosome::clear()
 // addMarkerSet(): adds a MarkerSet
 void Chromosome::addMarkerSet(MarkerSet * marker_set)
 {
-	cout << "Chromosome.addMarkerSet called" << endl;
+	if (DEBUG) cout << "Chromosome.addMarkerSet called" << endl;
 	chromosome.push_back(marker_set);
-	// cout << chromosome << endl;
 }
 
 void Chromosome::print_snps(ostream& out, unsigned int start, unsigned int end)

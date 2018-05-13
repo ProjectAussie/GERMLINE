@@ -4,19 +4,17 @@ void Match::extendBack()
 {
 	// save old position values
 	unsigned int SAVE_pms = position_ms;
-	cout << "extendBack called. position_ms: " << position_ms << endl;
+	if (DEBUG) cout << "extendBack called. position_ms: " << position_ms << endl;
 	
 	// iterate backwards through genome
-	while(position_ms > 0)
-	{
+	while (position_ms > 0) {
 		position_ms--;
-		if( !approxEqual() )
-		{
+		if (!approxEqual()) {
 			position_ms++;
 			break;
 		}
 	}
-	cout << "assigning start_ms value: " << position_ms << endl;
+	if (DEBUG) cout << "assigning start_ms value: " << position_ms << endl;
 	start_ms = position_ms;
 	// restore saved values
 	position_ms = SAVE_pms;
@@ -76,38 +74,37 @@ int Match::scanLeft( unsigned int marker_set_number )
 {
 	bool found_mismatch = false;
 	int marker = MARKER_SET_SIZE - 1; // e.g. 40
-	cout << "initial marker in scanLeft: " << marker << endl;
-	cout << "marker_set_number in scanLeft: " << marker_set_number << endl;
+	if (DEBUG) cout << "initial marker in scanLeft: " << marker << endl;
+	if (DEBUG) cout << "marker_set_number in scanLeft: " << marker_set_number << endl;
 
 	if (HAPLOID) {
-		cout << "SCANNING LEFT IN HAPLOID MODE BUT NOT HAP_EXT" << endl;
-		cout << "for marker from 41 to 0 (or error)" << endl;
+		if (DEBUG) cout << "SCANNING LEFT IN HAPLOID MODE BUT NOT HAP_EXT" << endl;
+		if (DEBUG) cout << "for marker from 41 to 0 (or error)" << endl;
 
 		// when HAPLOID is true, getChromosome resets its parameter to zero, so the input argument doesn't matter
 		boost::dynamic_bitset<>& node_zero_bits = node[0]->getChromosome(999)->getMarkerSet(marker_set_number)->getMarkerBits();
 		boost::dynamic_bitset<>& node_one_bits = node[1]->getChromosome(999)->getMarkerSet(marker_set_number)->getMarkerBits();
 
-		cout << "node 0 markerBits: " << node_zero_bits << endl;
-		cout << "node 1 markerBits: " << node_one_bits << endl;
+		if (DEBUG) cout << "node 0 markerBits: " << node_zero_bits << endl;
+		if (DEBUG) cout << "node 1 markerBits: " << node_one_bits << endl;
 
 		for ( marker = MARKER_SET_SIZE - 1 ; marker >= 0 && !found_mismatch; marker-- ) {
-			cout << "for-loop; marker (updated with brackets): " << marker << endl;
+			if (DEBUG) cout << "for-loop; marker (updated with brackets): " << marker << endl;
 
 			// AG: scanLeft goes all the way to the end here, rather than stopping where the match tract goes het
 			int node_zero_marker = node_zero_bits[marker];
 			int node_one_marker = node_one_bits[marker];
 
-			cout << "node 0 markerBits[" << marker << "]: " << node_zero_marker << endl;
-			cout << "node 1 markerBits[" << marker << "]: " <<  node_one_marker << endl;
+			if (DEBUG) cout << "node 0 markerBits[" << marker << "]: " << node_zero_marker << endl;
+			if (DEBUG) cout << "node 1 markerBits[" << marker << "]: " <<  node_one_marker << endl;
 
 			if ( node_zero_marker != node_one_marker ) {
-				cout << "setting error to true at marker " << marker << endl;
+				if (DEBUG) cout << "setting error to true at marker " << marker << endl;
 				found_mismatch = true;
 			}
 		}
-	} else if (HAP_EXT)
-	{
-		cout << "SCANNING LEFT IN HAP_EXT" << endl;
+	} else if (HAP_EXT) {
+		if (DEBUG) cout << "SCANNING LEFT IN HAP_EXT" << endl;
 		int cur_marker;
 		// AG: looks like we run a function here over 0,0, 0,1, 1,0, 1,1
 		for ( int a = 0 ; a < 2 ; a++ ) {
@@ -123,10 +120,9 @@ int Match::scanLeft( unsigned int marker_set_number )
 				if ( cur_marker < marker ) marker = cur_marker;
 			}
 		}
-	} else
-	{
-		cout << "SCANNING LEFT IN ELSE CLAUSE" << endl;
-		cout << "marker_set: " << marker_set_number << endl;
+	} else {
+		if (DEBUG) cout << "SCANNING LEFT IN ELSE CLAUSE" << endl;
+		if (DEBUG) cout << "marker_set: " << marker_set_number << endl;
 
 		// AG: big question here: what are nodes? what are chromosomes?
 
@@ -135,10 +131,10 @@ int Match::scanLeft( unsigned int marker_set_number )
 		boost::dynamic_bitset<>& node_one_chromosome_zero_bits = node[1]->getChromosome(0)->getMarkerSet(marker_set_number)->getMarkerBits();
 		boost::dynamic_bitset<>& node_one_chromosome_one_bits = node[1]->getChromosome(1)->getMarkerSet(marker_set_number)->getMarkerBits();
 
-		cout << "node_zero_chromosome_zero_bits: " << node_zero_chromosome_zero_bits << endl;
-		cout << "node_zero_chromosome_one_bits: " << node_zero_chromosome_one_bits << endl;
-		cout << "node_one_chromosome_zero_bits: " << node_one_chromosome_zero_bits << endl;
-		cout << "node_one_chromosome_one_bits: " << node_one_chromosome_one_bits << endl;
+		if (DEBUG) cout << "node_zero_chromosome_zero_bits: " << node_zero_chromosome_zero_bits << endl;
+		if (DEBUG) cout << "node_zero_chromosome_one_bits: " << node_zero_chromosome_one_bits << endl;
+		if (DEBUG) cout << "node_one_chromosome_zero_bits: " << node_one_chromosome_zero_bits << endl;
+		if (DEBUG) cout << "node_one_chromosome_one_bits: " << node_one_chromosome_one_bits << endl;
 
 		// AG: ^ is XOR. .flip() flips ones and zeros in a bit-set
 		boost::dynamic_bitset<> node_zero_is_heterozygous = (node_zero_chromosome_zero_bits ^ node_zero_chromosome_one_bits);
@@ -147,35 +143,32 @@ int Match::scanLeft( unsigned int marker_set_number )
 		boost::dynamic_bitset<> chromosome_zero_is_heterozygous = (node_zero_chromosome_zero_bits ^ node_one_chromosome_zero_bits);
 		boost::dynamic_bitset<> both_nodes_are_homozygous_and_chromosome_zero_is_heterozygous = node_zero_is_homozygous & node_one_is_homozygous & chromosome_zero_is_heterozygous;
 
-		cout << "node_zero_is_heterozygous: " << node_zero_is_heterozygous << endl;
-		cout << "node_zero_is_homozygous: " << node_zero_is_homozygous << endl;
-		cout << "node_one_is_homozygous: " << node_one_is_homozygous << endl;
-		cout << "chromosome_zero_is_heterozygous: " << chromosome_zero_is_heterozygous << endl;
-		cout << "both_nodes_are_homozygous_and_chromosome_zero_is_heterozygous: " << both_nodes_are_homozygous_and_chromosome_zero_is_heterozygous << endl;
+		if (DEBUG) cout << "node_zero_is_heterozygous: " << node_zero_is_heterozygous << endl;
+		if (DEBUG) cout << "node_zero_is_homozygous: " << node_zero_is_homozygous << endl;
+		if (DEBUG) cout << "node_one_is_homozygous: " << node_one_is_homozygous << endl;
+		if (DEBUG) cout << "chromosome_zero_is_heterozygous: " << chromosome_zero_is_heterozygous << endl;
+		if (DEBUG) cout << "both_nodes_are_homozygous_and_chromosome_zero_is_heterozygous: " << both_nodes_are_homozygous_and_chromosome_zero_is_heterozygous << endl;
 
 		boost::dynamic_bitset<> final_mask = both_nodes_are_homozygous_and_chromosome_zero_is_heterozygous;
 
 		if (HOM_ONLY) {
-			cout << "HOM_ONLY; CUSTOMIZING MASK TO DETECT HET MARKER WITHIN NODE ZERO" << endl;
+			if (DEBUG) cout << "HOM_ONLY; CUSTOMIZING MASK TO DETECT HET MARKER WITHIN NODE ZERO" << endl;
 			final_mask = node_zero_is_heterozygous;
 		}
 
-		cout << "final mask: " << final_mask << endl;
+		if (DEBUG) cout << "final mask: " << final_mask << endl;
 
 		for (marker = MARKER_SET_SIZE - 1; marker >= 0 && !found_mismatch; marker--) {
-			cout << "testing marker " << marker << endl;
+			if (DEBUG) cout << "testing marker " << marker << endl;
 			// AG: I'm not sure why this works. Seems like we should be iterating backwards
 			// through the mask array, which has the heterozygous SNP (snp 5) 5 places from the end
 			if (final_mask[marker]) {
-				cout << "setting err to true at marker " << marker << endl;
+				if (DEBUG) cout << "setting err to true at marker " << marker << endl;
 				found_mismatch = true;
 			}
 		}
 	}
 
-	// AG hypothesis: marker gets set to -1 by the for-loop marker--, then the loop quits
-	// so we return -1 as marker
-	// cout << "returning marker: " << marker << endl;	
 	return marker;
 }
 
@@ -185,7 +178,7 @@ int Match::scanRight( unsigned int marker_set_number )
 	int marker = 0;
 
 	if (HAPLOID) {
-		cout << "SCANNING RIGHT IN HAPLOID MODE" << endl;
+		if (DEBUG) cout << "SCANNING RIGHT IN HAPLOID MODE" << endl;
 		for (marker = 0; marker < MARKER_SET_SIZE && !found_mismatch; marker++) {
 			if (node[0]->getChromosome(0)->getMarkerSet()->getMarkerBits()[marker] != node[1]->getChromosome(0)->getMarkerSet()->getMarkerBits()[marker] ) {
 				found_mismatch = true;
@@ -193,7 +186,7 @@ int Match::scanRight( unsigned int marker_set_number )
 		}
 	} else if (HAP_EXT)
 	{
-		cout << "SCANNING RIGHT IN HAP_EXT MODE" << endl;
+		if (DEBUG) cout << "SCANNING RIGHT IN HAP_EXT MODE" << endl;
 		int cur_marker;
 		for (int a = 0; a < 2; a++) {
 			for (int b = 0; b < 2; b++) { 
@@ -208,7 +201,7 @@ int Match::scanRight( unsigned int marker_set_number )
 		}
 	} else
 	{
-		cout << "ELSE-CLAUSE OF SCAN-RIGHT" << endl;
+		if (DEBUG) cout << "ELSE-CLAUSE OF SCAN-RIGHT" << endl;
 		boost::dynamic_bitset<> node_zero_chromosome_zero_bits = node[0]->getChromosome(0)->getMarkerSet(marker_set_number)->getMarkerBits();
 		boost::dynamic_bitset<> node_zero_chromosome_one_bits = node[0]->getChromosome(1)->getMarkerSet(marker_set_number)->getMarkerBits();
 		boost::dynamic_bitset<> node_one_chromosome_zero_bits = node[1]->getChromosome(0)->getMarkerSet(marker_set_number)->getMarkerBits();
@@ -223,11 +216,11 @@ int Match::scanRight( unsigned int marker_set_number )
 		boost::dynamic_bitset<> mask = node_zero_is_homozygous & node_one_is_homozygous & chromosome_zero_is_heterozygous;
 
 		if (HOM_ONLY) {
-			cout << "HOM_ONLY; CUSTOMIZING MASK TO DETECT HET MARKER WITHIN NODE ZERO" << endl;
+			if (DEBUG) cout << "HOM_ONLY; CUSTOMIZING MASK TO DETECT HET MARKER WITHIN NODE ZERO" << endl;
 			mask = node_zero_is_heterozygous;
 		}
 
-		cout << "mask: " << mask << endl;
+		if (DEBUG) cout << "mask: " << mask << endl;
 		for (marker = 0; marker < MARKER_SET_SIZE && !found_mismatch; marker++) {
 			if (mask[marker]) {
 				found_mismatch = true;
@@ -255,69 +248,51 @@ bool Match::isHom( int n , unsigned int ms )
 void Match::print( ostream& fout )
 {
 	// extend this match from both ends
-	cout << "Match::print" << endl;
-	cout << "WIN_EXT: " << WIN_EXT << endl;
-	cout << "start_ms:" << endl;
-	cout << start_ms << endl;
-	cout << "MARKER_SET_SIZE:" << endl;
-	cout << MARKER_SET_SIZE << endl;
+	if (DEBUG) cout << "Match::print" << endl;
+	if (DEBUG) cout << "WIN_EXT: " << WIN_EXT << endl;
+	if (DEBUG) cout << "start_ms:" << endl;
+	if (DEBUG) cout << start_ms << endl;
+	if (DEBUG) cout << "MARKER_SET_SIZE:" << endl;
+	if (DEBUG) cout << MARKER_SET_SIZE << endl;
 	unsigned int snp_start = ALL_SNPS.getROIStart().getMarkerNumber() + start_ms * MARKER_SET_SIZE;
-	unsigned int snp_end = ALL_SNPS.getROIStart().getMarkerNumber() + ( end_ms + 1 ) * MARKER_SET_SIZE - 1;
+	unsigned int snp_end = ALL_SNPS.getROIStart().getMarkerNumber() + (end_ms + 1) * MARKER_SET_SIZE - 1;
 
-	cout << "snp_start:" << endl;
-	cout << snp_start << endl;
-	cout << "snp_end:" << endl;
-	cout << snp_end << endl;
+	if (DEBUG) cout << "snp_start:" << endl;
+	if (DEBUG) cout << snp_start << endl;
+	if (DEBUG) cout << "snp_end:" << endl;
+	if (DEBUG) cout << snp_end << endl;
 
 	int marker;
 	
 	if (WIN_EXT)
 	{
-		cout << "WIN_EXT is true; trying to extend match" << endl;
+		if (DEBUG) cout << "WIN_EXT is true; trying to extend match" << endl;
 		// backwards
 		if (start_ms > 0)
 		{
 			// parameter to scanLeft is called "ms", presumably "marker_set"
 			marker = scanLeft(start_ms - 1);
-			cout << "marker returned from scanLeft:" << marker << endl;
+			if (DEBUG) cout << "marker returned from scanLeft:" << marker << endl;
 			snp_start -= (MARKER_SET_SIZE - marker - 2);
-			// marker e.g. 24 (how do we get 24? start_ms = 1, so we may be doing scanLeft(0))
-			// scanLeft(0) returns 24..?
-			// then doing snp_start = 41 - (41 - 24 - 2) -> 41 - 15 -> 26
-			// start_ms:
-			// 1
-			// MARKER_SET_SIZE:
-			// 41
-			// snp_start:
-			// 41
-			// snp_end:
-			// 163
-			// scanLeft marker:
-			// 24
-			// snp_start after reassigning:
-			// 26
-			// The homozygous interval stops there -- germline does not seek again to the left of SNP 26
-			// This is why the homoz outputs vary by bits-parameter
-			cout << "snp_start after reassigning:" << endl;
-			cout << snp_start << endl;
+			if (DEBUG) cout << "snp_start after reassigning:" << endl;
+			if (DEBUG) cout << snp_start << endl;
 		}
 	}
-	cout << "end_ms: " << end_ms << endl;
-	cout << "num_sets: " << num_sets << endl;
+	if (DEBUG) cout << "end_ms: " << end_ms << endl;
+	if (DEBUG) cout << "num_sets: " << num_sets << endl;
 	if ( WIN_EXT || end_ms == num_sets - 2 )
 	{
-		cout << "WIN_EXT or end_ms == num_sets - 2, so we're attempting to extend to the right / forwards" << endl;
+		if (DEBUG) cout << "WIN_EXT or end_ms == num_sets - 2, so we're attempting to extend to the right / forwards" << endl;
 		// forwards
-		if( end_ms < num_sets - 1 )
-		{
-			cout << "end_ms < num_sets - 1, so we call scanRight(end_ms + 1)" << endl;
+		if (end_ms < num_sets - 1) {
+			if (DEBUG) cout << "end_ms < num_sets - 1, so we call scanRight(end_ms + 1)" << endl;
 			marker = scanRight( end_ms + 1 );
 			snp_end += marker - 1;
 		} else {
-			cout << "end_ms was not less than num_sets - 1, so we didn't call scanRight" << endl;
+			if (DEBUG) cout << "end_ms was not less than num_sets - 1, so we didn't call scanRight" << endl;
 		}
 	} else {
-		cout << "end_ms / num_sets: " << end_ms << " / " << num_sets << endl;
+		if (DEBUG) cout << "end_ms / num_sets: " << end_ms << " / " << num_sets << endl;
 	}
 	
 

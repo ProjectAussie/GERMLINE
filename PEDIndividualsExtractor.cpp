@@ -94,7 +94,7 @@ void PEDIndividualsExtractor::getIndividuals()
 
 void PEDIndividualsExtractor::getCompleteMarkerSet(Individual * p)
 {
-	cout << "PEDIndividualsExtractor::getCompleteMarkerSet" << endl;
+	if (DEBUG) cout << "PEDIndividualsExtractor::getCompleteMarkerSet" << endl;
 	stream.seekg(p->getOffset() + 4*ALL_SNPS.getROIStart().getMarkerNumber() + 4*position_ms*MARKER_SET_SIZE + 1);
 	MarkerSet * marker_sets[2];
 	marker_sets[0] = new MarkerSet();
@@ -109,7 +109,7 @@ void PEDIndividualsExtractor::getCompleteMarkerSet(Individual * p)
 void PEDIndividualsExtractor::readMarkerSet( MarkerSet ** marker_set )
 {
 	unsigned int maxsize = ALL_SNPS.currentSize();
-	cout << "PEDIndividualsExtractor::readMarkerSet; max_size: " << maxsize << " MARKER_SET_SIZE: " << MARKER_SET_SIZE << endl;
+	if (DEBUG) cout << "PEDIndividualsExtractor::readMarkerSet; max_size: " << maxsize << " MARKER_SET_SIZE: " << MARKER_SET_SIZE << endl;
 
 	for (int position = 0; position < MARKER_SET_SIZE; position++)
 	{
@@ -117,11 +117,11 @@ void PEDIndividualsExtractor::readMarkerSet( MarkerSet ** marker_set )
 			break;
 		}
 		int overall_position = position_ms * MARKER_SET_SIZE + position;
-		cout << "position " << position << "; overall position: " << overall_position << endl;
+		if (DEBUG) cout << "position " << position << "; overall position: " << overall_position << endl;
 		for (int allele = 0; allele < 2; allele++) { // AG: what is "al"?
 			stripWhitespace();
 			char marker = stream.peek();
-			cout << "allele " << allele << ": " << marker << endl;
+			if (DEBUG) cout << "allele " << allele << ": " << marker << endl;
 			int allele_as_binary = ALL_SNPS.mapNucleotideToBinary(marker, overall_position);
 			if ( allele_as_binary == 1 ) {
 				marker_set[allele]->set(position, true); // AG: are we collapsing the sets here?
@@ -133,19 +133,19 @@ void PEDIndividualsExtractor::readMarkerSet( MarkerSet ** marker_set )
 
 void PEDIndividualsExtractor::getCompleteMarkerSet(Individual * p0 , Individual * p1 )
 {
-	cout << "PEDIndividualsExtractor::getCompleteMarkerSet with two params" << endl;
+	if (DEBUG) cout << "PEDIndividualsExtractor::getCompleteMarkerSet with two params" << endl;
 	stream.seekg(p0->getOffset() + 4*ALL_SNPS.getROIStart().getMarkerNumber() + 4*position_ms*MARKER_SET_SIZE + 1);
 	MarkerSet * marker_sets[2];
 	marker_sets[0] = new MarkerSet();
 	marker_sets[1] = new MarkerSet();
 
-	cout << "readMarkerSet(marker_sets)" << endl;
+	if (DEBUG) cout << "readMarkerSet(marker_sets)" << endl;
 	readMarkerSet(marker_sets);
 
-	cout << "addMarkerSet marker_sets[0]" << endl;
+	if (DEBUG) cout << "addMarkerSet marker_sets[0]" << endl;
 	p0->addMarkerSet(TRANS, marker_sets[0]);
 
-	cout << "addMarkerSet marker_sets[1]" << endl;
+	if (DEBUG) cout << "addMarkerSet marker_sets[1]" << endl;
 	p1->addMarkerSet(TRANS, marker_sets[1]);
 }
 

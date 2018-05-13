@@ -7,7 +7,7 @@ using namespace std;
 Individual::Individual()
 {
 	if ( HAPLOID ) {
-		cout << "Individual() constructor; haploid mode" << endl;
+		if (DEBUG) cout << "Individual() constructor; haploid mode" << endl;
 		chromosome = new Chromosome[1];
 	} else {
 		chromosome = new Chromosome[2];
@@ -188,7 +188,7 @@ void Individual::clearMarkers()
 // addMarkerSet(): adds MarkerSet to a chromosome
 void Individual::addMarkerSet(int ct, MarkerSet * marker_set)
 {
-	cout << "Individual::addMarkerSet" << endl;
+	if (DEBUG) cout << "Individual::addMarkerSet" << endl;
 	if ( HAPLOID ) {
 		ct = 0;
 	}
