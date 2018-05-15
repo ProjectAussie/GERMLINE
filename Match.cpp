@@ -151,20 +151,11 @@ int Match::scanLeft( unsigned int marker_set_number )
 		if (DEBUG) cout << "chromosome_zero_is_heterozygous: " << chromosome_zero_is_heterozygous << endl;
 		if (DEBUG) cout << "both_nodes_are_homozygous_and_chromosome_zero_is_heterozygous: " << both_nodes_are_homozygous_and_chromosome_zero_is_heterozygous << endl;
 
-		boost::dynamic_bitset<> final_mask = both_nodes_are_homozygous_and_chromosome_zero_is_heterozygous;
-
-		if (HOM_ONLY) {
-			if (DEBUG) cout << "HOM_ONLY; CUSTOMIZING MASK TO DETECT HET MARKER WITHIN NODE ZERO OR NODE ONE" << endl;
-			final_mask = node_zero_is_heterozygous | node_one_is_heterozygous;
-		}
-
-		if (DEBUG) cout << "final mask: " << final_mask << endl;
-
 		for (marker = MARKER_SET_SIZE - 1; marker >= 0 && !found_mismatch; marker--) {
 			if (DEBUG) cout << "testing marker " << marker << endl;
 			// AG: I'm not sure why this works. Seems like we should be iterating backwards
 			// through the mask array, which has the heterozygous SNP (snp 5) 5 places from the end
-			if (final_mask[marker]) {
+			if (both_nodes_are_homozygous_and_chromosome_zero_is_heterozygous[marker]) {
 				if (DEBUG) cout << "setting err to true at marker " << marker << endl;
 				found_mismatch = true;
 			}
@@ -218,19 +209,10 @@ int Match::scanRight( unsigned int marker_set_number )
 		boost::dynamic_bitset<> node_one_is_heterozygous = (node_one_chromosome_zero_bits ^ node_one_chromosome_one_bits);
 		boost::dynamic_bitset<> node_one_is_homozygous = (node_one_chromosome_zero_bits ^ node_one_chromosome_one_bits).flip();
 		boost::dynamic_bitset<> chromosome_zero_is_heterozygous = (node_zero_chromosome_zero_bits ^ node_one_chromosome_zero_bits);
+		boost::dynamic_bitset<> both_nodes_are_homozygous_and_chromosome_zero_is_heterozygous = node_zero_is_homozygous & node_one_is_homozygous & chromosome_zero_is_heterozygous;
 
-		boost::dynamic_bitset<> final_mask = node_zero_is_homozygous & node_one_is_homozygous & chromosome_zero_is_heterozygous;
-
-		if (HOM_ONLY) {
-			if (DEBUG) cout << "HOM_ONLY; CUSTOMIZING MASK TO DETECT HET MARKER WITHIN NODE ZERO OR NODE ONE" << endl;
-			if (DEBUG) cout << "node_zero_is_heterozygous: " << node_zero_is_heterozygous << endl;
-			if (DEBUG) cout << "node_one_is_heterozygous: " << node_one_is_heterozygous << endl;
-			final_mask = node_zero_is_heterozygous | node_one_is_heterozygous;
-		}
-
-		if (DEBUG) cout << "final_mask: " << final_mask << endl;
 		for (marker = 0; marker < MARKER_SET_SIZE && !found_mismatch; marker++) {
-			if (final_mask[marker]) {
+			if (both_nodes_are_homozygous_and_chromosome_zero_is_heterozygous[marker]) {
 				if (DEBUG) cout << "found mismatch at marker " << marker << endl;
 				found_mismatch = true;
 			}
