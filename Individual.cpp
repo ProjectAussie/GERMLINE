@@ -2,55 +2,36 @@
 
 #include "Individual.h"
 using namespace std;
-using namespace __gnu_cxx;
-
 
 // Individual(): default constructor
 Individual::Individual()
 {
 	if ( HAPLOID ) h = new Chromosome[1]; else h = new Chromosome[2];
 	numeric_id = 0;
-	all_matches.set_deleted_key(4294967295);	//deleted key is set to the longest unsigned int value
-	mem_ind += sizeof(Individual);
 }
 
 Individual::~Individual()
 {
 	delete[] h;
-
-	sparse_hash_map<size_t,Match* >::iterator iter;
-	for (iter = all_matches.begin(); iter != all_matches.end(); iter++)
-	{
-		mem_all_matches -= (sizeof(pair<size_t,Match*>) + sizeof(Match));
-		delete iter->second;
-		iter->second=NULL;
-	}
-	all_matches.clear();
-	all_matches.resize(0);
+	delete[] all_matches;
 }
-
 
 void Individual::freeMatches()
 {
-	for(	size_t iter = 0 ; iter < num_samples ; iter++ )
-		if( all_matches.find(iter) != all_matches.end() )
-			deleteMatch(iter);				
+	for ( size_t iter = 0 ; iter < num_samples ; iter++ )
+		if ( all_matches[ iter ] != NULL ) deleteMatch( iter );
 }
 
 Match * Individual::getMatch( size_t id )
 {
-	if(all_matches.find(id) != all_matches.end())
-		return all_matches[id];
-	else
-		return NULL;
+	return all_matches[ id ];
 }
 
 void Individual::assertHomozygous()
 {
 	size_t iter = this->getNumericID();
 	Match * m;
-	
-	if(all_matches.find(iter) != all_matches.end())
+	if ( all_matches[ iter ] != NULL )
 	{
 		// increment this match
 		all_matches[ iter ]->end_ms = position_ms;
@@ -62,8 +43,7 @@ void Individual::assertHomozygous()
 		m->end_ms = m->start_ms = position_ms;
 		m->node[0] = m->node[1] = this;
 		m->extendBack();
-		all_matches.insert(make_pair(iter,m));		
-		mem_all_matches += ( sizeof(Match) + sizeof(pair<size_t,Match*>));
+		all_matches[ iter ] = m;
 	}
 }
 
@@ -75,48 +55,40 @@ void Individual::assertShares()
 	// try to extend previous matches that did not match currently
 	for( size_t iter = 0 ; iter < num_samples ; iter++ )
 	{
-		if (all_matches.find(iter) == all_matches.end() ) continue;
+		if ( all_matches[ iter ] == NULL ) continue;
 
 		m = all_matches[ iter ];
 		// Can we increment?
 		if ( m->approxEqual() ) m->end_ms = position_ms;
 		else deleteMatch( iter );
-		m=NULL;
 	}
 }
 
 void Individual::clearMatch( size_t id )
-{	
-	all_matches.erase(id);	
+{
+	all_matches[ id ] = NULL;
 }
-
 void Individual::deleteMatch( size_t id )
 {
 	// try to print it
-	all_matches[id]->print( MATCH_FILE );
+	all_matches[ id ]->print( MATCH_FILE );
+	delete all_matches[ id ];
 
-	mem_all_matches -= (sizeof(pair<size_t,Match* >) + sizeof(Match));
-	delete	all_matches[id];
-	all_matches[id]=NULL;
-	clearMatch (id);
-	all_matches.resize(0);
+	// erase from the list
+	clearMatch( id );
 }
 
 void Individual::addMatch( size_t id , Match * m)
 {
-	all_matches.insert(make_pair(id,m));
-	mem_all_matches += ( sizeof(pair<size_t,Match*>));
+	all_matches[ id ] = m;
 }
 
-
-///////////////////////////////////////////
 void Individual::reserveMemory()
 {
-//all_matches = new Match * [ num_samples ];
-//	for ( size_t i = 0 ; i < num_samples ; i++ ) all_matches[ i ] = NULL;
+	all_matches = new Match * [ num_samples ];
+	for ( size_t i = 0 ; i < num_samples ; i++ ) all_matches[ i ] = NULL;
 }
 
-//TODO: update to use WIndowSize instead of MARKER_SET_SIZE
 void Individual::print(ostream& out,long start,long end)
 {
 	short tot;
@@ -208,12 +180,6 @@ void Individual::addMarkerSet(int ct, MarkerSet * ms)
 	h[ct].addMarkerSet(ms);
 }
 
-void Individual::addMarkers(int ct, vector<bool>* markers)
-{
-	if ( HAPLOID ) ct = 0;
-	h[ct].addMarkers(markers);
-}
-
 // operator<<(): overloaded stream insertion operator
 ostream& operator<<(ostream &fout, Individual& ind)
 {
@@ -224,28 +190,4 @@ ostream& operator<<(ostream &fout, Individual& ind)
 }
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// updateMarkerSet() : removes markersets from buffer init_chromosome and inserts into chromosome
-void Individual::updateMarkerSet(unsigned int start, unsigned int end)
-{
-	if(HAPLOID)
-		h[0].updateMarkerSet(start,end);	
-	else
-	{
-		h[0].updateMarkerSet(start,end);
-		h[1].updateMarkerSet(start,end);
-	}
-
-}
-void Individual::appendMarkerSet(unsigned int start, int num_markers)
-{
-	if(HAPLOID)
-		h[0].appendMarkerSet(start,num_markers);
-	else
-	{
-		h[0].appendMarkerSet(start,num_markers);
-		h[1].appendMarkerSet(start,num_markers);
-	}
-}
 // end Individual.cpp

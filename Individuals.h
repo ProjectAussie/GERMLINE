@@ -40,10 +40,11 @@ public:
 private:
 
 	void permuteMarkerSet(Chromosome *, int, MarkerSet);
-	long sets;
-	size_t iter;
 	// stores the individuals
-	vector< Individual * > pedigree;	
+	vector< Individual * > pedigree;
+	size_t iter;
+
+	long sets;
 };
 
 #endif

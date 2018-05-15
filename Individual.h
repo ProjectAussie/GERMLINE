@@ -12,27 +12,22 @@
 #include <map>
 #include <set>
 #include <iostream>
-#include <google/sparse_hash_map>
 
-using google::sparse_hash_map;      // namespace where class lives by default
 using namespace std;
-using namespace __gnu_cxx;
 
 class Individual;
 class Match;
-
 class Share
 {
 public:
 	Share( Individual * );
 	void add(Individual * );
 	void assertMatches();
-	unsigned int size();
+
 private:
 	Match * createMatch(Individual * c1 , Individual * c2);
 	list< Individual * > matches;
 };
-
 
 
 class Individual
@@ -95,28 +90,21 @@ public:
 	// Postcondition: If chromosome identified by ct has room, then ms has been
 	//  added to the end of the chromosome; otherwise a warning message is printed..
 	void addMarkerSet(int, MarkerSet * ms);
-	// addMarkers(): loads all markerbits in the buffer chromosome of an individual
-	void addMarkers(int ct, vector<bool>* markers);
 
 	// clearMarkers(): clears all MarkerSets from this individual
 	void clearMarkers();
-//	void initialize();
 
-	////////////////////////////////////////////////////////////////////////////////
-	void updateMarkerSet(unsigned int start, unsigned int end);
-	void appendMarkerSet(unsigned int ,int);
-	
 private:
 
-	
-	// sequence start in file
-	streamoff offset;
-	Chromosome * h;
-	unsigned int numeric_id;
-	sparse_hash_map<size_t,Match* >all_matches;
 	// ID of the individual
 	string ID;
+	unsigned int numeric_id;
+
+	Chromosome * h;
+	// sequence start in file
+	streamoff offset;
 	
+	Match ** all_matches;
 };
 
 

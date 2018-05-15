@@ -26,7 +26,7 @@ public:
 	// Postcondition: inds contains the individuals from the
 	//  input files that user supplies in the format 
 	//  corresponding to pie. .
-	void getIndividuals(string map, string ped);
+	void getIndividuals();
 	string getOutput();
 	PolymorphicIndividualsExtractor* getPie();
 

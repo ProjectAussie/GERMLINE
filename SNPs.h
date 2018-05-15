@@ -83,13 +83,11 @@ private:
 
 	void addSNP(SNP&);
 
-	int ROI_snp[2];
-	string ROI_id[2];	
 	// info file
-	unsigned int full_size;
-	ifstream s;
 	string info;
-	NucleotideMap cnm;
+	ifstream s;
+	unsigned int full_size;
+	
 	// genetic map
 	map< string , map< string , float > > cm_map;
 
@@ -100,10 +98,10 @@ private:
 	// keep a list of the chromosomes in input order
 	list< map< string , vector<SNP> >::iterator > chr_list;
 
-	
+	NucleotideMap cnm;
 
-	
-	
+	string ROI_id[2];
+	int ROI_snp[2];
 };
 
 #endif

@@ -7,7 +7,6 @@
 #include "Individuals.h"
 #include "MatchFactory.h"
 #include "PolymorphicIndividualsExtractor.h"
-#include "WindowsList.h"
 #include <sstream>
 #include <iostream>
 
@@ -30,7 +29,7 @@ public:
 
 	void printAllMatches();
 	void printHaplotypes(string);
-	unsigned long long calculateMemData();
+
 private:
 
 	// matchAllMarkers(): builds matches for individuals considering all markers.
@@ -49,11 +48,9 @@ private:
 	//   matches for individuals considering markers in marker set markerSetPosition, 
 	//   extending existing matches whenever possible.
 	void matchMarkerSet();
-	void appendMarkerSet(unsigned int, int);
-	void readMarkerSet(unsigned int , unsigned int );
+	void readMarkerSet();
 	void readHaploidMarkerSet();
-	void readMatchMarkerSet();
-	
+
 	// pointer to individuals
 	Individuals * individualsP;
 	// generates matches
