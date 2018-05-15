@@ -14,7 +14,7 @@ Embark (Adam G.) set out to fix Germline's -haploid and -homoz-only -w_extend is
 
 ### Steps to update and release a new version
 
-* Change the source code on a branch and test test test
+* Change the source code on a branch and test test test (`bash run_tests.sh in the /test directory`)
 * Document the updated tests
 * Bump the version number in Germline_0001.cpp
 * Update the change log
