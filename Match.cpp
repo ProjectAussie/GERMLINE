@@ -139,12 +139,14 @@ int Match::scanLeft( unsigned int marker_set_number )
 		// AG: ^ is XOR. .flip() flips ones and zeros in a bit-set
 		boost::dynamic_bitset<> node_zero_is_heterozygous = (node_zero_chromosome_zero_bits ^ node_zero_chromosome_one_bits);
 		boost::dynamic_bitset<> node_zero_is_homozygous = (node_zero_chromosome_zero_bits ^ node_zero_chromosome_one_bits).flip();
+		boost::dynamic_bitset<> node_one_is_heterozygous = (node_one_chromosome_zero_bits ^ node_one_chromosome_one_bits);
 		boost::dynamic_bitset<> node_one_is_homozygous = (node_one_chromosome_zero_bits ^ node_one_chromosome_one_bits).flip();
 		boost::dynamic_bitset<> chromosome_zero_is_heterozygous = (node_zero_chromosome_zero_bits ^ node_one_chromosome_zero_bits);
 		boost::dynamic_bitset<> both_nodes_are_homozygous_and_chromosome_zero_is_heterozygous = node_zero_is_homozygous & node_one_is_homozygous & chromosome_zero_is_heterozygous;
 
 		if (DEBUG) cout << "node_zero_is_heterozygous: " << node_zero_is_heterozygous << endl;
 		if (DEBUG) cout << "node_zero_is_homozygous: " << node_zero_is_homozygous << endl;
+		if (DEBUG) cout << "node_one_is_heterozygous: " << node_one_is_heterozygous << endl;
 		if (DEBUG) cout << "node_one_is_homozygous: " << node_one_is_homozygous << endl;
 		if (DEBUG) cout << "chromosome_zero_is_heterozygous: " << chromosome_zero_is_heterozygous << endl;
 		if (DEBUG) cout << "both_nodes_are_homozygous_and_chromosome_zero_is_heterozygous: " << both_nodes_are_homozygous_and_chromosome_zero_is_heterozygous << endl;
@@ -152,8 +154,8 @@ int Match::scanLeft( unsigned int marker_set_number )
 		boost::dynamic_bitset<> final_mask = both_nodes_are_homozygous_and_chromosome_zero_is_heterozygous;
 
 		if (HOM_ONLY) {
-			if (DEBUG) cout << "HOM_ONLY; CUSTOMIZING MASK TO DETECT HET MARKER WITHIN NODE ZERO" << endl;
-			final_mask = node_zero_is_heterozygous;
+			if (DEBUG) cout << "HOM_ONLY; CUSTOMIZING MASK TO DETECT HET MARKER WITHIN NODE ZERO OR NODE ONE" << endl;
+			final_mask = node_zero_is_heterozygous | node_one_is_heterozygous;
 		}
 
 		if (DEBUG) cout << "final mask: " << final_mask << endl;
@@ -179,7 +181,11 @@ int Match::scanRight( unsigned int marker_set_number )
 
 	if (HAPLOID) {
 		if (DEBUG) cout << "SCANNING RIGHT IN HAPLOID MODE" << endl;
+		if (DEBUG) cout << "marker_set_number in scanRight: " << marker_set_number << endl;
 		for (marker = 0; marker < MARKER_SET_SIZE && !found_mismatch; marker++) {
+			if (DEBUG) cout << "TESTING MARKER " << marker << " FOR MISMATCH" << endl;
+			if (DEBUG) cout << "node-zero bits: " << node[0]->getChromosome(0)->getMarkerSet()->getMarkerBits() << endl;
+			if (DEBUG) cout << "node-one bits: " << node[1]->getChromosome(0)->getMarkerSet()->getMarkerBits() << endl;
 			if (node[0]->getChromosome(0)->getMarkerSet()->getMarkerBits()[marker] != node[1]->getChromosome(0)->getMarkerSet()->getMarkerBits()[marker] ) {
 				found_mismatch = true;
 			}
@@ -213,16 +219,19 @@ int Match::scanRight( unsigned int marker_set_number )
 		boost::dynamic_bitset<> node_one_is_homozygous = (node_one_chromosome_zero_bits ^ node_one_chromosome_one_bits).flip();
 		boost::dynamic_bitset<> chromosome_zero_is_heterozygous = (node_zero_chromosome_zero_bits ^ node_one_chromosome_zero_bits);
 
-		boost::dynamic_bitset<> mask = node_zero_is_homozygous & node_one_is_homozygous & chromosome_zero_is_heterozygous;
+		boost::dynamic_bitset<> final_mask = node_zero_is_homozygous & node_one_is_homozygous & chromosome_zero_is_heterozygous;
 
 		if (HOM_ONLY) {
-			if (DEBUG) cout << "HOM_ONLY; CUSTOMIZING MASK TO DETECT HET MARKER WITHIN NODE ZERO" << endl;
-			mask = node_zero_is_heterozygous;
+			if (DEBUG) cout << "HOM_ONLY; CUSTOMIZING MASK TO DETECT HET MARKER WITHIN NODE ZERO OR NODE ONE" << endl;
+			if (DEBUG) cout << "node_zero_is_heterozygous: " << node_zero_is_heterozygous << endl;
+			if (DEBUG) cout << "node_one_is_heterozygous: " << node_one_is_heterozygous << endl;
+			final_mask = node_zero_is_heterozygous | node_one_is_heterozygous;
 		}
 
-		if (DEBUG) cout << "mask: " << mask << endl;
+		if (DEBUG) cout << "final_mask: " << final_mask << endl;
 		for (marker = 0; marker < MARKER_SET_SIZE && !found_mismatch; marker++) {
-			if (mask[marker]) {
+			if (final_mask[marker]) {
+				if (DEBUG) cout << "found mismatch at marker " << marker << endl;
 				found_mismatch = true;
 			}
 		}
@@ -252,8 +261,11 @@ void Match::print( ostream& fout )
 	if (DEBUG) cout << "WIN_EXT: " << WIN_EXT << endl;
 	if (DEBUG) cout << "start_ms:" << endl;
 	if (DEBUG) cout << start_ms << endl;
+	if (DEBUG) cout << "end_ms: " << endl;
+	if (DEBUG) cout << end_ms << endl;
 	if (DEBUG) cout << "MARKER_SET_SIZE:" << endl;
 	if (DEBUG) cout << MARKER_SET_SIZE << endl;
+	if (DEBUG) cout << "getROIStart().getMarkerNumber() " << ALL_SNPS.getROIStart().getMarkerNumber();
 	unsigned int snp_start = ALL_SNPS.getROIStart().getMarkerNumber() + start_ms * MARKER_SET_SIZE;
 	unsigned int snp_end = ALL_SNPS.getROIStart().getMarkerNumber() + (end_ms + 1) * MARKER_SET_SIZE - 1;
 

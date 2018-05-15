@@ -45,8 +45,10 @@ void Individual::assertHomozygous()
 	{	
 		// this is a new match
 		m = new Match();
+		if (DEBUG) cout << "new Match() in Individual.cpp::assertHomozygous, assigning start_ms and end_ms to " << position_ms << endl;
 		m->end_ms = m->start_ms = position_ms;
 		m->node[0] = m->node[1] = this;
+		if (DEBUG) cout << "extendBack called in Individual.cpp" << endl;
 		m->extendBack();
 		all_matches[ iter ] = m;
 	}
