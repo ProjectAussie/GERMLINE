@@ -24,13 +24,53 @@ GERMLINE also accepts an optional genetic map, formatted according to the HapMap
 # Output
 Upon completion, GERMLINE generates a .match file in the specified location. The first five lines contain meta-data detailing the run settings and executions time. The following rows detail the identified pairwise shared segments, one per row, with each row containing the following fields:
 
-    * Family ID 1
-    * Individual ID 1
-    * Family ID 2
-    * Individual ID 2
-    * Segment start (bp)
-    * Segment end (bp)
-    * Mismatching SNPs in segment
-    * Total SNPs in segment
-    * Genetic Length of segment(cM)
+* Family ID 1
+* Individual ID 1
+* Family ID 2
+* Individual ID 2
+* Chromosome
+* Segment start (bp)
+* Segment end (bp)
+* Segment start (SNP)
+* Segment end (SNP)
+* Total SNPs in segment
+* Genetic length of segment
+* Units for genetic length (cM or MB)
+* Mismatching SNPs in segment
+* 1 if Individual 1 is homozygous in match; 0 otherwise
+* 1 if Individual 2 is homozygous in match; 0 otherwise
 
+
+## Embark fork of Germline
+
+Embark (Adam G.) set out to fix Germline's -haploid and -homoz-only -w_extend issues in May 2018.
+
+### Bugs in Columbia's released version (1.5.1)
+
+* When running germline with `-haploid` and `-w_extend` flags and with `bits` (segment size) anything greater than 1, match tracts extend beyond the correct start and end coordinates. To demo this, run the tests  after setting germline PATH to version 1.5.1 (this can be downloaded from Columbia's website).
+
+* When running germline with `-homoz-only` and `-w_extend` flags and with `bits` (segment size) anything greater than 1, match tracts do not line up with the correct start and end coordinates.
+
+* When running germline with `-haploid -w_extend` and `bits` anything greater than 1, the "snp_count" column is incorrect
+
+* When running germline with `-haploid -w_extend bits=1`, with a tract ending at the end of the chromosome, germline does not report that the tract extends all the way to the end of the chromosome, instead reporting a tract one SNP short. To demo this,  add 1 to the BITS_TO_TEST variable in test/testing_constants_and_functions.sh, then run the tests.
+
+### Steps to update and release a new version
+
+* Change the source code on a branch and test test test (`bash run_tests.sh in the /test directory`)
+* Sync the code to an EC2 and run the tests there to confirm they work on Embark's ubuntu EC2s
+* Document the updated tests
+* Increment the version number in Germline_0001.cpp following semantic versioning
+* Update the change log
+* Sync the updated version to S3, and update the ancestry assignment EC2 provisioning script to use the new version
+* Update the AMI for our EC2s using the updated provisioning script, so new EC2s come with the latest Germline version
+
+### Change log
+
+#### Version 1.5.2
+
+* replicates stream-reading fix that David Riccardi made in 2016 (but didn't make into version control)
+* `germline -haploid -w_extend -bits 41` (or any bits value > 1) now produces correct match tracts
+* exit codes follow shell-script convention: 1 for error, 0 for success
+* `germline -version` now reports the version number
+* added tests
