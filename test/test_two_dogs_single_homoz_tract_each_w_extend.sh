@@ -1,9 +1,4 @@
 #!/bin/bash
-set -euo pipefail
-cd ..
-make
-cd test
-
 source ./testing_constants_and_functions.sh
 mkdir -p test_outputs
 
