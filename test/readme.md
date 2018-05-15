@@ -26,6 +26,7 @@ Embark (Adam G.) set out to fix Germline's -haploid and -homoz-only -w_extend is
 
 #### Version 1.5.2
 
+* replicates stream-reading fix that David Riccardi made in 2016 (but didn't make into version control)
 * `germline -haploid -w_extend -bits 41` (or any bits value > 1) now produces correct match tracts
 * exit codes follow shell-script convention: 1 for error, 0 for success
 * `germline -version` now reports the version number
