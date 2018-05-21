@@ -49,11 +49,16 @@ Embark (Adam G.) set out to fix Germline's -haploid and -homoz-only -w_extend is
 
 * When running germline with `-haploid` and `-w_extend` flags and with `bits` (segment size) anything greater than 1, match tracts extend beyond the correct start and end coordinates. To demo this, run the tests  after setting germline PATH to version 1.5.1 (this can be downloaded from Columbia's website).
 
-* When running germline with `-homoz-only` and `-w_extend` flags and with `bits` (segment size) anything greater than 1, match tracts do not line up with the correct start and end coordinates.
+* (STILL TO FIX) When running germline with `-homoz-only` and `-w_extend` flags and with `bits` (segment size) anything greater than 1, match tracts do not line up with the correct start and end coordinates.
 
-* When running germline with `-haploid -w_extend` and `bits` anything greater than 1, the "snp_count" column is incorrect
+* (STILL TO FIX) When running germline with `-haploid -w_extend` and `bits` anything greater than 1, the "snp_count" column is incorrect
 
-* When running germline with `-haploid -w_extend bits=1`, with a tract ending at the end of the chromosome, germline does not report that the tract extends all the way to the end of the chromosome, instead reporting a tract one SNP short. To demo this,  add 1 to the BITS_TO_TEST variable in test/testing_constants_and_functions.sh, then run the tests.
+* (STILL TO FIX) When running germline with `-haploid -w_extend bits=1`, with a tract ending at the end of the chromosome, germline does not report that the tract extends all the way to the end of the chromosome, instead reporting a tract one SNP short. To demo this,  add 1 to the BITS_TO_TEST variable in test/testing_constants_and_functions.sh, then run the tests.
+
+### Feature wishlist
+
+* Modify Germline to take a list of family_ids_we_want_outputs_for, so we can skip grepping new-individual match tracts out of output files
+* Modify Germline so output files use consistent delimiters (e.g., all tabs rather than a mix of tabs and spaces)
 
 ### Steps to update and release a new version
 
