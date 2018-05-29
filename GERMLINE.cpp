@@ -40,6 +40,7 @@ void GERMLINE::mine( string params )
 	fout << endl;
 	fout << " GERMLINE was coded by Alexander Gusev and collaborators in " << endl;
 	fout << " Itsik Pe'er's Computational Biology Lab at Columbia University" << endl;
+	fout << " Run 'germline -version' to view version number." << endl;
 	fout << setw(65) << setfill('-') << ' ' << endl << setfill(' ');
 	
 	if ( BINARY_OUT ) MATCH_FILE.open( ( out + ".bmatch" ).c_str() , ios::binary );

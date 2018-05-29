@@ -24,6 +24,7 @@ void MarkerSet::clear()
 
 boost::dynamic_bitset<>& MarkerSet::getMarkerBits()
 {
+	// cout << "getMarkerBits called. returning: " << markers << endl;
 	return markers;
 }
 
@@ -35,6 +36,7 @@ bool MarkerSet::getMarker(int index) const
 
 void MarkerSet::set(int index , bool bit )
 {
+	if (DEBUG) cout << "markers.set ( " << index << ", " << bit << " )" << endl;
 	markers.set( index , bit );
 }
 

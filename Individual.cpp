@@ -6,13 +6,18 @@ using namespace std;
 // Individual(): default constructor
 Individual::Individual()
 {
-	if ( HAPLOID ) h = new Chromosome[1]; else h = new Chromosome[2];
+	if ( HAPLOID ) {
+		if (DEBUG) cout << "Individual() constructor; haploid mode" << endl;
+		chromosome = new Chromosome[1];
+	} else {
+		chromosome = new Chromosome[2];
+	}
 	numeric_id = 0;
 }
 
 Individual::~Individual()
 {
-	delete[] h;
+	delete[] chromosome;
 	delete[] all_matches;
 }
 
@@ -40,8 +45,10 @@ void Individual::assertHomozygous()
 	{	
 		// this is a new match
 		m = new Match();
+		if (DEBUG) cout << "new Match() in Individual.cpp::assertHomozygous, assigning start_ms and end_ms to " << position_ms << endl;
 		m->end_ms = m->start_ms = position_ms;
 		m->node[0] = m->node[1] = this;
+		if (DEBUG) cout << "extendBack called in Individual.cpp" << endl;
 		m->extendBack();
 		all_matches[ iter ] = m;
 	}
@@ -96,7 +103,7 @@ void Individual::print(ostream& out,long start,long end)
 	for(int i=0;i<tot;i++)
 	{
 		out << getID() << '\t';
-		h[i].print(out,start,end);
+		chromosome[i].print(out,start,end);
 		out << endl;
 	}
 }
@@ -104,19 +111,19 @@ void Individual::print(ostream& out,long start,long end)
 int Individual::numHet()
 {
 	if ( HAPLOID ) return 0;
-	else return int(( h[0].getMarkerSet()->getMarkerBits() ^ h[1].getMarkerSet()->getMarkerBits() ).count());
+	else return int(( chromosome[0].getMarkerSet()->getMarkerBits() ^ chromosome[1].getMarkerSet()->getMarkerBits() ).count());
 }
 
 bool Individual::isHeterozygous()
 {
 	if ( HAPLOID ) return false;
-	else return !( h[0].getMarkerSet()->equal( h[1].getMarkerSet() ) );
+	else return !( chromosome[0].getMarkerSet()->equal( chromosome[1].getMarkerSet() ) );
 }
 
 bool Individual::isHeterozygous(int i)
 {
 	if ( HAPLOID ) return false;
-	else return h[0].getMarkerSet()->getMarker(i) != h[1].getMarkerSet()->getMarker(i);
+	else return chromosome[0].getMarkerSet()->getMarker(i) != chromosome[1].getMarkerSet()->getMarker(i);
 }
 
 void Individual::setOffset(streamoff o)
@@ -137,18 +144,23 @@ string Individual::getID() const
 
 Chromosome * Individual::getAlternateChromosome( Chromosome * c)
 {
-	if ( HAPLOID ) return &(h[0]);
+	if ( HAPLOID ) return &(chromosome[0]);
 	else
 	{
-		if( &(h[0]) == c ) return &(h[1]); else return &(h[0]);
+		if( &(chromosome[0]) == c ) return &(chromosome[1]); else return &(chromosome[0]);
 	}
 }
 
+// returns a pointer to a chromosome?
 Chromosome * Individual::getChromosome(int ct)
 {
-	if ( HAPLOID ) ct = 0;
-
-	return &(h[ct]);
+	if ( HAPLOID ) {
+		// AG: if haploid, hardcode "ct" to zero. Not sure why.
+		// return memory address of h[0] ?
+		return &(chromosome[0]);
+	} else {
+		return &(chromosome[ct]);
+	}
 }
 
 unsigned int Individual::getNumericID()
@@ -169,15 +181,20 @@ void Individual::setID(string id)
 
 void Individual::clearMarkers()
 {
-	h[0].clear();
-	if ( !HAPLOID ) h[1].clear();
+	chromosome[0].clear();
+	if ( !HAPLOID ) {
+		chromosome[1].clear();
+	}
 }
 
 // addMarkerSet(): adds MarkerSet to a chromosome
-void Individual::addMarkerSet(int ct, MarkerSet * ms)
+void Individual::addMarkerSet(int ct, MarkerSet * marker_set)
 {
-	if ( HAPLOID ) ct = 0;
-	h[ct].addMarkerSet(ms);
+	if (DEBUG) cout << "Individual::addMarkerSet" << endl;
+	if ( HAPLOID ) {
+		ct = 0;
+	}
+	chromosome[ct].addMarkerSet(marker_set);
 }
 
 // operator<<(): overloaded stream insertion operator

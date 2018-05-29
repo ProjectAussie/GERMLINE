@@ -1,0 +1,6 @@
+dog1 dog1.0	dog1 dog1.1	1	50001 1880001	snp_6 snp_189	1.83	MB	0	1	1
+dog1 dog1.0	dog2 dog2.0	1	1 1990001	snp_1 snp_200	1.99	MB	0	1	1
+dog1 dog1.0	dog2 dog2.1	1	1 1990001	snp_1 snp_200	1.99	MB	0	1	1
+dog1 dog1.1	dog2 dog2.0	1	50001 1880001	snp_6 snp_189	1.83	MB	0	1	1
+dog1 dog1.1	dog2 dog2.1	1	50001 1880001	snp_6 snp_189	1.83	MB	0	1	1
+dog2 dog2.0	dog2 dog2.1	1	1 1990001	snp_1 snp_200	1.99	MB	0	1	1

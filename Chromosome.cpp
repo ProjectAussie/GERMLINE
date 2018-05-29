@@ -9,8 +9,10 @@ using namespace std;
 Chromosome::Chromosome()
 {}
 
+// returns a pointer to a marker set?
 MarkerSet * Chromosome::getMarkerSet()
 {
+	// if (DEBUG) cout << "Chromosome.getMarkerSet() called without params; position_ms is " << position_ms << endl;
 	return chromosome[position_ms];
 }
 
@@ -26,9 +28,10 @@ void Chromosome::clear()
 }
 
 // addMarkerSet(): adds a MarkerSet
-void Chromosome::addMarkerSet(MarkerSet * ms)
+void Chromosome::addMarkerSet(MarkerSet * marker_set)
 {
-	chromosome.push_back(ms);
+	if (DEBUG) cout << "Chromosome.addMarkerSet called" << endl;
+	chromosome.push_back(marker_set);
 }
 
 void Chromosome::print_snps(ostream& out, unsigned int start, unsigned int end)

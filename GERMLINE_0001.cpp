@@ -42,7 +42,12 @@ int main(int argc, char* argv[])
 		else if( strncmp(argv[i], "-haploid", strlen("-haploid")) == 0 )					{ HAPLOID = true; HAP_EXT = true; }
 		else if( strncmp(argv[i], "-h_extend", strlen("-h_extend")) == 0 )					HAP_EXT = true;
 		else if( strncmp(argv[i], "-w_extend", strlen("-w_extend")) == 0 )					WIN_EXT = true;
-		else bad_param = true;
+		else if( strncmp(argv[i], "-version", strlen("-version")) == 0 ) {
+			cout << "version 1.5.2" << endl;
+			return 0;
+		} else {
+			bad_param = true;
+		}
 	}
 
 	if(MIN_MATCH_LEN < 0)
@@ -74,7 +79,7 @@ int main(int argc, char* argv[])
 		<< '\t' << "-haploid" << '\t' << "Treat input individual as two fully phased chromosomes with no recombination\n\t\toutput IDs with 0/1 suffix for chromosome destinction" << endl
 		<< '\t' << "-h_extend" << '\t' << "Extend from seeds if *haplotypes* match" << endl
 		<< '\t' << "-w_extend" << '\t' << "Extend, one marker at a time, beyong the boundaries of a found match" << endl;
-		return 0;
+		return 1;
 	}
 
 	if( rs_range[0] != "" && rs_range[1] != "" )
@@ -90,7 +95,7 @@ int main(int argc, char* argv[])
 
 	GERMLINE germline;
     germline.mine( params );
-    return 1;
+    return 0;
 }
 
 

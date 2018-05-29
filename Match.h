@@ -39,7 +39,7 @@ public:
 	void extendBack();
 
 private:
-	int scanLeft( unsigned int ms );
+	int scanLeft( unsigned int marker_set_number );
 	int scanRight( unsigned int ms );
 	int diff( unsigned int ms );
 	bool isHom( int n , unsigned int ms );
