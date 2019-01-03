@@ -37,6 +37,7 @@ public:
 	void freeMatches();
 	void freeMarkers();
 	void loadOldIndividuals(string f);
+	bool isOld(Individual &);
 
 private:
 
