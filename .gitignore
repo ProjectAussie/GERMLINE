@@ -1,2 +1,3 @@
-test/test_outputs/*
+test/output
 *.o
+parse_bmatch
