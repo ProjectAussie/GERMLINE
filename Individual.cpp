@@ -142,6 +142,11 @@ string Individual::getID() const
 	return ID;
 }
 
+string Individual::getBaseID() const
+{
+	return BaseID;
+}
+
 Chromosome * Individual::getAlternateChromosome( Chromosome * c)
 {
 	if ( HAPLOID ) return &(chromosome[0]);
@@ -177,6 +182,11 @@ void Individual::setNumericID( unsigned int id )
 void Individual::setID(string id)
 {
 	ID = id;
+}
+
+void Individual::setBaseID(string id)
+{
+	BaseID = id;
 }
 
 void Individual::clearMarkers()

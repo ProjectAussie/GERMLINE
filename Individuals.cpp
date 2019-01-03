@@ -58,4 +58,20 @@ void Individuals::addIndividual(Individual * ind)
 	ind->setNumericID( (unsigned int) num_samples++ );
 }
 
+void Individuals::loadOldIndividuals(string f) {
+	ifstream s_old(f.c_str());
+	if (!s_old) {
+		cerr << "WARNING: List of old individuals \"" << f << "\" could not be loaded" << endl;
+		return;
+	}
+
+	string fam_id, ind_id;
+
+	while(!s_old.eof()) {
+		s_old >> fam_id >> ind_id;
+                old_samples.insert(fam_id) ; //XXX ind_id missing
+	}
+}
+
+
 // end Individuals.cpp

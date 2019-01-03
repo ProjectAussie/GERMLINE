@@ -80,6 +80,8 @@ void PEDIndividualsExtractor::getIndividuals()
 		new_ind[1]->setOffset( stream.tellg() );
 		new_ind[0]->setID(famID + " " + ID + ".0" );
 		new_ind[1]->setID(famID + " " + ID + ".1" );
+		new_ind[0]->setBaseID(famID + " " + ID );
+		new_ind[1]->setBaseID(famID + " " + ID );
 		
 		individualsP->addIndividual( new_ind[0] );
 		individualsP->addIndividual( new_ind[1] );
@@ -88,6 +90,7 @@ void PEDIndividualsExtractor::getIndividuals()
 		Individual * new_ind = new Individual;
 		new_ind->setOffset(stream.tellg());
 		new_ind->setID(famID + " " + ID);
+                new_ind->setBaseID(famID + " " + ID);
 		individualsP->addIndividual(new_ind);
 	}
 }
