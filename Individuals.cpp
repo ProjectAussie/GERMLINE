@@ -69,12 +69,14 @@ void Individuals::loadOldIndividuals(string f) {
 
 	while(!s_old.eof()) {
 		s_old >> fam_id >> ind_id;
+                //cout << fam_id << ind_id << endl;
                 old_samples.insert(fam_id + " " + ind_id);
 	}
 }
 
 
 bool Individuals::isOld(Individual & ind) {
+  //cout << ind.getBaseID() << endl;
   return old_samples.find(ind.getBaseID()) != old_samples.end();
 }
 
