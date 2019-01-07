@@ -16,7 +16,7 @@ void Share::assertMatches()
 		ii = i;
 		for ( ++ii ; ii != matches.end() ; ii++ )
 		{
-		  if ((!ALL_SAMPLES.hasRestrictions()) || (ALL_SAMPLES.isOld(**i) && ALL_SAMPLES.isNew(**ii)) || (ALL_SAMPLES.isNew(**i) && ALL_SAMPLES.isOld(**ii))) {
+			if ((!ALL_SAMPLES.hasRestrictions()) || (ALL_SAMPLES.isOld((*i)->getBaseID()) && ALL_SAMPLES.isNew((*ii)->getBaseID())) || (ALL_SAMPLES.isNew((*i)->getBaseID()) && ALL_SAMPLES.isOld((*ii)->getBaseID()))) {
 				if (DEBUG) cout << "ii in share::assertMatches inner loop: " << *ii << endl;
 				// Check if this pair matched in previous word (symmetrically)
 				m = (*i)->getMatch( (*ii)->getNumericID() );

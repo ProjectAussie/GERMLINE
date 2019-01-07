@@ -38,8 +38,8 @@ public:
 	void freeMarkers();
 	void loadOldIndividuals(string f);
 	void loadNewIndividuals(string f);
-	bool isOld(Individual &);
-	bool isNew(Individual &);
+	bool isOld(string);
+	bool isNew(string);
 	bool hasRestrictions();
 
 private:

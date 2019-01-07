@@ -86,7 +86,7 @@ void Individuals::loadNewIndividuals(string f) {
 
 	while(!s_new.eof()) {
 		s_new >> fam_id >> ind_id;
-                new_samples.insert(fam_id + " " + ind_id);
+		new_samples.insert(fam_id + " " + ind_id);
 	}
 }
 
@@ -95,14 +95,14 @@ bool Individuals::hasRestrictions() {
   return !old_samples.empty();
 }
 
-bool Individuals::isOld(Individual & ind) {
+bool Individuals::isOld(string indBaseID) {
   //cout << ind.getBaseID() << endl;
-  return old_samples.find(ind.getBaseID()) != old_samples.end();
+  return old_samples.find(indBaseID) != old_samples.end();
 }
 
 
-bool Individuals::isNew(Individual & ind) {
-  return new_samples.find(ind.getBaseID()) != new_samples.end();
+bool Individuals::isNew(string indBaseID) {
+  return new_samples.find(indBaseID) != new_samples.end();
 }
 
 // end Individuals.cpp
