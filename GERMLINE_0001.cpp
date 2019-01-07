@@ -115,12 +115,6 @@ int main(int argc, char* argv[])
 		<< '\t' << "-haps" << '\t' << "Print the resolved haplotypes in a seperate HAPS file." << endl
 		<< '\t' << "-map" << '\t' << "Genetic distance map." << endl
 		<< '\t' << "-bits" << '\t' << "Slice size." << endl
-		<< '\t' << "-homoz" << '\t' << "Allow self matches (homozygosity)" << endl
-		<< '\t' << "-homoz-only" << '\t' << "Look for autozygous/homozygous segments only, does not detect IBD" << endl
-		<< '\t' << "-haploid" << '\t' << "Treat input individual as two fully phased chromosomes with no recombination\n\t\toutput IDs with 0/1 suffix for chromosome destinction" << endl
-		<< '\t' << "-h_extend" << '\t' << "Extend from seeds if *haplotypes* match" << endl
-		<< '\t' << "-w_extend" << '\t' << "Extend, one marker at a time, beyong the boundaries of a found match" << endl
-		<< '\t' << "-old_samples" << '\t' << "List of old individuals to cross compare." << endl
 		<< '\t' << "-new_samples" << '\t' << "List of new individuals." << endl;
 		return 1;
 	}

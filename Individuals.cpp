@@ -91,6 +91,10 @@ void Individuals::loadNewIndividuals(string f) {
 }
 
 
+bool Individuals::hasRestrictions() {
+  return !old_samples.empty();
+}
+
 bool Individuals::isOld(Individual & ind) {
   //cout << ind.getBaseID() << endl;
   return old_samples.find(ind.getBaseID()) != old_samples.end();

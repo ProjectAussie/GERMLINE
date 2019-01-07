@@ -40,6 +40,7 @@ public:
 	void loadNewIndividuals(string f);
 	bool isOld(Individual &);
 	bool isNew(Individual &);
+	bool hasRestrictions();
 
 private:
 
