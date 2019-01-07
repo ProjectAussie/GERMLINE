@@ -20,7 +20,7 @@ int MAX_ERR_HET = 1;
 int main(int argc, char* argv[])
 {
 	// parse arguments
-	string rs_range[2], map, old; old = map = rs_range[0] = rs_range[1] = "";
+	string rs_range[2], map, old_samples, new_samples; old_samples = new_samples = map = rs_range[0] = rs_range[1] = "";
 	string params = argv[0];
 
 	bool bad_param = false;
@@ -80,8 +80,11 @@ int main(int argc, char* argv[])
 			cout << "version 1.5.2" << endl;
 			return 0;
 		}
-		else if (strncmp(argv[i], "-old", strlen("-old")) == 0 && i < argc-1) {
-			old = argv[++i];
+		else if (strncmp(argv[i], "-old_samples", strlen("-old_samples")) == 0 && i < argc-1) {
+			old_samples = argv[++i];
+		}
+		else if (strncmp(argv[i], "-new_samples", strlen("-new_samples")) == 0 && i < argc-1) {
+			new_samples = argv[++i];
 		}
 		else {
 			bad_param = true;
@@ -117,7 +120,8 @@ int main(int argc, char* argv[])
 		<< '\t' << "-haploid" << '\t' << "Treat input individual as two fully phased chromosomes with no recombination\n\t\toutput IDs with 0/1 suffix for chromosome destinction" << endl
 		<< '\t' << "-h_extend" << '\t' << "Extend from seeds if *haplotypes* match" << endl
 		<< '\t' << "-w_extend" << '\t' << "Extend, one marker at a time, beyong the boundaries of a found match" << endl
-		<< '\t' << "-old" << '\t' << "List of individuals to avoid cross-comparing." << endl;
+		<< '\t' << "-old_samples" << '\t' << "List of old individuals to cross compare." << endl
+		<< '\t' << "-new_samples" << '\t' << "List of new individuals." << endl;
 		return 1;
 	}
 
@@ -130,8 +134,11 @@ int main(int argc, char* argv[])
 	if(map != "") {
 		ALL_SNPS.loadGeneticDistanceMap(map);
 	}
-	if (old != "") {
-		ALL_SAMPLES.loadOldIndividuals(old);
+	if (old_samples != "") {
+		ALL_SAMPLES.loadOldIndividuals(old_samples);
+	}
+	if (new_samples != "") {
+		ALL_SAMPLES.loadNewIndividuals(new_samples);
 	}
 
 	GERMLINE germline;

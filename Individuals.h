@@ -37,7 +37,9 @@ public:
 	void freeMatches();
 	void freeMarkers();
 	void loadOldIndividuals(string f);
+	void loadNewIndividuals(string f);
 	bool isOld(Individual &);
+	bool isNew(Individual &);
 
 private:
 
@@ -48,6 +50,7 @@ private:
 
 	long sets;
 	set<string> old_samples; 
+	set<string> new_samples;
 };
 
 #endif

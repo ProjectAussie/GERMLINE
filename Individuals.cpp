@@ -75,9 +75,30 @@ void Individuals::loadOldIndividuals(string f) {
 }
 
 
+void Individuals::loadNewIndividuals(string f) {
+	ifstream s_new(f.c_str());
+	if (!s_new) {
+		cerr << "WARNING: List of new individuals \"" << f << "\" could not be loaded" << endl;
+		return;
+	}
+
+	string fam_id, ind_id;
+
+	while(!s_new.eof()) {
+		s_new >> fam_id >> ind_id;
+                new_samples.insert(fam_id + " " + ind_id);
+	}
+}
+
+
 bool Individuals::isOld(Individual & ind) {
   //cout << ind.getBaseID() << endl;
   return old_samples.find(ind.getBaseID()) != old_samples.end();
+}
+
+
+bool Individuals::isNew(Individual & ind) {
+  return new_samples.find(ind.getBaseID()) != new_samples.end();
 }
 
 // end Individuals.cpp

@@ -17,7 +17,7 @@ void Share::assertMatches()
 		ii = i;
 		for ( ++ii ; ii != matches.end() ; ii++ )
 		{
-			if (ALL_SAMPLES.isOld(**i) && ALL_SAMPLES.isOld(**ii)) {
+                  if ((ALL_SAMPLES.isOld(**i) && ALL_SAMPLES.isNew(**ii)) || (ALL_SAMPLES.isNew(**i) && ALL_SAMPLES.isOld(**ii))) {
 				continue;
 			}
 			if (DEBUG) cout << "ii in share::assertMatches inner loop: " << *ii << endl;
