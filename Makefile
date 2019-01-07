@@ -23,6 +23,7 @@ test: test_plink
 test_plink:
 	-mkdir -p test/output
 	-@rm -f test/test_outputs/generated.match test/test_outputs/generated.log test/output/generated.err test/output/generated.out
-	-@./$(MAIN) -silent -bits 50 -min_m 1 -err_hom 2 -old test/old_humans -err_het 0 < test/test.run > test/output/generated.out 2> test/output/generated.err | echo -e "---\nRunning Test Case\n---"
-#	-@./$(MAIN) -silent -bits 50 -min_m 1 -err_hom 2 -err_het 0 < test/test.run > test/output/generated.out 2> test/output/generated.err | echo -e "---\nRunning Test Case\n---"
-#diff -q -s test/expected.match test/output/generated.match
+	-@./$(MAIN) -silent -bits 50 -min_m 1 -err_hom 2 -old_samples test/old_humans -new_samples test/new_humans -err_het 0 < test/restricted.run > test/output/restricted.out 2> test/output/restricted.err | echo -e "---\nRunning Test Case\n---"
+	-@./$(MAIN) -silent -bits 50 -min_m 1 -err_hom 2 -err_het 0 < test/test.run > test/output/generated.out 2> test/output/generated.err | echo -e "---\nRunning Test Case\n---"
+	diff -q -s test/expected.match test/output/generated.match
+	diff -q -s test/restricted.match test/output/restricted.match
