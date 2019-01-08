@@ -20,7 +20,12 @@ int MAX_ERR_HET = 1;
 int main(int argc, char* argv[])
 {
 	// parse arguments
-	string rs_range[2], map, old_samples, new_samples; old_samples = new_samples = map = rs_range[0] = rs_range[1] = "";
+	string rs_range[2], map, old_samples, new_samples;
+	old_samples = "";
+	new_samples = "";
+	map = "";
+	rs_range[0] = "";
+	rs_range[1] = "";
 	string params = argv[0];
 
 	bool bad_param = false;
@@ -77,7 +82,7 @@ int main(int argc, char* argv[])
 			WIN_EXT = true;
 		}
 		else if( strncmp(argv[i], "-version", strlen("-version")) == 0 ) {
-			cout << "version 1.5.2" << endl;
+			cout << "version 1.6.0-embark" << endl;
 			return 0;
 		}
 		else if (strncmp(argv[i], "-old_samples", strlen("-old_samples")) == 0 && i < argc-1) {

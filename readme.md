@@ -79,3 +79,9 @@ Embark (Adam G.) set out to fix Germline's -haploid and -homoz-only -w_extend is
 * exit codes follow shell-script convention: 1 for error, 0 for success
 * `germline -version` now reports the version number
 * added tests
+
+#### Version 1.6.0-embark
+
+* Support for using only subsets of samples using ``-old_samples sample_list`` and ``-new_samples sample_list`: Samples for the old list will be compared to the new list
+* Only loads the used samples in-memory. In many cases will use orders of magnitude less memory allowing for parallel execution on smaller-memory machines
+* Comparison time reduced to whatever is needed from both lists. In many cases a order of magnitude faster

@@ -58,36 +58,29 @@ void Individuals::addIndividual(Individual * ind)
 	ind->setNumericID( (unsigned int) num_samples++ );
 }
 
-void Individuals::loadOldIndividuals(string f) {
-	ifstream s_old(f.c_str());
-	if (!s_old) {
-		cerr << "WARNING: List of old individuals \"" << f << "\" could not be loaded" << endl;
+
+void _loadIndividuals(string f, set<string> *samples) {
+	ifstream s(f.c_str());
+	if (!s) {
+		cerr << "WARNING: List of individuals \"" << f << "\" could not be loaded" << endl;
 		return;
 	}
 
 	string fam_id, ind_id;
 
-	while(!s_old.eof()) {
-		s_old >> fam_id >> ind_id;
-                //cout << fam_id << ind_id << endl;
-                old_samples.insert(fam_id + " " + ind_id);
+	while(!s.eof()) {
+		s >> fam_id >> ind_id;
+		samples->insert(fam_id + " " + ind_id);
 	}
+}
+
+void Individuals::loadOldIndividuals(string f) {
+	_loadIndividuals(f, &old_samples);
 }
 
 
 void Individuals::loadNewIndividuals(string f) {
-	ifstream s_new(f.c_str());
-	if (!s_new) {
-		cerr << "WARNING: List of new individuals \"" << f << "\" could not be loaded" << endl;
-		return;
-	}
-
-	string fam_id, ind_id;
-
-	while(!s_new.eof()) {
-		s_new >> fam_id >> ind_id;
-		new_samples.insert(fam_id + " " + ind_id);
-	}
+	_loadIndividuals(f, &new_samples);
 }
 
 
@@ -96,7 +89,6 @@ bool Individuals::hasRestrictions() {
 }
 
 bool Individuals::isOld(string indBaseID) {
-  //cout << ind.getBaseID() << endl;
   return old_samples.find(indBaseID) != old_samples.end();
 }
 
