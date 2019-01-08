@@ -20,8 +20,8 @@ int MAX_ERR_HET = 1;
 int main(int argc, char* argv[])
 {
 	// parse arguments
-	string rs_range[2], map, old_samples, new_samples;
-	old_samples = "";
+	string rs_range[2], map, samples_to_compare_to, new_samples;
+	samples_to_compare_to = "";
 	new_samples = "";
 	map = "";
 	rs_range[0] = "";
@@ -85,8 +85,8 @@ int main(int argc, char* argv[])
 			cout << "version 1.6.0-embark" << endl;
 			return 0;
 		}
-		else if (strncmp(argv[i], "-old_samples", strlen("-old_samples")) == 0 && i < argc-1) {
-			old_samples = argv[++i];
+		else if (strncmp(argv[i], "-samples_to_compare_to", strlen("-samples_to_compare_to")) == 0 && i < argc-1) {
+			samples_to_compare_to = argv[++i];
 		}
 		else if (strncmp(argv[i], "-new_samples", strlen("-new_samples")) == 0 && i < argc-1) {
 			new_samples = argv[++i];
@@ -125,7 +125,7 @@ int main(int argc, char* argv[])
 		<< '\t' << "-haploid" << '\t' << "Treat input individual as two fully phased chromosomes with no recombination\n\t\toutput IDs with 0/1 suffix for chromosome destinction" << endl
 		<< '\t' << "-h_extend" << '\t' << "Extend from seeds if *haplotypes* match" << endl
 		<< '\t' << "-w_extend" << '\t' << "Extend, one marker at a time, beyong the boundaries of a found match" << endl
-		<< '\t' << "-old_samples" << '\t' << "List of old individuals to cross compare." << endl
+		<< '\t' << "-samples_to_compare_to" << '\t' << "List of individuals to cross compare." << endl
 		<< '\t' << "-new_samples" << '\t' << "List of new individuals." << endl;
 		return 1;
 	}
@@ -139,8 +139,8 @@ int main(int argc, char* argv[])
 	if(map != "") {
 		ALL_SNPS.loadGeneticDistanceMap(map);
 	}
-	if (old_samples != "") {
-		ALL_SAMPLES.loadOldIndividuals(old_samples);
+	if (samples_to_compare_to != "") {
+		ALL_SAMPLES.loadOldIndividuals(samples_to_compare_to);
 	}
 	if (new_samples != "") {
 		ALL_SAMPLES.loadNewIndividuals(new_samples);

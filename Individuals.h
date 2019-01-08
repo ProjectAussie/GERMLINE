@@ -50,7 +50,7 @@ private:
 	size_t iter;
 
 	long sets;
-	set<string> old_samples; 
+	set<string> samples_to_compare_to; 
 	set<string> new_samples;
 };
 

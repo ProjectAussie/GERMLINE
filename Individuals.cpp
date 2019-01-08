@@ -75,7 +75,7 @@ void _loadIndividuals(string f, set<string> *samples) {
 }
 
 void Individuals::loadOldIndividuals(string f) {
-	_loadIndividuals(f, &old_samples);
+	_loadIndividuals(f, &samples_to_compare_to);
 }
 
 
@@ -85,11 +85,11 @@ void Individuals::loadNewIndividuals(string f) {
 
 
 bool Individuals::hasRestrictions() {
-  return !old_samples.empty();
+  return !samples_to_compare_to.empty();
 }
 
 bool Individuals::isOld(string indBaseID) {
-  return old_samples.find(indBaseID) != old_samples.end();
+  return samples_to_compare_to.find(indBaseID) != samples_to_compare_to.end();
 }
 
 
