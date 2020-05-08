@@ -21,6 +21,9 @@ clean:
 test: test_plink
 
 test_plink:
-	-@rm -f test/generated.match test/generated.log test/generated.err test/generated.out
-	-@./$(MAIN) -silent -bits 50 -min_m 1 -err_hom 2 -err_het 0 < test/test.run > test/generated.out 2> test/generated.err | echo -e "---\nRunning Test Case\n---"
-	diff -q -s test/expected.match test/generated.match
+	-mkdir -p test/output
+	-@rm -f test/output/*
+	-@./$(MAIN) -silent -bits 50 -min_m 1 -err_hom 2 -samples_to_compare_to test/old_humans -new_samples test/new_humans -err_het 0 < test/restricted.run > test/output/restricted.out 2> test/output/restricted.err | echo -e "---\nRunning Test Case\n---"
+	-@./$(MAIN) -silent -bits 50 -min_m 1 -err_hom 2 -err_het 0 < test/test.run > test/output/generated.out 2> test/output/generated.err | echo -e "---\nRunning Test Case\n---"
+	diff -q -s test/expected.match test/output/generated.match
+	diff -q -s test/restricted.match test/output/restricted.match

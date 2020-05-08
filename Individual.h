@@ -68,6 +68,7 @@ public:
 	// Precondition: None.
 	// Postcondition: Returns value for ID
 	string getID() const;
+	string getBaseID() const;
 
 	void setOffset(streamoff);
 	streamoff getOffset();
@@ -82,6 +83,7 @@ public:
 	// Precondition: None.
 	// Postcondition: ID has been set to id.
 	void setID(string id);
+	void setBaseID(string id);
 	void setNumericID( unsigned int id );
 	unsigned int getNumericID();
 
@@ -98,6 +100,7 @@ private:
 
 	// ID of the individual
 	string ID;
+	string BaseID;
 	unsigned int numeric_id;
 
 	Chromosome * chromosome;

@@ -6,7 +6,7 @@
 #include "BasicDefinitions.h"
 #include "Chromosome.h"
 #include "Individual.h"
-#include <map>
+#include <set>
 #include <ostream>
 using namespace std;
 
@@ -36,6 +36,11 @@ public:
 	
 	void freeMatches();
 	void freeMarkers();
+	void loadOldIndividuals(string f);
+	void loadNewIndividuals(string f);
+	bool isOld(string);
+	bool isNew(string);
+	bool hasRestrictions();
 
 private:
 
@@ -45,6 +50,8 @@ private:
 	size_t iter;
 
 	long sets;
+	set<string> samples_to_compare_to; 
+	set<string> new_samples;
 };
 
 #endif

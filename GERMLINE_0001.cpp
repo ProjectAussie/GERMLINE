@@ -20,32 +20,78 @@ int MAX_ERR_HET = 1;
 int main(int argc, char* argv[])
 {
 	// parse arguments
-	string rs_range[2] , map; map = rs_range[0] = rs_range[1] = "";
+	string rs_range[2], map, samples_to_compare_to, new_samples;
+	samples_to_compare_to = "";
+	new_samples = "";
+	map = "";
+	rs_range[0] = "";
+	rs_range[1] = "";
 	string params = argv[0];
 
 	bool bad_param = false;
-	for(int i=1;i<argc;i++){
+	for(int i=1; i<argc; i++) {
 		params += " " + string(argv[i]);
-		if( strncmp(argv[i], "-min_m", strlen("-min_m")) == 0 && i < argc-1)				MIN_MATCH_LEN = atof(argv[++i]);
-		else if( strncmp(argv[i], "-err_hom", strlen("-max_err")) == 0 && i < argc-1)		{ MAX_ERR_HOM = atoi(argv[++i]); }
-		else if( strncmp(argv[i], "-err_het", strlen("-max_err")) == 0 && i < argc-1)		{ MAX_ERR_HET = atoi(argv[++i]); }
-		else if( strncmp(argv[i], "-from_snp", strlen("-from_snp")) == 0 && i < argc-1 )	rs_range[0] = argv[++i];
-		else if( strncmp(argv[i], "-to_snp", strlen("-to_snp")) == 0 && i < argc-1 )		rs_range[1] = argv[++i];
-		else if( strncmp(argv[i], "-print", strlen("-print")) == 0 )						PRINT_MATCH_HAPS = true;
-		else if( strncmp(argv[i], "-silent", strlen("-silent")) == 0 )						SILENT = true;
-		else if( strncmp(argv[i], "-debug", strlen("-debug")) == 0 )						DEBUG = true;
-		else if( strncmp(argv[i], "-map", strlen("-map")) == 0 && i < argc-1)				map = argv[++i];
-		else if( strncmp(argv[i], "-bits", strlen("-bits")) == 0 && i < argc-1)				MARKER_SET_SIZE = atoi(argv[++i]);
-		else if( strncmp(argv[i], "-homoz-only", strlen("-homoz-only")) == 0 )				{ ALLOW_HOM = true; HOM_ONLY = true; }
-		else if( strncmp(argv[i], "-homoz", strlen("-homoz")) == 0 )						ALLOW_HOM = true;
-		else if( strncmp(argv[i], "-bin_out", strlen("-bin_out")) == 0 )						BINARY_OUT = true;
-		else if( strncmp(argv[i], "-haploid", strlen("-haploid")) == 0 )					{ HAPLOID = true; HAP_EXT = true; }
-		else if( strncmp(argv[i], "-h_extend", strlen("-h_extend")) == 0 )					HAP_EXT = true;
-		else if( strncmp(argv[i], "-w_extend", strlen("-w_extend")) == 0 )					WIN_EXT = true;
+		if (strncmp(argv[i], "-min_m", strlen("-min_m")) == 0 && i < argc-1) {
+			MIN_MATCH_LEN = atof(argv[++i]);
+		}
+		else if (strncmp(argv[i], "-err_hom", strlen("-max_err")) == 0 && i < argc-1) {
+			MAX_ERR_HOM = atoi(argv[++i]);
+		}
+		else if (strncmp(argv[i], "-err_het", strlen("-max_err")) == 0 && i < argc-1) {
+			MAX_ERR_HET = atoi(argv[++i]);
+		}
+		else if (strncmp(argv[i], "-from_snp", strlen("-from_snp")) == 0 && i < argc-1 ) {
+			rs_range[0] = argv[++i];
+		}
+		else if (strncmp(argv[i], "-to_snp", strlen("-to_snp")) == 0 && i < argc-1 ) {
+			rs_range[1] = argv[++i];
+		}
+		else if (strncmp(argv[i], "-print", strlen("-print")) == 0 ) {
+			PRINT_MATCH_HAPS = true;
+		}
+		else if (strncmp(argv[i], "-silent", strlen("-silent")) == 0 ) {
+			SILENT = true;
+		}
+		else if (strncmp(argv[i], "-debug", strlen("-debug")) == 0 ) {
+			DEBUG = true;
+		}
+		else if (strncmp(argv[i], "-map", strlen("-map")) == 0 && i < argc-1) {
+			map = argv[++i];
+		}
+		else if (strncmp(argv[i], "-bits", strlen("-bits")) == 0 && i < argc-1) {
+			MARKER_SET_SIZE = atoi(argv[++i]);
+		}
+		else if (strncmp(argv[i], "-homoz-only", strlen("-homoz-only")) == 0 ) {
+			ALLOW_HOM = true;
+			HOM_ONLY = true;
+		}
+		else if (strncmp(argv[i], "-homoz", strlen("-homoz")) == 0 ) {
+			ALLOW_HOM = true;
+		}
+		else if (strncmp(argv[i], "-bin_out", strlen("-bin_out")) == 0 ) {
+			BINARY_OUT = true;
+		}
+		else if (strncmp(argv[i], "-haploid", strlen("-haploid")) == 0 ) {
+			HAPLOID = true;
+			HAP_EXT = true;
+		}
+		else if( strncmp(argv[i], "-h_extend", strlen("-h_extend")) == 0 ) {
+			HAP_EXT = true;
+		}
+		else if (strncmp(argv[i], "-w_extend", strlen("-w_extend")) == 0 ) {
+			WIN_EXT = true;
+		}
 		else if( strncmp(argv[i], "-version", strlen("-version")) == 0 ) {
-			cout << "version 1.5.2" << endl;
+			cout << "version 1.6.0-embark" << endl;
 			return 0;
-		} else {
+		}
+		else if (strncmp(argv[i], "-samples_to_compare_to", strlen("-samples_to_compare_to")) == 0 && i < argc-1) {
+			samples_to_compare_to = argv[++i];
+		}
+		else if (strncmp(argv[i], "-new_samples", strlen("-new_samples")) == 0 && i < argc-1) {
+			new_samples = argv[++i];
+		}
+		else {
 			bad_param = true;
 		}
 	}
@@ -78,7 +124,9 @@ int main(int argc, char* argv[])
 		<< '\t' << "-homoz-only" << '\t' << "Look for autozygous/homozygous segments only, does not detect IBD" << endl
 		<< '\t' << "-haploid" << '\t' << "Treat input individual as two fully phased chromosomes with no recombination\n\t\toutput IDs with 0/1 suffix for chromosome destinction" << endl
 		<< '\t' << "-h_extend" << '\t' << "Extend from seeds if *haplotypes* match" << endl
-		<< '\t' << "-w_extend" << '\t' << "Extend, one marker at a time, beyong the boundaries of a found match" << endl;
+		<< '\t' << "-w_extend" << '\t' << "Extend, one marker at a time, beyong the boundaries of a found match" << endl
+		<< '\t' << "-samples_to_compare_to" << '\t' << "List of individuals to cross compare." << endl
+		<< '\t' << "-new_samples" << '\t' << "List of new individuals." << endl;
 		return 1;
 	}
 
@@ -88,9 +136,14 @@ int main(int argc, char* argv[])
 		ALL_SNPS.setROI(rs_range);
 	}
 
-	if(map != "")
-	{
-		ALL_SNPS.loadGeneticDistanceMap( map );
+	if(map != "") {
+		ALL_SNPS.loadGeneticDistanceMap(map);
+	}
+	if (samples_to_compare_to != "") {
+		ALL_SAMPLES.loadOldIndividuals(samples_to_compare_to);
+	}
+	if (new_samples != "") {
+		ALL_SAMPLES.loadNewIndividuals(new_samples);
 	}
 
 	GERMLINE germline;
