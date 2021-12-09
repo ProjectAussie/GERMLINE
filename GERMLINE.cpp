@@ -53,12 +53,12 @@ void GERMLINE::mine( string params )
 	// This is called in PEDIndividualsExtractor which is
 	// called in getIndividuals
 	stringstream sstm;
-    for (int i=0;i<num_samples ;i++)
-    {
-        sstm.str("");
-        sstm << "match_file_" << i << ".match";
+	for (int i=0;i<num_samples ;i++)
+	{
+		sstm.str("");
+		sstm << "match_file_" << i << ".match";
 		FILE_MAP[i] = new ofstream(sstm.str(), std::ofstream::out | std::ofstream::app);
-    }
+	}
 	
 	fout << params << endl;
 	fout << setw(65) << setfill('-') << ' ' << endl << setfill(' ');
