@@ -1,4 +1,5 @@
 #include "Match.h"
+#include "BasicDefinitions.h"
 
 void Match::extendBack()
 {
@@ -322,28 +323,32 @@ void Match::print( ostream& fout )
 		unsigned int sid[2];
 		sid[0] = ALL_SNPS.getSNP(snp_start).getMarkerNumber();
 		sid[1] = ALL_SNPS.getSNP(snp_end).getMarkerNumber();
-		fout.write( (char*) &pid[0] , sizeof( unsigned int ) );
-		fout.write( (char*) &pid[1] , sizeof( unsigned int ) );
-		fout.write( (char*) &sid[0] , sizeof( unsigned int ) );
-		fout.write( (char*) &sid[1] , sizeof( unsigned int ) );
-		fout.write( (char*) &dif , sizeof( int ) );
-		fout.write( (char*) &hom[0] , sizeof( bool ) );
-		fout.write( (char*) &hom[1] , sizeof( bool ) );
+		ofstream fout_temp = *FILE_MAP[node[0]->getID()];
+		fout_temp.write( (char*) &pid[0] , sizeof( unsigned int ) );
+		fout_temp.write( (char*) &pid[1] , sizeof( unsigned int ) );
+		fout_temp.write( (char*) &sid[0] , sizeof( unsigned int ) );
+		fout_temp.write( (char*) &sid[1] , sizeof( unsigned int ) );
+		// fout.write( (char*) &dif , sizeof( int ) );
+		// fout.write( (char*) &hom[0] , sizeof( bool ) );
+		// fout.write( (char*) &hom[1] , sizeof( bool ) );
 	} else
 	{
-		fout << node[0]->getID() << '\t';
-		fout << node[1]->getID() << '\t';
-		fout << ALL_SNPS.getSNP(snp_start).getChr() << '\t';
-		fout << ALL_SNPS.getSNP(snp_start).getPhysPos() << ' ';
-		fout << ALL_SNPS.getSNP(snp_end).getPhysPos() << '\t';
-		fout << ALL_SNPS.getSNP(snp_start).getSNPID() << ' ';
-		fout << ALL_SNPS.getSNP(snp_end).getSNPID() << '\t';
-		fout << ( snp_end - snp_start + 1) << '\t';
-		fout << setiosflags(ios::fixed) << setprecision(2) << distance << '\t';
-		if ( genetic ) fout << "cM" << '\t'; else fout << "MB" << '\t';
-		fout << dif;
-		for ( int n = 0 ; n < 2 ; n++ )
-			if ( hom[n] ) fout << '\t' << 1; else fout << '\t' << 0;
+		// line_elements = line.split("\t")
+    	// return "\t".join(line_elements[:4])
+		ofstream fout_temp = *FILE_MAP[node[0]->getNumericID()];
+		fout_temp << node[0]->getID() << '\t';
+		fout_temp << node[1]->getID() << '\t';
+		fout_temp << ALL_SNPS.getSNP(snp_start).getChr() << '\t';
+		fout_temp << ALL_SNPS.getSNP(snp_start).getPhysPos() << ' ';
+		fout_temp << ALL_SNPS.getSNP(snp_end).getPhysPos() << '\t';
+		// fout << ALL_SNPS.getSNP(snp_start).getSNPID() << ' ';
+		// fout << ALL_SNPS.getSNP(snp_end).getSNPID() << '\t';
+		// fout << ( snp_end - snp_start + 1) << '\t';
+		// fout << setiosflags(ios::fixed) << setprecision(2) << distance << '\t';
+		// if ( genetic ) fout << "cM" << '\t'; else fout << "MB" << '\t';
+		// fout << dif;
+		// for ( int n = 0 ; n < 2 ; n++ )
+		// 	if ( hom[n] ) fout << '\t' << 1; else fout << '\t' << 0;
 		fout << endl;
 	}
 	num_matches++;

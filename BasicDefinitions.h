@@ -38,6 +38,7 @@ class Individuals;
 extern SNPs ALL_SNPS;
 extern Individuals ALL_SAMPLES;
 extern ofstream MATCH_FILE;
+map<int, ofstream*> FILE_MAP;
 
 enum ErrorType{RECOMB=0,MI=1};
 const int HET=2;
