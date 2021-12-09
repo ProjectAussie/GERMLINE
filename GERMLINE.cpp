@@ -49,6 +49,9 @@ void GERMLINE::mine( string params )
 
 	// Instantiate pointers to files with append access
 	// we want one pointer per sample?
+	// num_samples incremented in Individuals::addIndividual
+	// This is called in PEDIndividualsExtractor which is
+	// called in getIndividuals
 	stringstream sstm;
     for (int i=0;i<num_samples ;i++)
     {
