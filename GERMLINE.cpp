@@ -7,6 +7,7 @@
 using namespace std;
 
 ofstream MATCH_FILE;
+map<int, ofstream*> FILE_MAP;
 size_t num_samples;
 unsigned long num_matches;
 SNPs ALL_SNPS;
@@ -45,6 +46,16 @@ void GERMLINE::mine( string params )
 	
 	if ( BINARY_OUT ) MATCH_FILE.open( ( out + ".bmatch" ).c_str() , ios::binary );
 	else MATCH_FILE.open( ( out + ".match" ).c_str() );
+
+	// Instantiate pointers to files with append access
+	// we want one pointer per sample?
+	stringstream sstm;
+    for (int i=0;i<num_samples ;i++)
+    {
+        sstm.str("");
+        sstm << "match_file_" << i << ".match";
+		FILE_MAP[i] = new ofstream(sstm.str(), std::ofstream::out | std::ofstream::app);
+    }
 	
 	fout << params << endl;
 	fout << setw(65) << setfill('-') << ' ' << endl << setfill(' ');
