@@ -230,6 +230,19 @@ ofstream* Individual::getIndividualOutputMatchFile()
 	return individualOutputMatchFile;
 }
 
+void Individual::setIndividualOutputHomozFile()
+{
+	string ext = ".tsv";
+	string dir = "individual_homoz_files/";
+	string fileHandleName = dir + getID() + ext;
+	individualOutputMatchFile = new ofstream(fileHandleName, ofstream::app);
+}
+
+ofstream* Individual::getIndividualOutputHomozFile()
+{
+	return individualOutputHomozFile;
+}
+
 // helper methods to enable individual output in desired format
 string Individual::getSingleID()
 {

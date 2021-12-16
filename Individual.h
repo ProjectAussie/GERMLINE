@@ -95,9 +95,13 @@ public:
 
 	// clearMarkers(): clears all MarkerSets from this individual
 	void clearMarkers();
-	// initialize new ofstream for individual
+	// initialize new ofstream for individual match tracts
 	void setIndividualOutputMatchFile();
 	ofstream* getIndividualOutputMatchFile();
+
+	//initialize new ofstream for individual homoz tracts
+	void setIndividualOutputHomozFile();
+	ofstream* getIndividualOutputHomozFile();
 
 	// helper methods to retrieve ID and haplotype
 	string getHaplotype();
@@ -123,6 +127,7 @@ private:
 	
 	Match ** all_matches;
 	ofstream* individualOutputMatchFile;
+	ofstream* individualOutputHomozFile;
 };
 
 

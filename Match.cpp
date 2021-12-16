@@ -355,13 +355,17 @@ void Match::print( ostream& fout, bool individualOutput )
 				ofs = node[1]->getIndividualOutputMatchFile();
 			}
 			else {
-				// ToDo handle homoz tracts
+				oline.push_back(node[0]->getSingleID());
+				oline.push_back(node[0]->getHaplotype());
+				oline.push_back(node[1]->getSingleID());
+				oline.push_back(node[1]->getHaplotype());
+				ofs = node[0]->getIndividualOutputHomozFile();
 			}
 			oline.push_back(ALL_SNPS.getSNP(snp_start).getChr());
 			oline.push_back(to_string(ALL_SNPS.getSNP(snp_start).getPhysPos()));
 			oline.push_back(to_string(ALL_SNPS.getSNP(snp_end).getPhysPos()));
 			join(oline, '\t', complete_oline);
-			fout << complete_oline << endl;
+			*ofs << complete_oline << endl;
 		}
 		else {
 			fout << node[0]->getID() << '\t';
