@@ -225,6 +225,11 @@ void Individual::setIndividualOutputMatchFile()
 	individualOutputMatchFile = new ofstream(fileHandleName, ofstream::app);
 }
 
+ofstream* Individual::getIndividualOutputMatchFile()
+{
+	return individualOutputMatchFile;
+}
+
 // helper methods to enable individual output in desired format
 string Individual::getSingleID()
 {

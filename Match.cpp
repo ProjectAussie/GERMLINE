@@ -336,14 +336,32 @@ void Match::print( ostream& fout, bool individualOutput )
 			// In the case of new-dog : new-dog comparisons, it shouldn't matter.
 			vector<string> oline;
         	string complete_oline;
-			oline.push_back(node[0]->getSingleID());
-			oline.push_back(node[0]->getHaplotype());
-			oline.push_back(node[1]->getSingleID());
-			oline.push_back(node[1]->getHaplotype());
+			int key1 = stoi(node[0]->getSingleID());
+			int key2 = stoi(node[1]->getSingleID());
+			ofstream* ofs;
+
+			if ( key1 > key2 ) {
+				oline.push_back(node[0]->getSingleID());
+				oline.push_back(node[0]->getHaplotype());
+				oline.push_back(node[1]->getSingleID());
+				oline.push_back(node[1]->getHaplotype());
+				ofs = node[0]->getIndividualOutputMatchFile();
+			}
+			else if ( key2 > key1 ) {
+				oline.push_back(node[1]->getSingleID());
+				oline.push_back(node[1]->getHaplotype());
+				oline.push_back(node[0]->getSingleID());
+				oline.push_back(node[0]->getHaplotype());
+				ofs = node[1]->getIndividualOutputMatchFile();
+			}
+			else {
+				// ToDo handle homoz tracts
+			}
 			oline.push_back(ALL_SNPS.getSNP(snp_start).getChr());
 			oline.push_back(to_string(ALL_SNPS.getSNP(snp_start).getPhysPos()));
 			oline.push_back(to_string(ALL_SNPS.getSNP(snp_end).getPhysPos()));
 			join(oline, '\t', complete_oline);
+			fout << complete_oline << endl;
 		}
 		else {
 			fout << node[0]->getID() << '\t';

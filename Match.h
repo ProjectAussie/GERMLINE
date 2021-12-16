@@ -33,7 +33,7 @@ public:
 		return ALL_SNPS.getDistance(buff_start*MARKER_SET_SIZE,(end_ms+2)*MARKER_SET_SIZE-1) >= MIN_MATCH_LEN;
 	}
 	Individual * getTarget(Individual * me){ if( node[0] == me ) return node[1]; else return node[0]; }
-	void print( ostream& );
+	void print( ostream&, bool individualOutput );
 	bool approxEqual();
 	void erase();
 	void extendBack();

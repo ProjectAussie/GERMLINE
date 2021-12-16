@@ -97,12 +97,13 @@ public:
 	void clearMarkers();
 	// initialize new ofstream for individual
 	void setIndividualOutputMatchFile();
+	ofstream* getIndividualOutputMatchFile();
 
 	// helper methods to retrieve ID and haplotype
 	string getHaplotype();
 	string getSingleID();
-	void setSingleID();
-	void setHaplotype();
+	void setSingleID(string singleID);
+	void setHaplotype(string haplotype);
 
 private:
 
