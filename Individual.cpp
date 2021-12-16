@@ -77,8 +77,8 @@ void Individual::clearMatch( size_t id )
 }
 void Individual::deleteMatch( size_t id )
 {
-	// try to print it
-	all_matches[ id ]->print( MATCH_FILE );
+	// try to print it, use individual output per Embark specified format
+	all_matches[ id ]->print( MATCH_FILE, true );
 	delete all_matches[ id ];
 
 	// erase from the list
@@ -216,6 +216,7 @@ ostream& operator<<(ostream &fout, Individual& ind)
 	return fout;
 }
 
+// ToDo modify his to maybe take in chromosome since the eventual output is "specified_folder/proxy_key/chr_XX.tsv"
 void Individual::setIndividualOutputMatchFile()
 {
 	string ext = ".tsv";

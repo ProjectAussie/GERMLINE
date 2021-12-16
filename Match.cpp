@@ -236,7 +236,7 @@ bool Match::isHom( int n , unsigned int ms )
 	return (int) ( node[n]->getChromosome( 0 )->getMarkerSet(ms)->getMarkerBits() ^ node[n]->getChromosome( 1 )->getMarkerSet(ms)->getMarkerBits() ).count() <= ( MAX_ERR_HOM + MAX_ERR_HET );
 }
 
-void Match::print( ostream& fout )
+void Match::print( ostream& fout, bool individualOutput )
 {
 	// extend this match from both ends
 	if (DEBUG) cout << "Match::print" << endl;
@@ -331,21 +331,49 @@ void Match::print( ostream& fout )
 		fout.write( (char*) &hom[1] , sizeof( bool ) );
 	} else
 	{
-		fout << node[0]->getID() << '\t';
-		fout << node[1]->getID() << '\t';
-		fout << ALL_SNPS.getSNP(snp_start).getChr() << '\t';
-		fout << ALL_SNPS.getSNP(snp_start).getPhysPos() << ' ';
-		fout << ALL_SNPS.getSNP(snp_end).getPhysPos() << '\t';
-		fout << ALL_SNPS.getSNP(snp_start).getSNPID() << ' ';
-		fout << ALL_SNPS.getSNP(snp_end).getSNPID() << '\t';
-		fout << ( snp_end - snp_start + 1) << '\t';
-		fout << setiosflags(ios::fixed) << setprecision(2) << distance << '\t';
-		if ( genetic ) fout << "cM" << '\t'; else fout << "MB" << '\t';
-		fout << dif;
-		for ( int n = 0 ; n < 2 ; n++ )
-			if ( hom[n] ) fout << '\t' << 1; else fout << '\t' << 0;
-		fout << endl;
+		if ( individualOutput ) {
+			// ToDo output desired per-proxy-key format, the proxy key in the samples to compare should be first (larger key)
+			// In the case of new-dog : new-dog comparisons, it shouldn't matter.
+			vector<string> oline;
+        	string complete_oline;
+			oline.push_back(node[0]->getSingleID());
+			oline.push_back(node[0]->getHaplotype());
+			oline.push_back(node[1]->getSingleID());
+			oline.push_back(node[1]->getHaplotype());
+			oline.push_back(ALL_SNPS.getSNP(snp_start).getChr());
+			oline.push_back(to_string(ALL_SNPS.getSNP(snp_start).getPhysPos()));
+			oline.push_back(to_string(ALL_SNPS.getSNP(snp_end).getPhysPos()));
+			join(oline, '\t', complete_oline);
+		}
+		else {
+			fout << node[0]->getID() << '\t';
+			fout << node[1]->getID() << '\t';
+			fout << ALL_SNPS.getSNP(snp_start).getChr() << '\t';
+			fout << ALL_SNPS.getSNP(snp_start).getPhysPos() << ' ';
+			fout << ALL_SNPS.getSNP(snp_end).getPhysPos() << '\t';
+			fout << ALL_SNPS.getSNP(snp_start).getSNPID() << ' ';
+			fout << ALL_SNPS.getSNP(snp_end).getSNPID() << '\t';
+			fout << ( snp_end - snp_start + 1) << '\t';
+			fout << setiosflags(ios::fixed) << setprecision(2) << distance << '\t';
+			if ( genetic ) fout << "cM" << '\t'; else fout << "MB" << '\t';
+			fout << dif;
+			for ( int n = 0 ; n < 2 ; n++ )
+				if ( hom[n] ) fout << '\t' << 1; else fout << '\t' << 0;
+			fout << endl;
+		}
 	}
 	num_matches++;
+}
+
+void join(const vector<string>& v, char c, string& s) {
+
+   s.clear();
+
+   for (vector<string>::const_iterator p = v.begin();
+        p != v.end(); ++p) {
+      s += *p;
+      if (p != v.end() - 1)
+        s += c;
+   }
 }
 
