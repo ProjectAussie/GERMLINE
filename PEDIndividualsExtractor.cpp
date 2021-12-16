@@ -38,6 +38,7 @@ void PEDIndividualsExtractor::loadInput()
 	}
 	
 	individualsP->initialize();
+	individualsP->initializeOutputMatchFiles();
 	stream.clear();
 }
 
@@ -85,6 +86,10 @@ void PEDIndividualsExtractor::getIndividuals()
 		new_ind[1]->setID( famID + " " + ID + ".1" );
 		new_ind[0]->setBaseID( baseID );
 		new_ind[1]->setBaseID( baseID );
+		new_ind[0]->setSingleID( ID );
+		new_ind[1]->setSingleID( ID) ;
+		new_ind[0]->setHaplotype("0");
+		new_ind[1]->setHaplotype("1");
 		
 		individualsP->addIndividual( new_ind[0] );
 		individualsP->addIndividual( new_ind[1] );

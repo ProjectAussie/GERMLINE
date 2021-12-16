@@ -98,11 +98,22 @@ public:
 	// initialize new ofstream for individual
 	void setIndividualOutputMatchFile();
 
+	// helper methods to retrieve ID and haplotype
+	string getHaplotype();
+	string getSingleID();
+	void setSingleID();
+	void setHaplotype();
+
 private:
 
-	// ID of the individual
+	// ID of the individual is of the form "FAM ID.0" or "FAM ID.1"
 	string ID;
 	string BaseID;
+	// single ID is just the ID
+	string singleID;
+	// haplotype is either 0 or 1
+	string haplotype;
+
 	unsigned int numeric_id;
 
 	Chromosome * chromosome;

@@ -224,4 +224,25 @@ void Individual::setIndividualOutputMatchFile()
 	individualOutputMatchFile = new ofstream(fileHandleName, ofstream::app);
 }
 
+// helper methods to enable individual output in desired format
+string Individual::getSingleID()
+{
+	return singleID;
+}
+
+string Individual::getHaplotype()
+{
+	return haplotype;
+}
+
+void Individual::setSingleID(string singleID)
+{
+	singleID = singleID;
+}
+
+void Individual::setHaplotype(string haplotype)
+{
+	haplotype = haplotype;
+}
+
 // end Individual.cpp
