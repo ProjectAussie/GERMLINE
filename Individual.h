@@ -110,7 +110,7 @@ public:
 	void setHaplotype(string haplotype);
 
 	// help track new dogs
-	bool isNew;
+	bool is_new;
 
 private:
 

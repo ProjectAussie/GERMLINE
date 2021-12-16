@@ -26,6 +26,7 @@ void Individuals::initializeOutputFiles()
 	for ( iter = 0 ; iter < pedigree.size() ; iter++ ) {
 		string base_id = pedigree[ iter ]->getBaseID();
 		if ( isNew(base_id) ) {
+			pedigree[ iter ]->is_new = true;
 			pedigree[ iter ]->setIndividualOutputMatchFile();
 			pedigree[ iter ]->setIndividualOutputHomozFile();
 		}
