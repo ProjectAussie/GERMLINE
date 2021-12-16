@@ -216,5 +216,12 @@ ostream& operator<<(ostream &fout, Individual& ind)
 	return fout;
 }
 
+void Individual::setIndividualOutputMatchFile()
+{
+	string ext = ".tsv";
+	string dir = "individual_match_files/";
+	string fileHandleName = dir + getID() + ext;
+	individualOutputMatchFile = new ofstream(fileHandleName, ofstream::app);
+}
 
 // end Individual.cpp

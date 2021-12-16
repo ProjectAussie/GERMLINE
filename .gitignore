@@ -1,3 +1,4 @@
+.vscode
 test/output
 *.o
 parse_bmatch

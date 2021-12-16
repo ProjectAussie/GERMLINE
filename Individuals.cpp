@@ -20,6 +20,12 @@ void Individuals::initialize()
 	for ( iter = 0 ; iter < pedigree.size() ; iter++ ) pedigree[ iter ]->reserveMemory();
 }
 
+// initialize all individual output file match file handles
+void Individuals::initializeOutputMatchFiles()
+{
+	for ( iter = 0 ; iter < pedigree.size() ; iter++ ) pedigree[ iter ]->setIndividualOutputMatchFile();
+}
+
 void Individuals::freeMatches()
 {
 	for(begin();more();next()) pedigree[ iter ]->freeMatches();

@@ -95,6 +95,8 @@ public:
 
 	// clearMarkers(): clears all MarkerSets from this individual
 	void clearMarkers();
+	// initialize new ofstream for individual
+	void setIndividualOutputMatchFile();
 
 private:
 
@@ -108,6 +110,7 @@ private:
 	streamoff offset;
 	
 	Match ** all_matches;
+	ofstream* individualOutputMatchFile;
 };
 
 
