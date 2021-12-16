@@ -20,13 +20,14 @@ void Individuals::initialize()
 	for ( iter = 0 ; iter < pedigree.size() ; iter++ ) pedigree[ iter ]->reserveMemory();
 }
 
-// initialize all individual output file match file handles
-void Individuals::initializeOutputMatchFiles()
+// initialize all individual output file match and homoz file handles
+void Individuals::initializeOutputFiles()
 {
 	for ( iter = 0 ; iter < pedigree.size() ; iter++ ) {
 		string base_id = pedigree[ iter ]->getBaseID();
 		if ( isNew(base_id) ) {
 			pedigree[ iter ]->setIndividualOutputMatchFile();
+			pedigree[ iter ]->setIndividualOutputHomozFile();
 		}
 	}
 }

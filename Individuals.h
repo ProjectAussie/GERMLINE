@@ -41,7 +41,7 @@ public:
 	bool isOld(string);
 	bool isNew(string);
 	bool hasRestrictions();
-	void initializeOutputMatchFiles();
+	void initializeOutputFiles();
 
 private:
 

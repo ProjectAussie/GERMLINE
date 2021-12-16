@@ -38,7 +38,7 @@ void PEDIndividualsExtractor::loadInput()
 	}
 	
 	individualsP->initialize();
-	individualsP->initializeOutputMatchFiles();
+	individualsP->initializeOutputFiles();
 	stream.clear();
 }
 

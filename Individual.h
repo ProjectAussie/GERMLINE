@@ -109,6 +109,9 @@ public:
 	void setSingleID(string singleID);
 	void setHaplotype(string haplotype);
 
+	// help track new dogs
+	bool isNew;
+
 private:
 
 	// ID of the individual is of the form "FAM ID.0" or "FAM ID.1"
