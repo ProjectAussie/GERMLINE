@@ -45,5 +45,7 @@ private:
 	bool isHom( int n , unsigned int ms );
 };
 
+void join(const vector<string>& v, char c, string& s)
+
 #endif
 
