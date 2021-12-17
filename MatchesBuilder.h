@@ -1,7 +1,7 @@
 // MatchesBuilder.h: builds matches from individuals
 
 #ifndef MATCHESBUILDER_H
-#define MATCHESBUILDERs_H
+#define MATCHESBUILDER_H
 
 #include "BasicDefinitions.h"
 #include "Individuals.h"
