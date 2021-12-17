@@ -216,5 +216,31 @@ ostream& operator<<(ostream &fout, Individual& ind)
 	return fout;
 }
 
+void Individual::setIndividualMatchFile()
+{
+	string ext = ".tsv";
+	string dir = "individual_match_files/";
+	string fileHandleName = dir + getID() + ext;
+	individualMatchFile = new ofstream(fileHandleName, ofstream::app);
+}
+
+void Individual::setIndividualHomozFile()
+{
+	string ext = ".tsv";
+	string dir = "individual_homoz_files/";
+	string fileHandleName = dir + getID() + ext;
+	individualHomozFile = new ofstream(fileHandleName, ofstream::app);
+}
+
+ofstream* Individual::getIndividualMatchFile()
+{
+	return individualMatchFile;
+}
+
+ofstream* Individual::getIndividualHomozFile()
+{
+	return individualHomozFile;
+}
+
 
 // end Individual.cpp

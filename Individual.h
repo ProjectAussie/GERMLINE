@@ -96,6 +96,11 @@ public:
 	// clearMarkers(): clears all MarkerSets from this individual
 	void clearMarkers();
 
+	void setIndividualMatchFile();
+	void setIndividualHomozFile();
+	ofstream* getIndividualMatchFile();
+	ofstream* getIndividualHomozFile();
+
 private:
 
 	// ID of the individual
@@ -108,6 +113,8 @@ private:
 	streamoff offset;
 	
 	Match ** all_matches;
+	ofstream* individualMatchFile;
+	ofstream* individualHomozFile;
 };
 
 
