@@ -43,6 +43,8 @@ public:
 	bool isNew(string);
 	bool hasRestrictions();
 
+	bool useEmbarkRFGermlineOutput;
+
 private:
 
 	void permuteMarkerSet(Chromosome *, int, MarkerSet);

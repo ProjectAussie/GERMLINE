@@ -27,6 +27,7 @@ int main(int argc, char* argv[])
 	rs_range[0] = "";
 	rs_range[1] = "";
 	string params = argv[0];
+	ALL_SAMPLES.useEmbarkRFGermlineOutput = false;
 
 	bool bad_param = false;
 	for(int i=1; i<argc; i++) {
@@ -141,9 +142,11 @@ int main(int argc, char* argv[])
 	}
 	if (samples_to_compare_to != "") {
 		ALL_SAMPLES.loadOldIndividuals(samples_to_compare_to);
+		ALL_SAMPLES.useEmbarkRFGermlineOutput = true;
 	}
 	if (new_samples != "") {
 		ALL_SAMPLES.loadNewIndividuals(new_samples);
+		ALL_SAMPLES.useEmbarkRFGermlineOutput = true;
 	}
 
 	GERMLINE germline;
