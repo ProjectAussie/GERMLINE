@@ -221,7 +221,7 @@ void Individual::setIndividualMatchFile()
 {
 	string ext = ".tsv";
 	string dir = "individual_match_files/";
-	string fileHandleName = dir + getID() + ext;
+	string fileHandleName = dir + single_id + ext;
 	individualMatchFile = new ofstream(fileHandleName, ofstream::app);
 }
 
@@ -229,7 +229,7 @@ void Individual::setIndividualHomozFile()
 {
 	string ext = ".tsv";
 	string dir = "individual_homoz_files/";
-	string fileHandleName = dir + getID() + ext;
+	string fileHandleName = dir + single_id + ext;
 	individualHomozFile = new ofstream(fileHandleName, ofstream::app);
 }
 
