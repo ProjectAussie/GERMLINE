@@ -32,6 +32,7 @@ public:
 	void begin();
 	size_t size() { return pedigree.size(); }
 	void initialize();
+	void initializeOutputFileHandles();
 	void print( ostream& );
 	
 	void freeMatches();

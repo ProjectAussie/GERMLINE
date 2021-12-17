@@ -38,6 +38,7 @@ void PEDIndividualsExtractor::loadInput()
 	}
 	
 	individualsP->initialize();
+	individualsP->initializeOutputFileHandles();
 	stream.clear();
 }
 
@@ -98,7 +99,7 @@ void PEDIndividualsExtractor::getIndividuals()
 		else {
 			new_ind[0]->is_new = false;
 			new_ind[1]->is_new = false;
-			cout << "Loaded new sample: " << new_ind[0]->single_id << endl;
+			cout << "Loaded old sample: " << new_ind[0]->single_id << endl;
 		}
 		
 		individualsP->addIndividual( new_ind[0] );
