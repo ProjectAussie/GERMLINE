@@ -89,6 +89,15 @@ void PEDIndividualsExtractor::getIndividuals()
 		new_ind[1]->haplotype = "1";
 		new_ind[0]->single_id = ID;
 		new_ind[1]->single_id = ID;
+
+		if ( individualsP->isNew(new_ind[0]->getBaseID()) ) {
+			new_ind[0]->is_new = true;
+			new_ind[1]->is_new = true;
+		}
+		else {
+			new_ind[0]->is_new = false;
+			new_ind[1]->is_new = false;
+		}
 		
 		individualsP->addIndividual( new_ind[0] );
 		individualsP->addIndividual( new_ind[1] );
