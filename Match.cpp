@@ -331,6 +331,54 @@ void Match::print( ostream& fout )
 		fout.write( (char*) &hom[1] , sizeof( bool ) );
 	} else
 	{
+		int key1 = stoi(node[0]->single_id);
+		int key2 = stoi(node[1]->single_id);
+		vector<string> oline;
+		string joined_oline;
+		ofstream* ofs;
+		string chromosome = ALL_SNPS.getSNP(snp_start).getChr();
+		string start_pos = to_string(ALL_SNPS.getSNP(snp_start).getPhysPos());
+		string end_pos = to_string(ALL_SNPS.getSNP(snp_end).getPhysPos());
+		
+		// homoz
+		if ( key1 == key2 && node[0]->is_new ) {
+			cout << "Writing out homoz" << endl;
+		}
+		// key1 is new, key2 is old
+		else if ( key1 > key2 && node[0]->is_new ) {
+			cout << "Writing match tracts for new key1 " << key1 << endl;
+			oline.push_back(node[0]->single_id);
+			oline.push_back(node[0]->haplotype);
+			oline.push_back(node[1]->single_id);
+			oline.push_back(node[1]->haplotype);
+			oline.push_back(chromosome);
+			oline.push_back(start_pos);
+			oline.push_back(end_pos);
+			ofs = node[0]->getIndividualMatchFile();
+			join(oline, '\t', joined_oline);
+			*ofs << joined_oline << endl;
+		}
+		// key2 is new, key1 is old
+		else if ( key2 > key1 && node[1]->is_new ) {
+			cout << "Writing match tracts for new key2 " << key2 << endl;
+			oline.push_back(node[1]->single_id);
+			oline.push_back(node[1]->haplotype);
+			oline.push_back(node[0]->single_id);
+			oline.push_back(node[0]->haplotype);
+			oline.push_back(chromosome);
+			oline.push_back(start_pos);
+			oline.push_back(end_pos);
+			ofs = node[1]->getIndividualMatchFile();
+			join(oline, '\t', joined_oline);
+			*ofs << joined_oline << endl;
+		}
+		// newdog : newdog comparison, write out same record twice
+		else if ( node[0]->is_new  &&  node[1]->is_new  && key1 != key2 ) {
+			cout << "Writing records for both keys";
+		}
+
+		/*
+		cout << stoi(node[1]->single_id) << endl;
 		fout << node[0]->getID() << '\t';
 		fout << node[1]->getID() << '\t';
 		fout << ALL_SNPS.getSNP(snp_start).getChr() << '\t';
@@ -345,7 +393,19 @@ void Match::print( ostream& fout )
 		for ( int n = 0 ; n < 2 ; n++ )
 			if ( hom[n] ) fout << '\t' << 1; else fout << '\t' << 0;
 		fout << endl;
+		*/
 	}
 	num_matches++;
 }
 
+void join(const vector<string>& v, char c, string& s) {
+
+   s.clear();
+
+   for (vector<string>::const_iterator p = v.begin();
+        p != v.end(); ++p) {
+      s += *p;
+      if (p != v.end() - 1)
+        s += c;
+   }
+}

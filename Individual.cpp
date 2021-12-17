@@ -78,6 +78,7 @@ void Individual::clearMatch( size_t id )
 void Individual::deleteMatch( size_t id )
 {
 	// try to print it
+	cout << "Writing results for: " << single_id << endl;
 	all_matches[ id ]->print( MATCH_FILE );
 	delete all_matches[ id ];
 
