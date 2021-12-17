@@ -85,6 +85,10 @@ void PEDIndividualsExtractor::getIndividuals()
 		new_ind[1]->setID( famID + " " + ID + ".1" );
 		new_ind[0]->setBaseID( baseID );
 		new_ind[1]->setBaseID( baseID );
+		new_ind[0]->haplotype = "0";
+		new_ind[1]->haplotype = "1";
+		new_ind[0]->single_id = ID;
+		new_ind[1]->single_id = ID;
 		
 		individualsP->addIndividual( new_ind[0] );
 		individualsP->addIndividual( new_ind[1] );

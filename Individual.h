@@ -101,6 +101,10 @@ public:
 	ofstream* getIndividualMatchFile();
 	ofstream* getIndividualHomozFile();
 
+	bool is_new;
+	string single_id;
+	string haplotype;
+
 private:
 
 	// ID of the individual
