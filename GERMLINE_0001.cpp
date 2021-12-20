@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
 	rs_range[1] = "";
 	string params = argv[0];
 	ALL_SAMPLES.useEmbarkRFGermlineOutput = false;
-	ALL_SAMPLES.chromosome = "1";
+	ALL_SAMPLES.chromosome = "";
 
 	bool bad_param = false;
 	for(int i=1; i<argc; i++) {
@@ -94,10 +94,12 @@ int main(int argc, char* argv[])
 			new_samples = argv[++i];
 		}
 		else if (strncmp(argv[i], "-chromosome", strlen("-chromosome")) == 0 && i < argc-1) {
-			ALL_SAMPLES.chromosome = argv[++i];
+			chromosome = argv[++i];
+			chromosome.insert(chromosome.begin(), 20 - chromosome.length(), '0');
+			ALL_SAMPLES.chromosome = chromosome;
 		}
 		else if (strncmp(argv[i], "-individual_outputs", strlen("-individual_outputs")) == 0 && i < argc-1) {
-			ALL_SAMPLES.useEmbarkRFGermlineOutput = false;
+			ALL_SAMPLES.useEmbarkRFGermlineOutput = true;
 		}
 		else {
 			bad_param = true;
@@ -134,7 +136,9 @@ int main(int argc, char* argv[])
 		<< '\t' << "-h_extend" << '\t' << "Extend from seeds if *haplotypes* match" << endl
 		<< '\t' << "-w_extend" << '\t' << "Extend, one marker at a time, beyong the boundaries of a found match" << endl
 		<< '\t' << "-samples_to_compare_to" << '\t' << "List of individuals to cross compare." << endl
-		<< '\t' << "-new_samples" << '\t' << "List of new individuals." << endl;
+		<< '\t' << "-new_samples" << '\t' << "List of new individuals." << endl
+		<< '\t' << "-chromosome" << '\t' << "Chromosome number for individual match/homoz file outputs." << endl
+		<< '\t' << "-individual_outputs" << '\t' << "Flag: Generate individual match/homoz file outputs" << endl;
 		return 1;
 	}
 

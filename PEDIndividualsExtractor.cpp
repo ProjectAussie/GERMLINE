@@ -96,12 +96,12 @@ void PEDIndividualsExtractor::getIndividuals()
 		if ( ALL_SAMPLES.isNew(new_ind[0]->getBaseID()) ) {
 			new_ind[0]->is_new = true;
 			new_ind[1]->is_new = true;
-			cout << "Loaded new sample: " << new_ind[0]->single_id << endl;
+			// cout << "Loaded new sample: " << new_ind[0]->single_id << endl;
 		}
 		else {
 			new_ind[0]->is_new = false;
 			new_ind[1]->is_new = false;
-			cout << "Loaded old sample: " << new_ind[0]->single_id << endl;
+			// cout << "Loaded old sample: " << new_ind[0]->single_id << endl;
 		}
 		
 		individualsP->addIndividual( new_ind[0] );
