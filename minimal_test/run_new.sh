@@ -2,6 +2,9 @@
 
 set -e
 
+rm -rf dog_level_match_files/*
+rm -rf dog_level_homoz_files/*
+
 if [ "$1" == "old-new" ]; then
     ~/dev/GERMLINE/germline -haploid -min_m 0.5 -err_hom 0 -err_het 0 -bits 90 -w_extend \
         -samples_to_compare_to 0000_old_dog_proxy_keys_germline_output.plinky \

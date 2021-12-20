@@ -2,7 +2,7 @@
 
 This directory contains a minimal test data set and runners. The purpose of these tests is to show parity against the `germline` code from `a1bdd07d84dd5ac69725c7566cab6ebb42c8e443`. 
 
-## Resoources
+## Resources
 
 * list of old dog keys (plink and txt format)
 * list of new dog keys (plink and txt format)
@@ -10,3 +10,7 @@ This directory contains a minimal test data set and runners. The purpose of thes
 * compiled rust code for Mac (local testing)
 * Runner script to run the old germline binary with old-new compset, and new-new compsets and the follow-up rust code
 * Runner script to run the new germline binary with old-new compset, and new-new compsets
+
+## Usage
+
+Simply run the shell scripts included, they are not guaranteed to work as they were not tested beyond my (MZ) system and setup.
