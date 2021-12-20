@@ -344,10 +344,6 @@ void Match::print( ostream& fout )
 			// homoz
 			if ( key1 == key2 && node[0]->is_new ) {
 				// cout << "Writing out homoz" << endl;
-				oline.push_back(node[0]->single_id);
-				oline.push_back(node[0]->haplotype);
-				oline.push_back(node[1]->single_id);
-				oline.push_back(node[1]->haplotype);
 				oline.push_back(chromosome);
 				oline.push_back(start_pos);
 				oline.push_back(end_pos);
