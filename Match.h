@@ -7,6 +7,7 @@
 #include "Individual.h"
 #include "math.h"
 #include <iomanip>
+#include <stdexcept>
 
 class Individual;
 

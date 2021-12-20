@@ -408,6 +408,9 @@ void Match::print( ostream& fout )
 				join(oline, '\t', joined_oline);
 				*ofs << joined_oline << endl;
 			}
+			else {
+				throw runtime_error("Unable to process match");
+			}
 		} 
 		// Generate regular germline outputs for matches against ref panel or other use cases
 		else { 
