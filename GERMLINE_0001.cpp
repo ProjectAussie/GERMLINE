@@ -20,7 +20,7 @@ int MAX_ERR_HET = 1;
 int main(int argc, char* argv[])
 {
 	// parse arguments
-	string rs_range[2], map, samples_to_compare_to, new_samples;
+	string rs_range[2], map, samples_to_compare_to, new_samples, chromosome;
 	samples_to_compare_to = "";
 	new_samples = "";
 	map = "";
@@ -28,6 +28,7 @@ int main(int argc, char* argv[])
 	rs_range[1] = "";
 	string params = argv[0];
 	ALL_SAMPLES.useEmbarkRFGermlineOutput = false;
+	ALL_SAMPLES.chromosome = "1";
 
 	bool bad_param = false;
 	for(int i=1; i<argc; i++) {
@@ -92,6 +93,12 @@ int main(int argc, char* argv[])
 		else if (strncmp(argv[i], "-new_samples", strlen("-new_samples")) == 0 && i < argc-1) {
 			new_samples = argv[++i];
 		}
+		else if (strncmp(argv[i], "-chromosome", strlen("-chromosome")) == 0 && i < argc-1) {
+			ALL_SAMPLES.chromosome = argv[++i];
+		}
+		else if (strncmp(argv[i], "-individual_outputs", strlen("-individual_outputs")) == 0 && i < argc-1) {
+			ALL_SAMPLES.useEmbarkRFGermlineOutput = false;
+		}
 		else {
 			bad_param = true;
 		}
@@ -142,11 +149,9 @@ int main(int argc, char* argv[])
 	}
 	if (samples_to_compare_to != "") {
 		ALL_SAMPLES.loadOldIndividuals(samples_to_compare_to);
-		ALL_SAMPLES.useEmbarkRFGermlineOutput = true;
 	}
 	if (new_samples != "") {
 		ALL_SAMPLES.loadNewIndividuals(new_samples);
-		ALL_SAMPLES.useEmbarkRFGermlineOutput = true;
 	}
 
 	GERMLINE germline;

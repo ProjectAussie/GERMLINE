@@ -38,7 +38,9 @@ void PEDIndividualsExtractor::loadInput()
 	}
 	
 	individualsP->initialize();
-	individualsP->initializeOutputFileHandles();
+	if ( ALL_SAMPLES.useEmbarkRFGermlineOutput ) {
+		individualsP->initializeOutputFileHandles(ALL_SAMPLES.chromosome);
+	}
 	stream.clear();
 }
 

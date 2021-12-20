@@ -20,12 +20,12 @@ void Individuals::initialize()
 	for ( iter = 0 ; iter < pedigree.size() ; iter++ ) pedigree[ iter ]->reserveMemory();
 }
 
-void Individuals::initializeOutputFileHandles()
+void Individuals::initializeOutputFileHandles(string chromosome)
 {
 	for ( iter = 0 ; iter < pedigree.size() ; iter++ ) {
 		if ( pedigree[ iter ]->is_new ) {
-			pedigree[ iter ]->setIndividualMatchFile();
-			pedigree[ iter ]->setIndividualHomozFile();
+			pedigree[ iter ]->setIndividualMatchFile(chromosome);
+			pedigree[ iter ]->setIndividualHomozFile(chromosome);
 		}
 	}
 }

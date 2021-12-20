@@ -96,8 +96,8 @@ public:
 	// clearMarkers(): clears all MarkerSets from this individual
 	void clearMarkers();
 
-	void setIndividualMatchFile();
-	void setIndividualHomozFile();
+	void setIndividualMatchFile(string chromosome);
+	void setIndividualHomozFile(string chromosome);
 	ofstream* getIndividualMatchFile();
 	ofstream* getIndividualHomozFile();
 

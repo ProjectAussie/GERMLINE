@@ -217,18 +217,18 @@ ostream& operator<<(ostream &fout, Individual& ind)
 	return fout;
 }
 
-void Individual::setIndividualMatchFile()
+void Individual::setIndividualMatchFile(string chromosome)
 {
 	string ext = ".tsv";
-	string dir = "individual_match_files/";
+	string dir = "dog_level_match_files/";
 	string fileHandleName = dir + single_id + ext;
 	individualMatchFile = new ofstream(fileHandleName, ofstream::app);
 }
 
-void Individual::setIndividualHomozFile()
+void Individual::setIndividualHomozFile(string chromosome)
 {
 	string ext = ".tsv";
-	string dir = "individual_homoz_files/";
+	string dir = "dog_level_homoz_files/";
 	string fileHandleName = dir + single_id + ext;
 	individualHomozFile = new ofstream(fileHandleName, ofstream::app);
 }

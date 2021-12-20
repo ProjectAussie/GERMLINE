@@ -32,7 +32,7 @@ public:
 	void begin();
 	size_t size() { return pedigree.size(); }
 	void initialize();
-	void initializeOutputFileHandles();
+	void initializeOutputFileHandles(string chromosome);
 	void print( ostream& );
 	
 	void freeMatches();
@@ -44,6 +44,7 @@ public:
 	bool hasRestrictions();
 
 	bool useEmbarkRFGermlineOutput;
+	string chromosome; // used for individual file handle outputs
 
 private:
 
