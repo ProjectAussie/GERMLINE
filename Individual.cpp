@@ -221,7 +221,7 @@ void Individual::setIndividualMatchFile(string chromosome)
 {
 	string ext = ".tsv";
 	string dir = "dog_level_match_files/";
-	string fileHandleName = dir + single_id + ext;
+	string fileHandleName = dir + single_id + "/" + "chr" + chromosome + ext;
 	individualMatchFile = new ofstream(fileHandleName, ofstream::app);
 }
 
@@ -229,7 +229,7 @@ void Individual::setIndividualHomozFile(string chromosome)
 {
 	string ext = ".tsv";
 	string dir = "dog_level_homoz_files/";
-	string fileHandleName = dir + single_id + ext;
+	string fileHandleName = dir + single_id + "/" + "chr" + chromosome + ext;
 	individualHomozFile = new ofstream(fileHandleName, ofstream::app);
 }
 
