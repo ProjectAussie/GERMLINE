@@ -343,7 +343,7 @@ void Match::print( ostream& fout )
 			
 			// homoz
 			if ( key1 == key2 && node[0]->is_new ) {
-				//cout << "Writing out homoz" << endl;
+				cout << "Writing out homoz" << endl;
 				oline.push_back(node[0]->single_id);
 				oline.push_back(node[0]->haplotype);
 				oline.push_back(node[1]->single_id);
@@ -357,7 +357,7 @@ void Match::print( ostream& fout )
 			}
 			// key1 is new, key2 is old
 			else if ( key1 > key2 && node[0]->is_new ) {
-				//cout << "Writing match tracts for new key1 " << key1 << endl;
+				cout << "Writing match tracts for new key1 " << key1 << endl;
 				oline.push_back(node[0]->single_id);
 				oline.push_back(node[0]->haplotype);
 				oline.push_back(node[1]->single_id);
@@ -371,7 +371,7 @@ void Match::print( ostream& fout )
 			}
 			// key2 is new, key1 is old
 			else if ( key2 > key1 && node[1]->is_new ) {
-				//cout << "Writing match tracts for new key2 " << key2 << endl;
+				cout << "Writing match tracts for new key2 " << key2 << endl;
 				oline.push_back(node[1]->single_id);
 				oline.push_back(node[1]->haplotype);
 				oline.push_back(node[0]->single_id);
@@ -385,7 +385,7 @@ void Match::print( ostream& fout )
 			}
 			// newdog : newdog comparison, write out same record twice
 			else if ( node[0]->is_new  &&  node[1]->is_new  && key1 != key2 ) {
-				//cout << "Writing records for both keys";
+				cout << "Writing records for both keys";
 				oline.push_back(node[0]->single_id);
 				oline.push_back(node[0]->haplotype);
 				oline.push_back(node[1]->single_id);

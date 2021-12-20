@@ -9,7 +9,7 @@
  Itsik Pe'er's Computational Biology Lab at Columbia University
  Run 'germline -version' to view version number.
 ---------------------------------------------------------------- 
-/Users/mikezhong/dev/GERMLINE/germline -haploid -min_m -err_hom -err_het -bits -w_extend -samples_to_compare_to -new_samples
+/Users/mikezhong/dev/GERMLINE/germline -haploid -min_m -err_hom -err_het -bits -w_extend -samples_to_compare_to -new_samples -chromosome -individual_outputs
 ---------------------------------------------------------------- 
 Minimum match length:                             0.5 cM
 Allowed mismatching bits:                         0 0

@@ -95,13 +95,16 @@ int main(int argc, char* argv[])
 		}
 		else if (strncmp(argv[i], "-chromosome", strlen("-chromosome")) == 0 && i < argc-1) {
 			chromosome = argv[++i];
-			chromosome.insert(chromosome.begin(), 20 - chromosome.length(), '0');
+			chromosome.insert(chromosome.begin(), 2 - chromosome.length(), '0');
 			ALL_SAMPLES.chromosome = chromosome;
+			cout << "Generating outputs for chromosome: " << chromosome << endl;
 		}
-		else if (strncmp(argv[i], "-individual_outputs", strlen("-individual_outputs")) == 0 && i < argc-1) {
+		else if (strncmp(argv[i], "-individual_outputs", strlen("-individual_outputs")) == 0) {
 			ALL_SAMPLES.useEmbarkRFGermlineOutput = true;
+			cout << "Generating individual outputs" << endl;
 		}
 		else {
+			cout << argv[i] << endl;
 			bad_param = true;
 		}
 	}

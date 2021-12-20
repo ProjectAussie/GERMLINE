@@ -220,16 +220,26 @@ ostream& operator<<(ostream &fout, Individual& ind)
 void Individual::setIndividualMatchFile(string chromosome)
 {
 	string ext = ".tsv";
-	string dir = "dog_level_match_files/";
-	string fileHandleName = dir + single_id + "/" + "chr" + chromosome + ext;
+	string dir = "dog_level_match_files/" + single_id;
+	filesystem::path _dir(dir);
+	if ( !filesystem::exists(_dir) ) {
+		filesystem::create_directories(_dir);
+	}
+	string fileHandleName = dir + "/chr" + chromosome + ext;
+	// cout << fileHandleName << endl;
 	individualMatchFile = new ofstream(fileHandleName, ofstream::app);
 }
 
 void Individual::setIndividualHomozFile(string chromosome)
 {
 	string ext = ".tsv";
-	string dir = "dog_level_homoz_files/";
-	string fileHandleName = dir + single_id + "/" + "chr" + chromosome + ext;
+	string dir = "dog_level_homoz_files/" + single_id;
+	filesystem::path _dir(dir);
+	if ( !filesystem::exists(_dir) ) {
+		filesystem::create_directories(_dir);
+	}
+	string fileHandleName = dir + "/chr" + chromosome + ext;
+	// cout << fileHandleName << endl;
 	individualHomozFile = new ofstream(fileHandleName, ofstream::app);
 }
 
