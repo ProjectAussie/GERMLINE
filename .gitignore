@@ -1,3 +1,4 @@
+minimal_test/*.log
 .vscode
 test/output
 *.o
