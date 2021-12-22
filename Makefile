@@ -14,7 +14,7 @@ $(OBJS): $(SRCS)
 	$(CC) $(OPT) -c $*.cpp
 
 germline: $(OBJS)
-	$(CC) $(OPT) -o $(MAIN) $(OBJS)
+	$(CC) $(OPT) -o $(MAIN) $(OBJS) -lstdc++fs
 
 clean:
 	-rm -f *.o $(MAIN) $(BMATCH) test/generated.match test/generated.log test/generated.err test/generated.out
