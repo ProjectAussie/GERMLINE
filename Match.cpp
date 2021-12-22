@@ -411,7 +411,6 @@ void Match::print( ostream& fout )
 		// Generate regular germline outputs for matches against ref panel or other use cases
 		else { 
 			
-			cout << stoi(node[1]->single_id) << endl;
 			fout << node[0]->getID() << '\t';
 			fout << node[1]->getID() << '\t';
 			fout << ALL_SNPS.getSNP(snp_start).getChr() << '\t';
