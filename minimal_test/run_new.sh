@@ -8,7 +8,7 @@ if [ "$1" == "old-new" ]; then
         -samples_to_compare_to 0000_old_dog_proxy_keys_germline_output.plinky \
         -new_samples 0000_new_dog_proxy_keys_germline_output.plinky \
         -chromosome 1 \
-        -individual_outputs \
+        -individual_outputs test_individual \
         < germline_params_old_new
 fi
 
@@ -17,6 +17,6 @@ if [ "$1" == "new-new" ]; then
         -samples_to_compare_to 0000_new_dog_proxy_keys_germline_output.plinky \
         -new_samples 0000_new_dog_proxy_keys_germline_output.plinky \
         -chromosome 1 \
-        -individual_outputs \
+        -individual_outputs test_individual \
         < germline_params_new_new
 fi

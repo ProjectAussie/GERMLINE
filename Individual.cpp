@@ -220,7 +220,7 @@ ostream& operator<<(ostream &fout, Individual& ind)
 void Individual::setIndividualMatchFile(string chromosome)
 {
 	string ext = ".tsv";
-	string dir = "dog_level_match_files/" + single_id;
+	string dir = ALL_SAMPLES.individualOutputFolder + "/dog_level_match_files/" + single_id;
 	experimental::filesystem::path _dir(dir);
 	if ( !experimental::filesystem::exists(_dir) ) {
 		experimental::filesystem::create_directories(_dir);
@@ -233,7 +233,7 @@ void Individual::setIndividualMatchFile(string chromosome)
 void Individual::setIndividualHomozFile(string chromosome)
 {
 	string ext = ".tsv";
-	string dir = "dog_level_homoz_files/" + single_id;
+	string dir = ALL_SAMPLES.individualOutputFolder + "/dog_level_homoz_files/" + single_id;
 	experimental::filesystem::path _dir(dir);
 	if ( !experimental::filesystem::exists(_dir) ) {
 		experimental::filesystem::create_directories(_dir);

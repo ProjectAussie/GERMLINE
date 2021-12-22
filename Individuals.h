@@ -45,6 +45,7 @@ public:
 
 	bool useEmbarkRFGermlineOutput;
 	string chromosome; // used for individual file handle outputs
+	string individualOutputFolder; // top level folder for individual outputs
 
 private:
 
