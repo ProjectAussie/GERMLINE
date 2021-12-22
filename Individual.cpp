@@ -78,6 +78,7 @@ void Individual::clearMatch( size_t id )
 void Individual::deleteMatch( size_t id )
 {
 	// try to print it
+	// cout << "Writing results for: " << single_id << endl;
 	all_matches[ id ]->print( MATCH_FILE );
 	delete all_matches[ id ];
 
@@ -214,6 +215,42 @@ ostream& operator<<(ostream &fout, Individual& ind)
 	fout << ind.getChromosome(0) << endl;
 	fout << ind.getChromosome(1) << endl;
 	return fout;
+}
+
+void Individual::setIndividualMatchFile(string chromosome)
+{
+	string ext = ".tsv";
+	string dir = ALL_SAMPLES.individualOutputFolder + "/dog_level_match_files/" + single_id;
+	experimental::filesystem::path _dir(dir);
+	if ( !experimental::filesystem::exists(_dir) ) {
+		experimental::filesystem::create_directories(_dir);
+	}
+	string fileHandleName = dir + "/chr" + chromosome + ext;
+	// cout << fileHandleName << endl;
+	individualMatchFile = new ofstream(fileHandleName, ofstream::app);
+}
+
+void Individual::setIndividualHomozFile(string chromosome)
+{
+	string ext = ".tsv";
+	string dir = ALL_SAMPLES.individualOutputFolder + "/dog_level_homoz_files/" + single_id;
+	experimental::filesystem::path _dir(dir);
+	if ( !experimental::filesystem::exists(_dir) ) {
+		experimental::filesystem::create_directories(_dir);
+	}
+	string fileHandleName = dir + "/chr" + chromosome + ext;
+	// cout << fileHandleName << endl;
+	individualHomozFile = new ofstream(fileHandleName, ofstream::app);
+}
+
+ofstream* Individual::getIndividualMatchFile()
+{
+	return individualMatchFile;
+}
+
+ofstream* Individual::getIndividualHomozFile()
+{
+	return individualHomozFile;
 }
 
 

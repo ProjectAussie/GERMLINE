@@ -32,6 +32,7 @@ public:
 	void begin();
 	size_t size() { return pedigree.size(); }
 	void initialize();
+	void initializeOutputFileHandles(string chromosome);
 	void print( ostream& );
 	
 	void freeMatches();
@@ -41,6 +42,10 @@ public:
 	bool isOld(string);
 	bool isNew(string);
 	bool hasRestrictions();
+
+	bool useEmbarkRFGermlineOutput;
+	string chromosome; // used for individual file handle outputs
+	string individualOutputFolder; // top level folder for individual outputs
 
 private:
 

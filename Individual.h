@@ -12,6 +12,7 @@
 #include <map>
 #include <set>
 #include <iostream>
+#include <experimental/filesystem>
 
 using namespace std;
 
@@ -96,6 +97,15 @@ public:
 	// clearMarkers(): clears all MarkerSets from this individual
 	void clearMarkers();
 
+	void setIndividualMatchFile(string chromosome);
+	void setIndividualHomozFile(string chromosome);
+	ofstream* getIndividualMatchFile();
+	ofstream* getIndividualHomozFile();
+
+	bool is_new;
+	string single_id;
+	string haplotype;
+
 private:
 
 	// ID of the individual
@@ -108,6 +118,8 @@ private:
 	streamoff offset;
 	
 	Match ** all_matches;
+	ofstream* individualMatchFile;
+	ofstream* individualHomozFile;
 };
 
 

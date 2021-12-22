@@ -38,6 +38,9 @@ void PEDIndividualsExtractor::loadInput()
 	}
 	
 	individualsP->initialize();
+	if ( ALL_SAMPLES.useEmbarkRFGermlineOutput ) {
+		individualsP->initializeOutputFileHandles(ALL_SAMPLES.chromosome);
+	}
 	stream.clear();
 }
 
@@ -85,6 +88,21 @@ void PEDIndividualsExtractor::getIndividuals()
 		new_ind[1]->setID( famID + " " + ID + ".1" );
 		new_ind[0]->setBaseID( baseID );
 		new_ind[1]->setBaseID( baseID );
+		new_ind[0]->haplotype = "0";
+		new_ind[1]->haplotype = "1";
+		new_ind[0]->single_id = ID;
+		new_ind[1]->single_id = ID;
+
+		if ( ALL_SAMPLES.isNew(new_ind[0]->getBaseID()) ) {
+			new_ind[0]->is_new = true;
+			new_ind[1]->is_new = true;
+			// cout << "Loaded new sample: " << new_ind[0]->single_id << endl;
+		}
+		else {
+			new_ind[0]->is_new = false;
+			new_ind[1]->is_new = false;
+			// cout << "Loaded old sample: " << new_ind[0]->single_id << endl;
+		}
 		
 		individualsP->addIndividual( new_ind[0] );
 		individualsP->addIndividual( new_ind[1] );

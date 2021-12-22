@@ -7,6 +7,7 @@
 #include "Individual.h"
 #include "math.h"
 #include <iomanip>
+#include <stdexcept>
 
 class Individual;
 
@@ -44,6 +45,9 @@ private:
 	int diff( unsigned int ms );
 	bool isHom( int n , unsigned int ms );
 };
+
+
+void join(const vector<string>& v, char c, string& s);
 
 #endif
 

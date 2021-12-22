@@ -20,13 +20,16 @@ int MAX_ERR_HET = 1;
 int main(int argc, char* argv[])
 {
 	// parse arguments
-	string rs_range[2], map, samples_to_compare_to, new_samples;
+	string rs_range[2], map, samples_to_compare_to, new_samples, chromosome;
 	samples_to_compare_to = "";
 	new_samples = "";
 	map = "";
 	rs_range[0] = "";
 	rs_range[1] = "";
 	string params = argv[0];
+	ALL_SAMPLES.useEmbarkRFGermlineOutput = false;
+	ALL_SAMPLES.chromosome = "";
+	ALL_SAMPLES.individualOutputFolder = "";
 
 	bool bad_param = false;
 	for(int i=1; i<argc; i++) {
@@ -91,7 +94,19 @@ int main(int argc, char* argv[])
 		else if (strncmp(argv[i], "-new_samples", strlen("-new_samples")) == 0 && i < argc-1) {
 			new_samples = argv[++i];
 		}
+		else if (strncmp(argv[i], "-chromosome", strlen("-chromosome")) == 0 && i < argc-1) {
+			chromosome = argv[++i];
+			chromosome.insert(chromosome.begin(), 2 - chromosome.length(), '0');
+			ALL_SAMPLES.chromosome = chromosome;
+			cout << "Generating outputs for chromosome: " << chromosome << endl;
+		}
+		else if (strncmp(argv[i], "-individual_outputs", strlen("-individual_outputs")) == 0) {
+			ALL_SAMPLES.individualOutputFolder = argv[++i];
+			ALL_SAMPLES.useEmbarkRFGermlineOutput = true;
+			cout << "Generating individual outputs" << endl;
+		}
 		else {
+			cout << argv[i] << endl;
 			bad_param = true;
 		}
 	}
@@ -126,7 +141,9 @@ int main(int argc, char* argv[])
 		<< '\t' << "-h_extend" << '\t' << "Extend from seeds if *haplotypes* match" << endl
 		<< '\t' << "-w_extend" << '\t' << "Extend, one marker at a time, beyong the boundaries of a found match" << endl
 		<< '\t' << "-samples_to_compare_to" << '\t' << "List of individuals to cross compare." << endl
-		<< '\t' << "-new_samples" << '\t' << "List of new individuals." << endl;
+		<< '\t' << "-new_samples" << '\t' << "List of new individuals." << endl
+		<< '\t' << "-chromosome" << '\t' << "Chromosome number for individual match/homoz file outputs." << endl
+		<< '\t' << "-individual_outputs" << '\t' << "Top level directory to generate individual match/homoz file outputs to" << endl;
 		return 1;
 	}
 
