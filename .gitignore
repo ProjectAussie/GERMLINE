@@ -4,4 +4,5 @@ test/output
 *.o
 parse_bmatch
 germline
+germline.md5
 .idea
