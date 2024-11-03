@@ -28,7 +28,7 @@ jobs:
           echo "version=${VERSION/version /v}" >> $GITHUB_OUTPUT
       - name: Release
         uses: softprops/action-gh-release@v2
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.make_release }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.make_release == true }}
         with:
           files: |
             bin/germline
