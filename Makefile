@@ -23,7 +23,7 @@ setup:
 
 clean:
 	-rm -f *.o bin/$(MAIN) $(BMATCH) test/generated.match test/generated.log test/generated.err test/generated.out
-test: test_plink
+test: test_plink test_extend
 
 test_plink:
 	-mkdir -p test/output
@@ -32,3 +32,6 @@ test_plink:
 	-@./bin/$(MAIN) -silent -bits 50 -min_m 1 -err_hom 2 -err_het 0 < test/test.run > test/output/generated.out 2> test/output/generated.err | echo -e "---\nRunning Test Case\n---"
 	diff -q -s test/expected.match test/output/generated.match
 	diff -q -s test/restricted.match test/output/restricted.match
+
+test_extend:
+	./test/run_tests.sh
