@@ -125,6 +125,7 @@ int main(int argc, char* argv[])
 	{
 		cerr << "usage: " << argv[0] << "<flags (optional)>" << endl
 		<< "flags:" << endl
+		<< '\t' << "-version" << '\t' << "Print version information." << endl
 		<< '\t' << "-silent" << '\t' << "Suppress all output except for warnings and prompts." << endl
 		<< '\t' << "-bin_out" << '\t' << "Output in binary format to save space." << endl
 		<< '\t' << "-min_m" << '\t' << "Minimum length for match to be used for imputation (in cM or MB)." << endl
