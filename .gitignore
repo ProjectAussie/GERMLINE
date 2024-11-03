@@ -5,5 +5,5 @@ test/output
 parse_bmatch
 bin
 germline
-germline.md5
+*.md5
 .idea
