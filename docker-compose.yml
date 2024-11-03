@@ -7,3 +7,5 @@ services:
     volumes:
       - $PWD/bin:/build/bin
     entrypoint: make
+    environment:
+      TERM: xterm
