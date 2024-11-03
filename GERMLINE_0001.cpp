@@ -1,5 +1,6 @@
 #include "GERMLINE.h"
 #include <string.h>
+
 const std::string VERSION = "1.6.0-embark";
 double MIN_MATCH_LEN = 3;
 int MARKER_SET_SIZE = 128;
