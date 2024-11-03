@@ -70,6 +70,13 @@ Embark (Adam G.) set out to fix Germline's -haploid and -homoz-only -w_extend is
 * Sync the updated version to S3, and update the ancestry assignment EC2 provisioning script to use the new version
 * Update the AMI for our EC2s using the updated provisioning script, so new EC2s come with the latest Germline version
 
+### Building GERMLINE
+
+To build GERMLINE, run `make` in the germline directory.
+This will create the `bin/germline` and `bin/parse_bmatch` executables.
+
+GERMLINE can also be build using Docker / docker compose. To do this, run `docker compose up` from the repository root.
+
 ### Change log
 
 #### Version 1.5.2

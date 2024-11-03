@@ -1,0 +1,9 @@
+services:
+  builder:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - $PWD/bin:/build/bin
+    entrypoint: make
