@@ -62,13 +62,12 @@ Embark (Adam G.) set out to fix Germline's -haploid and -homoz-only -w_extend is
 
 ### Steps to update and release a new version
 
-* Change the source code on a branch and test test test (`bash run_tests.sh in the /test directory`)
+* Change the source code on a branch and test test test (`cd test && bash run_tests.sh`)
 * Sync the code to an EC2 and run the tests there to confirm they work on Embark's ubuntu EC2s
 * Document the updated tests
 * Increment the VERSION constant in Germline_0001.cpp following semantic versioning
 * Update the change log
-* Sync the updated version to S3, and update the ancestry assignment EC2 provisioning script to use the new version
-* Update the AMI for our EC2s using the updated provisioning script, so new EC2s come with the latest Germline version
+* Run the `Build GERMLINE` GitHub Action with `make_release: true` to build and create a release.
 
 ### Building GERMLINE
 
@@ -79,7 +78,13 @@ GERMLINE can also be build using Docker / docker compose. To do this, run `docke
 
 ### Change log
 
-#### Version 1.5.2
+#### v1.6.0-embark
+
+* Support for using only subsets of samples using `-old_samples sample_list` and `-new_samples sample_list`: Samples for the old list will be compared to the new list
+* Only loads the used samples in-memory. In many cases will use orders of magnitude less memory allowing for parallel execution on smaller-memory machines
+* Comparison time reduced to whatever is needed from both lists. In many cases a order of magnitude faster
+
+#### v1.5.2
 
 * replicates stream-reading fix that David Riccardi made in 2016 (but didn't make into version control)
 * `germline -haploid -w_extend -bits 41` (or any bits value > 1) now produces correct match tracts
@@ -87,8 +92,3 @@ GERMLINE can also be build using Docker / docker compose. To do this, run `docke
 * `germline -version` now reports the version number
 * added tests
 
-#### Version 1.6.0-embark
-
-* Support for using only subsets of samples using `-old_samples sample_list` and `-new_samples sample_list`: Samples for the old list will be compared to the new list
-* Only loads the used samples in-memory. In many cases will use orders of magnitude less memory allowing for parallel execution on smaller-memory machines
-* Comparison time reduced to whatever is needed from both lists. In many cases a order of magnitude faster
