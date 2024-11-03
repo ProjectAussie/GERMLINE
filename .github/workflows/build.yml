@@ -1,5 +1,6 @@
 name: Build GERMLINE
 on:
+  pull_request:
   workflow_dispatch:
 
 jobs:
