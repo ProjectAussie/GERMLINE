@@ -25,7 +25,7 @@ jobs:
         id: germline-version
         run: |
           VERSION="$(bin/germline -version)"
-          echo "version=${VERSION/version /}" >> $GITHUB_OUTPUTS
+          echo "version=${VERSION/version /}" >> $GITHUB_OUTPUT
       - name: Release
         uses: softprops/action-gh-release@v2
         if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.make_release }}
