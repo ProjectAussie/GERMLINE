@@ -1,6 +1,5 @@
 name: Build GERMLINE
 on:
-  push:
   workflow_dispatch:
 
 jobs:
@@ -10,3 +9,10 @@ jobs:
       - uses: actions/checkout@v4
       - run: make germline
       - run: make test
+      - uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            germline
+            germline.md5
+          make_latest: true
