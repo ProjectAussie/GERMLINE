@@ -1,5 +1,5 @@
 name: Build GERMLINE
-run-name: Build${{ inputs.make_release && ' and Release'}} GERMLINE (${{ github.event_name == 'workflow_dispatch' && 'manual' || github.event_name }})
+run-name: Build${{ inputs.make_release && ' and Release' || '' }} GERMLINE (${{ github.event_name == 'workflow_dispatch' && 'manual' || github.event_name }})
 on:
   pull_request:
   workflow_dispatch:
