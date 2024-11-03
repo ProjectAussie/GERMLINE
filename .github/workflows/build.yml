@@ -15,13 +15,6 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     steps:
-      - name: Debug
-        shell: bash
-        run: |
-          set -x
-          echo ${{ github.event.inputs.make_release }}
-          echo ${{ github.event.inputs.make_release == 'true' }}
-          echo ${{ github.event.inputs.make_release == true }}
       - name: Checkout
         uses: actions/checkout@v4
       - name: Build
