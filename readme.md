@@ -65,7 +65,7 @@ Embark (Adam G.) set out to fix Germline's -haploid and -homoz-only -w_extend is
 * Change the source code on a branch and test test test (`bash run_tests.sh in the /test directory`)
 * Sync the code to an EC2 and run the tests there to confirm they work on Embark's ubuntu EC2s
 * Document the updated tests
-* Increment the version number in Germline_0001.cpp following semantic versioning
+* Increment the VERSION constant in Germline_0001.cpp following semantic versioning
 * Update the change log
 * Sync the updated version to S3, and update the ancestry assignment EC2 provisioning script to use the new version
 * Update the AMI for our EC2s using the updated provisioning script, so new EC2s come with the latest Germline version
