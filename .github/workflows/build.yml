@@ -9,7 +9,6 @@ on:
         required: true
         type: boolean
         default: false
-  push:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.make_release }}
   cancel-in-progress: true
