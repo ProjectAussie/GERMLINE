@@ -32,6 +32,6 @@ jobs:
         with:
           files: |
             bin/germline
-            bin/germline.md5
+            germline.md5
           make_latest: true
           tag_name: ${{ steps.germline-version.outputs.version }}
