@@ -74,7 +74,7 @@ Embark (Adam G.) set out to fix Germline's -haploid and -homoz-only -w_extend is
 To build GERMLINE, run `make` in the germline directory.
 This will create the `bin/germline` and `bin/parse_bmatch` executables.
 
-GERMLINE can also be build using Docker / docker compose. To do this, run `docker compose up` from the repository root.
+GERMLINE can also be built and tested using Docker / docker compose. To do this, run `docker compose up` from the repository root.
 
 ### Change log
 
