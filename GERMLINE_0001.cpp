@@ -1,6 +1,7 @@
 #include "GERMLINE.h"
 #include <string.h>
 
+const std::string VERSION = "1.6.0-embark";
 double MIN_MATCH_LEN = 3;
 int MARKER_SET_SIZE = 128;
 bool PRINT_MATCH_HAPS = false;
@@ -85,7 +86,7 @@ int main(int argc, char* argv[])
 			WIN_EXT = true;
 		}
 		else if( strncmp(argv[i], "-version", strlen("-version")) == 0 ) {
-			cout << "version 1.6.0-embark" << endl;
+			cout << "version" << " " << VERSION << endl;
 			return 0;
 		}
 		else if (strncmp(argv[i], "-samples_to_compare_to", strlen("-samples_to_compare_to")) == 0 && i < argc-1) {
@@ -125,6 +126,7 @@ int main(int argc, char* argv[])
 	{
 		cerr << "usage: " << argv[0] << "<flags (optional)>" << endl
 		<< "flags:" << endl
+		<< '\t' << "-version" << '\t' << "Print version information." << endl
 		<< '\t' << "-silent" << '\t' << "Suppress all output except for warnings and prompts." << endl
 		<< '\t' << "-bin_out" << '\t' << "Output in binary format to save space." << endl
 		<< '\t' << "-min_m" << '\t' << "Minimum length for match to be used for imputation (in cM or MB)." << endl

@@ -1,0 +1,44 @@
+name: Build GERMLINE
+run-name: Build${{ inputs.make_release && ' and Release' || '' }} GERMLINE (${{ github.event_name == 'workflow_dispatch' && 'manual' || github.event_name }})
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      make_release:
+        description: "Do you want to make a release?"
+        required: true
+        type: boolean
+        default: false
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.make_release }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+    env:
+      TERM: xterm
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build
+        run: make germline
+      - name: Test
+        run: make test
+      - name: Version
+        id: germline-version
+        run: |
+          VERSION="$(bin/germline -version)"
+          echo "version=${VERSION/version /v}" >> $GITHUB_OUTPUT
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: inputs.make_release
+        with:
+          files: |
+            bin/germline
+            germline.md5
+          make_latest: true
+          tag_name: ${{ steps.germline-version.outputs.version }}
+          target_commitish: ${{ github.sha }}

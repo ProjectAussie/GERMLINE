@@ -3,4 +3,7 @@ minimal_test/*.log
 test/output
 *.o
 parse_bmatch
+bin
 germline
+*.md5
+.idea
