@@ -1,6 +1,6 @@
 ARG platform=linux/amd64
 FROM --platform=$platform ubuntu:24.04
-LABEL authors="enbarkvet"
+LABEL authors="embarkvet"
 
 WORKDIR /build
 
