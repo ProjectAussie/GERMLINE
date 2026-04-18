@@ -13,36 +13,48 @@ Individual::Individual()
 		chromosome = new Chromosome[2];
 	}
 	numeric_id = 0;
+	is_new = false;
+	is_old = false;
+	individualMatchFile = nullptr;
+	individualHomozFile = nullptr;
 }
 
 Individual::~Individual()
 {
 	delete[] chromosome;
-	delete[] all_matches;
+	for ( auto& [id, m] : all_matches ) delete m;
+	delete individualMatchFile;
+	delete individualHomozFile;
 }
 
 void Individual::freeMatches()
 {
-	for ( size_t iter = 0 ; iter < num_samples ; iter++ )
-		if ( all_matches[ iter ] != NULL ) deleteMatch( iter );
+	// Collect IDs first to avoid modifying map during iteration
+	vector<unsigned int> ids;
+	ids.reserve(all_matches.size());
+	for ( auto& [id, m] : all_matches ) ids.push_back(id);
+	for ( auto id : ids ) deleteMatch( id );
 }
 
 Match * Individual::getMatch( size_t id )
 {
-	return all_matches[ id ];
+	auto it = all_matches.find( (unsigned int)id );
+	if ( it != all_matches.end() ) return it->second;
+	return nullptr;
 }
 
 void Individual::assertHomozygous()
 {
-	size_t iter = this->getNumericID();
+	unsigned int iter = this->getNumericID();
 	Match * m;
-	if ( all_matches[ iter ] != NULL )
+	auto it = all_matches.find( iter );
+	if ( it != all_matches.end() )
 	{
 		// increment this match
-		all_matches[ iter ]->end_ms = position_ms;
+		it->second->end_ms = position_ms;
 
 	} else
-	{	
+	{
 		// this is a new match
 		m = new Match();
 		if (DEBUG) cout << "new Match() in Individual.cpp::assertHomozygous, assigning start_ms and end_ms to " << position_ms << endl;
@@ -57,44 +69,39 @@ void Individual::assertHomozygous()
 void Individual::assertShares()
 {
 	Match * m;
-	set<Individual*>::iterator cip;
 
 	// try to extend previous matches that did not match currently
-	for( size_t iter = 0 ; iter < num_samples ; iter++ )
+	vector<unsigned int> to_delete;
+	for ( auto& [id, m] : all_matches )
 	{
-		if ( all_matches[ iter ] == NULL ) continue;
-
-		m = all_matches[ iter ];
 		// Can we increment?
 		if ( m->approxEqual() ) m->end_ms = position_ms;
-		else deleteMatch( iter );
+		else to_delete.push_back(id);
 	}
+	for ( auto id : to_delete ) deleteMatch( id );
 }
 
 void Individual::clearMatch( size_t id )
 {
-	all_matches[ id ] = NULL;
+	all_matches.erase( (unsigned int)id );
 }
 void Individual::deleteMatch( size_t id )
 {
-	// try to print it
-	// cout << "Writing results for: " << single_id << endl;
-	all_matches[ id ]->print( MATCH_FILE );
-	delete all_matches[ id ];
-
-	// erase from the list
-	clearMatch( id );
+	auto it = all_matches.find( (unsigned int)id );
+	if ( it == all_matches.end() ) return;
+	it->second->print( MATCH_FILE );
+	delete it->second;
+	all_matches.erase( it );
 }
 
 void Individual::addMatch( size_t id , Match * m)
 {
-	all_matches[ id ] = m;
+	all_matches[ (unsigned int)id ] = m;
 }
 
 void Individual::reserveMemory()
 {
-	all_matches = new Match * [ num_samples ];
-	for ( size_t i = 0 ; i < num_samples ; i++ ) all_matches[ i ] = NULL;
+	// No-op: unordered_map allocates on demand
 }
 
 void Individual::print(ostream& out,long start,long end)
@@ -221,9 +228,9 @@ void Individual::setIndividualMatchFile(string chromosome)
 {
 	string ext = ".tsv";
 	string dir = ALL_SAMPLES.individualOutputFolder + "/dog_level_match_files/" + single_id;
-	experimental::filesystem::path _dir(dir);
-	if ( !experimental::filesystem::exists(_dir) ) {
-		experimental::filesystem::create_directories(_dir);
+	filesystem::path _dir(dir);
+	if ( !filesystem::exists(_dir) ) {
+		filesystem::create_directories(_dir);
 	}
 	string fileHandleName = dir + "/chr" + chromosome + ext;
 	// cout << fileHandleName << endl;
@@ -234,9 +241,9 @@ void Individual::setIndividualHomozFile(string chromosome)
 {
 	string ext = ".tsv";
 	string dir = ALL_SAMPLES.individualOutputFolder + "/dog_level_homoz_files/" + single_id;
-	experimental::filesystem::path _dir(dir);
-	if ( !experimental::filesystem::exists(_dir) ) {
-		experimental::filesystem::create_directories(_dir);
+	filesystem::path _dir(dir);
+	if ( !filesystem::exists(_dir) ) {
+		filesystem::create_directories(_dir);
 	}
 	string fileHandleName = dir + "/chr" + chromosome + ext;
 	// cout << fileHandleName << endl;

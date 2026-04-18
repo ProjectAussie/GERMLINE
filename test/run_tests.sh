@@ -8,3 +8,4 @@ mkdir -p output
 
 ./test_single_dog_single_homoz_tract_w_extend.sh
 ./test_two_dogs_single_homoz_tract_each_w_extend.sh
+./test_diploid_w_extend.sh

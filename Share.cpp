@@ -8,20 +8,18 @@ Share::Share( Individual * cip )
 
 void Share::assertMatches()
 {
-	list<Individual*>::iterator i , ii;
 	Match * m;
-	for ( i = matches.begin() ; i != matches.end() ; i++ )
+	for ( size_t i = 0 ; i < matches.size() ; i++ )
 	{
-		if (DEBUG) cout << "i in share::assertMatches outer loop: " << *i << endl;
-		ii = i;
-		for ( ++ii ; ii != matches.end() ; ii++ )
+		if (DEBUG) cout << "i in share::assertMatches outer loop: " << matches[i] << endl;
+		for ( size_t ii = i + 1 ; ii < matches.size() ; ii++ )
 		{
-			if ((!ALL_SAMPLES.hasRestrictions()) || (ALL_SAMPLES.isOld((*i)->getBaseID()) && ALL_SAMPLES.isNew((*ii)->getBaseID())) || (ALL_SAMPLES.isNew((*i)->getBaseID()) && ALL_SAMPLES.isOld((*ii)->getBaseID()))) {
-				if (DEBUG) cout << "ii in share::assertMatches inner loop: " << *ii << endl;
+			if ((!ALL_SAMPLES.hasRestrictions()) || (matches[i]->is_old && matches[ii]->is_new) || (matches[i]->is_new && matches[ii]->is_old)) {
+				if (DEBUG) cout << "ii in share::assertMatches inner loop: " << matches[ii] << endl;
 				// Check if this pair matched in previous word (symmetrically)
-				m = (*i)->getMatch( (*ii)->getNumericID() );
-				if (DEBUG) cout << "numericID in share::assertMatches inner loop: " << (*ii)->getNumericID() << endl;
-				if ( m == NULL ) m = (*ii)->getMatch( (*i)->getNumericID() );
+				m = matches[i]->getMatch( matches[ii]->getNumericID() );
+				if (DEBUG) cout << "numericID in share::assertMatches inner loop: " << matches[ii]->getNumericID() << endl;
+				if ( m == NULL ) m = matches[ii]->getMatch( matches[i]->getNumericID() );
 				if ( m != NULL )
 				{
 					// This match can be incremented
@@ -31,12 +29,12 @@ void Share::assertMatches()
 				else
 				{
 					// This match must be created
-					m = createMatch( *i , *ii );
+					m = createMatch( matches[i] , matches[ii] );
 					// Extend the match backwards
 					if (DEBUG) cout << "extendBack() called from Share.cpp" << endl;
 					m->extendBack();
 					// Mark asserted
-					(*i)->addMatch( (*ii)->getNumericID() , m );
+					matches[i]->addMatch( matches[ii]->getNumericID() , m );
 				}
 			}
 		}

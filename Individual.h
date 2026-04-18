@@ -8,11 +8,12 @@
 #include "Match.h"
 #include "Individuals.h"
 #include <string>
-#include <list>
 #include <map>
+#include <unordered_map>
 #include <set>
+#include <vector>
 #include <iostream>
-#include <experimental/filesystem>
+#include <filesystem>
 
 using namespace std;
 
@@ -27,7 +28,7 @@ public:
 
 private:
 	Match * createMatch(Individual * c1 , Individual * c2);
-	list< Individual * > matches;
+	vector< Individual * > matches;
 };
 
 
@@ -38,11 +39,8 @@ public:
 	/** Match Tracking **/
 	void reserveMemory();
 
-	void addShare(Share*);
 	void assertShares();
 	void assertHomozygous();
-
-	list<Share*>& getShareList();
 
 	void freeMatches();
 	Match * getMatch( size_t );
@@ -103,6 +101,7 @@ public:
 	ofstream* getIndividualHomozFile();
 
 	bool is_new;
+	bool is_old;
 	string single_id;
 	string haplotype;
 
@@ -117,7 +116,7 @@ private:
 	// sequence start in file
 	streamoff offset;
 	
-	Match ** all_matches;
+	unordered_map<unsigned int, Match*> all_matches;
 	ofstream* individualMatchFile;
 	ofstream* individualHomozFile;
 };

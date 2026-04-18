@@ -5,14 +5,31 @@
 
 #include "MarkerSet.h"
 #include "Individual.h"
-#include <map>
+#include <unordered_map>
 #include <vector>
+#include <functional>
 
 using namespace std;
 
+struct DynamicBitsetHash
+{
+	size_t operator()(const boost::dynamic_bitset<>& bs) const
+	{
+		size_t seed = bs.size();
+		vector<boost::dynamic_bitset<>::block_type> blocks(bs.num_blocks());
+		boost::to_block_range(bs, blocks.begin());
+		for (auto block : blocks)
+		{
+			// Mix using a standard hash combine pattern
+			seed ^= hash<boost::dynamic_bitset<>::block_type>()(block) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+		}
+		return seed;
+	}
+};
+
 class MatchFactory
 {
-	
+
 public:
 
 	// MatchFactory(): default constructor
@@ -34,8 +51,8 @@ public:
 private:
 
 	// stores data to check for matches
-	map < boost::dynamic_bitset<> , Share > segments;
-	map < boost::dynamic_bitset<> , Share >::iterator iter;
+	unordered_map < boost::dynamic_bitset<> , Share, DynamicBitsetHash > segments;
+	unordered_map < boost::dynamic_bitset<> , Share, DynamicBitsetHash >::iterator iter;
 };
 
 #endif

@@ -96,14 +96,14 @@ void PEDIndividualsExtractor::getIndividuals()
 		if ( ALL_SAMPLES.isNew(new_ind[0]->getBaseID()) ) {
 			new_ind[0]->is_new = true;
 			new_ind[1]->is_new = true;
-			// cout << "Loaded new sample: " << new_ind[0]->single_id << endl;
 		}
 		else {
 			new_ind[0]->is_new = false;
 			new_ind[1]->is_new = false;
-			// cout << "Loaded old sample: " << new_ind[0]->single_id << endl;
 		}
-		
+		new_ind[0]->is_old = ALL_SAMPLES.isOld(new_ind[0]->getBaseID());
+		new_ind[1]->is_old = ALL_SAMPLES.isOld(new_ind[1]->getBaseID());
+
 		individualsP->addIndividual( new_ind[0] );
 		individualsP->addIndividual( new_ind[1] );
 	} else
@@ -112,6 +112,8 @@ void PEDIndividualsExtractor::getIndividuals()
 		new_ind->setOffset(stream.tellg());
 		new_ind->setID(famID + " " + ID);
 		new_ind->setBaseID( baseID );
+		new_ind->is_new = ALL_SAMPLES.isNew(new_ind->getBaseID());
+		new_ind->is_old = ALL_SAMPLES.isOld(new_ind->getBaseID());
 		individualsP->addIndividual( new_ind );
 	}
 }

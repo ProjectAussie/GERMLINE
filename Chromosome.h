@@ -38,7 +38,7 @@ public:
 private:
 
 	// Storage for chromosome MarkerSet objects
-	vector<MarkerSet * > chromosome;
+	vector<MarkerSet> chromosome;
 };
 
 ostream &operator<<(ostream &fout, Chromosome&);
