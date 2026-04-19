@@ -1,7 +1,7 @@
 #include "GERMLINE.h"
 #include <string.h>
 
-const std::string VERSION = "1.6.0-embark";
+const std::string VERSION = "1.7.0-embark";
 double MIN_MATCH_LEN = 3;
 int MARKER_SET_SIZE = 128;
 bool PRINT_MATCH_HAPS = false;
