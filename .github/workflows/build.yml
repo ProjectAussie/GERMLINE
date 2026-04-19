@@ -23,13 +23,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Build
-        run: make germline
-      - name: Test
-        run: make test
       - name: Build with sanitizers
         run: make germline OPT="-std=c++17 -O1 -g -fsanitize=address,undefined -I include"
       - name: Test with sanitizers
+        run: make test
+      - name: Build
+        run: make germline
+      - name: Test
         run: make test
       - name: Version
         id: germline-version
