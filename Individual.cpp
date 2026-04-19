@@ -73,7 +73,7 @@ void Individual::assertShares()
 void Individual::deleteMatch( size_t id )
 {
 	auto it = all_matches.find( (unsigned int)id );
-	if ( it == all_matches.end() ) return;
+	if ( it == all_matches.end() ) { if (DEBUG) cerr << "deleteMatch: id " << id << " not found" << endl; return; }
 	it->second->print( MATCH_FILE );
 	delete it->second;
 	all_matches.erase( it );
@@ -81,7 +81,8 @@ void Individual::deleteMatch( size_t id )
 
 void Individual::addMatch( size_t id , Match * m)
 {
-	all_matches[ (unsigned int)id ] = m;
+	auto [ it, inserted ] = all_matches.emplace( (unsigned int)id, m );
+	if ( !inserted ) { delete it->second; it->second = m; }
 }
 
 void Individual::print(ostream& out,long start,long end)
@@ -208,7 +209,8 @@ void Individual::setIndividualMatchFile(string chromosome)
 {
 	string ext = ".tsv";
 	string dir = ALL_SAMPLES.individualOutputFolder + "/dog_level_match_files/" + single_id;
-	filesystem::create_directories(dir);
+	try { filesystem::create_directories(dir); }
+	catch (const filesystem::filesystem_error& e) { throw runtime_error("Cannot create output directory '" + dir + "': " + e.what()); }
 	string fileHandleName = dir + "/chr" + chromosome + ext;
 	individualMatchFile = new ofstream(fileHandleName, ofstream::app);
 }
@@ -217,7 +219,8 @@ void Individual::setIndividualHomozFile(string chromosome)
 {
 	string ext = ".tsv";
 	string dir = ALL_SAMPLES.individualOutputFolder + "/dog_level_homoz_files/" + single_id;
-	filesystem::create_directories(dir);
+	try { filesystem::create_directories(dir); }
+	catch (const filesystem::filesystem_error& e) { throw runtime_error("Cannot create output directory '" + dir + "': " + e.what()); }
 	string fileHandleName = dir + "/chr" + chromosome + ext;
 	individualHomozFile = new ofstream(fileHandleName, ofstream::app);
 }

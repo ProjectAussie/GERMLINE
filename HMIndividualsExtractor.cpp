@@ -99,14 +99,21 @@ void HMIndividualsExtractor::getIndividuals()
 		new_ind[1]->setOffset( offset );
 		new_ind[0]->setID("0 " + ID + ".0" );
 		new_ind[1]->setID("0 " + ID + ".1" );
-		
+		new_ind[0]->setBaseID( ID );
+		new_ind[1]->setBaseID( ID );
+		new_ind[0]->is_new = new_ind[1]->is_new = ALL_SAMPLES.isNew( ID );
+		new_ind[0]->is_old = new_ind[1]->is_old = ALL_SAMPLES.isOld( ID );
+
 		individualsP->addIndividual( new_ind[0] );
 		individualsP->addIndividual( new_ind[1] );
 	} else
 	{
 		Individual * new_ind = new Individual;
 		new_ind->setID(ID);
+		new_ind->setBaseID( ID );
 		new_ind->setOffset( offset );
+		new_ind->is_new = ALL_SAMPLES.isNew( ID );
+		new_ind->is_old = ALL_SAMPLES.isOld( ID );
 		individualsP->addIndividual(new_ind);
 	}
 }

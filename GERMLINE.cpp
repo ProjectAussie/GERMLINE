@@ -49,6 +49,7 @@ void GERMLINE::mine( string params )
 	
 	if ( BINARY_OUT ) MATCH_FILE.open( ( out + ".bmatch" ).c_str() , ios::binary );
 	else MATCH_FILE.open( ( out + ".match" ).c_str() );
+	if ( !MATCH_FILE ) throw runtime_error( "Cannot open match output file: " + out + ( BINARY_OUT ? ".bmatch" : ".match" ) );
 	
 	fout << params << endl;
 	fout << setw(65) << setfill('-') << ' ' << endl << setfill(' ');
