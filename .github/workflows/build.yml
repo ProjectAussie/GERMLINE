@@ -28,7 +28,7 @@ jobs:
       - name: Test with sanitizers
         run: make test
       - name: Build
-        run: make germline
+        run: make clean germline
       - name: Test
         run: make test
       - name: Version
