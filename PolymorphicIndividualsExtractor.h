@@ -25,6 +25,7 @@ public:
 	//  would be a delay before prompting for the input file
 	//  which depends on the derived class for validation.
 	PolymorphicIndividualsExtractor();
+	virtual ~PolymorphicIndividualsExtractor() = default;
 
 	// getInput(): virtual function to extract input
 	// Precondition: None.
