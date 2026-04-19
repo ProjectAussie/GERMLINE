@@ -1,7 +1,21 @@
 // Individual.cpp: An individual with genetic data
 
 #include "Individual.h"
+#include <algorithm>
+#include <fstream>
+#include <string>
+#include <vector>
 using namespace std;
+
+static void sortFileInPlace(const string& path)
+{
+	if (path.empty()) return;
+	vector<string> lines;
+	{ ifstream fin(path); string line; while (getline(fin, line)) lines.push_back(move(line)); }
+	sort(lines.begin(), lines.end());
+	ofstream fout(path);
+	for (auto& l : lines) fout << l << '\n';
+}
 
 Individual::Individual()
 {
@@ -23,7 +37,9 @@ Individual::~Individual()
 	delete[] chromosome;
 	for ( auto& [id, m] : all_matches ) delete m;
 	delete individualMatchFile;
+	sortFileInPlace(individualMatchFilePath);
 	delete individualHomozFile;
+	sortFileInPlace(individualHomozFilePath);
 }
 
 void Individual::freeMatches()
@@ -211,8 +227,8 @@ void Individual::setIndividualMatchFile(string chromosome)
 	string dir = ALL_SAMPLES.individualOutputFolder + "/dog_level_match_files/" + single_id;
 	try { filesystem::create_directories(dir); }
 	catch (const filesystem::filesystem_error& e) { throw runtime_error("Cannot create output directory '" + dir + "': " + e.what()); }
-	string fileHandleName = dir + "/chr" + chromosome + ext;
-	individualMatchFile = new ofstream(fileHandleName, ofstream::app);
+	individualMatchFilePath = dir + "/chr" + chromosome + ext;
+	individualMatchFile = new ofstream(individualMatchFilePath, ofstream::app);
 }
 
 void Individual::setIndividualHomozFile(string chromosome)
@@ -221,8 +237,8 @@ void Individual::setIndividualHomozFile(string chromosome)
 	string dir = ALL_SAMPLES.individualOutputFolder + "/dog_level_homoz_files/" + single_id;
 	try { filesystem::create_directories(dir); }
 	catch (const filesystem::filesystem_error& e) { throw runtime_error("Cannot create output directory '" + dir + "': " + e.what()); }
-	string fileHandleName = dir + "/chr" + chromosome + ext;
-	individualHomozFile = new ofstream(fileHandleName, ofstream::app);
+	individualHomozFilePath = dir + "/chr" + chromosome + ext;
+	individualHomozFile = new ofstream(individualHomozFilePath, ofstream::app);
 }
 
 ofstream* Individual::getIndividualMatchFile()
