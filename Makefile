@@ -1,5 +1,9 @@
 CC=	g++
 OPT=	-std=c++17 -O3 -I include
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+    LDLIBS = -lstdc++fs
+endif
 SRCS=	GERMLINE_0001.cpp GERMLINE.cpp Share.cpp Chromosome.cpp ChromosomePair.cpp HMIndividualsExtractor.cpp MarkerSet.cpp Individual.cpp Individuals.cpp InputManager.cpp MatchFactory.cpp MatchesBuilder.cpp NucleotideMap.cpp PEDIndividualsExtractor.cpp Match.cpp PolymorphicIndividualsExtractor.cpp SNP.cpp SNPPositionMap.cpp SNPs.cpp
 OBJS=	GERMLINE_0001.o GERMLINE.o Chromosome.o Share.o ChromosomePair.o HMIndividualsExtractor.o MarkerSet.o Individual.o Individuals.o InputManager.o MatchFactory.o MatchesBuilder.o NucleotideMap.o PEDIndividualsExtractor.o Match.o PolymorphicIndividualsExtractor.o SNP.o SNPPositionMap.o SNPs.o
 MAIN=	germline
@@ -15,7 +19,7 @@ $(OBJS): $(SRCS)
 	$(CC) $(OPT) -c $*.cpp
 
 germline: $(OBJS) setup
-	$(CC) $(OPT) -o bin/$(MAIN) $(OBJS) -lstdc++fs
+	$(CC) $(OPT) -o bin/$(MAIN) $(OBJS) $(LDLIBS)
 	md5sum bin/$(MAIN) > $(MAIN).md5
 
 setup:
