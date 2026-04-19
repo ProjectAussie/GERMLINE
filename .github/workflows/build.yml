@@ -30,7 +30,7 @@ jobs:
       - name: Build with sanitizers
         run: make germline OPT="-std=c++17 -O1 -g -fsanitize=address,undefined -I include"
       - name: Test with sanitizers
-        run: ASAN_OPTIONS=detect_leaks=1 make test
+        run: make test
       - name: Version
         id: germline-version
         run: |
