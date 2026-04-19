@@ -2,7 +2,11 @@
 
 #include "GERMLINE.h"
 #include "math.h"
+#include <algorithm>
+#include <fstream>
 #include <iostream>
+#include <string>
+#include <vector>
 
 using namespace std;
 
@@ -86,6 +90,16 @@ void GERMLINE::mine( string params )
 	fout << setw(50) << "Total runtime (sec): " << difftime( timer[1] , timer[0] ) << endl;
 	fout.close();
 	MATCH_FILE.close();
+
+	if ( !BINARY_OUT )
+	{
+		string match_path = out + ".match";
+		vector<string> lines;
+		{ ifstream fin(match_path); string line; while (getline(fin, line)) lines.push_back(move(line)); }
+		sort(lines.begin(), lines.end());
+		ofstream fout_sort(match_path);
+		for (auto& l : lines) fout_sort << l << '\n';
+	}
 
 	if ( BINARY_OUT )
 	{

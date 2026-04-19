@@ -30,12 +30,8 @@ test_plink:
 	-@rm -f test/output/*
 	-@./bin/$(MAIN) -silent -bits 50 -min_m 1 -err_hom 2 -samples_to_compare_to test/old_humans -new_samples test/new_humans -err_het 0 < test/restricted.run > test/output/restricted.out 2> test/output/restricted.err | echo -e "---\nRunning Test Case\n---"
 	-@./bin/$(MAIN) -silent -bits 50 -min_m 1 -err_hom 2 -err_het 0 < test/test.run > test/output/generated.out 2> test/output/generated.err | echo -e "---\nRunning Test Case\n---"
-	sort test/expected.match > test/output/expected_sorted.match
-	sort test/output/generated.match > test/output/generated_sorted.match
-	diff -q -s test/output/expected_sorted.match test/output/generated_sorted.match
-	sort test/restricted.match > test/output/restricted_expected_sorted.match
-	sort test/output/restricted.match > test/output/restricted_sorted.match
-	diff -q -s test/output/restricted_expected_sorted.match test/output/restricted_sorted.match
+	diff -q -s test/expected.match test/output/generated.match
+	diff -q -s test/restricted.match test/output/restricted.match
 
 test_extend:
 	./test/run_tests.sh
