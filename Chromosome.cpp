@@ -24,11 +24,10 @@ void Chromosome::clear()
 	chromosome.clear();
 }
 
-// addMarkerSet(): adds a MarkerSet
 void Chromosome::addMarkerSet(MarkerSet * marker_set)
 {
 	if (DEBUG) cout << "Chromosome.addMarkerSet called" << endl;
-	chromosome.push_back(*marker_set);
+	chromosome.push_back(std::move(*marker_set));
 	delete marker_set;
 }
 

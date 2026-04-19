@@ -37,8 +37,6 @@ class Individual
 public:
 
 	/** Match Tracking **/
-	void reserveMemory();
-
 	void assertShares();
 	void assertHomozygous();
 
@@ -46,7 +44,6 @@ public:
 	Match * getMatch( size_t );
 
 	void deleteMatch( size_t );
-	void clearMatch( size_t );
 	void addMatch( size_t , Match* );
 
 	/** Match Tracking **/

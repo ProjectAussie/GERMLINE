@@ -17,7 +17,6 @@ Individuals::~Individuals()
 
 void Individuals::initialize()
 {
-	for ( iter = 0 ; iter < pedigree.size() ; iter++ ) pedigree[ iter ]->reserveMemory();
 }
 
 void Individuals::initializeOutputFileHandles(string chromosome)

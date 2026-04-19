@@ -3,7 +3,6 @@
 #include "Individual.h"
 using namespace std;
 
-// Individual(): default constructor
 Individual::Individual()
 {
 	if ( HAPLOID ) {
@@ -29,11 +28,8 @@ Individual::~Individual()
 
 void Individual::freeMatches()
 {
-	// Collect IDs first to avoid modifying map during iteration
-	vector<unsigned int> ids;
-	ids.reserve(all_matches.size());
-	for ( auto& [id, m] : all_matches ) ids.push_back(id);
-	for ( auto id : ids ) deleteMatch( id );
+	for ( auto& [id, m] : all_matches ) { m->print( MATCH_FILE ); delete m; }
+	all_matches.clear();
 }
 
 Match * Individual::getMatch( size_t id )
@@ -50,12 +46,10 @@ void Individual::assertHomozygous()
 	auto it = all_matches.find( iter );
 	if ( it != all_matches.end() )
 	{
-		// increment this match
 		it->second->end_ms = position_ms;
 
 	} else
 	{
-		// this is a new match
 		m = new Match();
 		if (DEBUG) cout << "new Match() in Individual.cpp::assertHomozygous, assigning start_ms and end_ms to " << position_ms << endl;
 		m->end_ms = m->start_ms = position_ms;
@@ -68,23 +62,14 @@ void Individual::assertHomozygous()
 
 void Individual::assertShares()
 {
-	Match * m;
-
-	// try to extend previous matches that did not match currently
-	vector<unsigned int> to_delete;
-	for ( auto& [id, m] : all_matches )
+	auto it = all_matches.begin();
+	while ( it != all_matches.end() )
 	{
-		// Can we increment?
-		if ( m->approxEqual() ) m->end_ms = position_ms;
-		else to_delete.push_back(id);
+		if ( it->second->approxEqual() ) { it->second->end_ms = position_ms; ++it; }
+		else { it->second->print( MATCH_FILE ); delete it->second; it = all_matches.erase( it ); }
 	}
-	for ( auto id : to_delete ) deleteMatch( id );
 }
 
-void Individual::clearMatch( size_t id )
-{
-	all_matches.erase( (unsigned int)id );
-}
 void Individual::deleteMatch( size_t id )
 {
 	auto it = all_matches.find( (unsigned int)id );
@@ -97,11 +82,6 @@ void Individual::deleteMatch( size_t id )
 void Individual::addMatch( size_t id , Match * m)
 {
 	all_matches[ (unsigned int)id ] = m;
-}
-
-void Individual::reserveMemory()
-{
-	// No-op: unordered_map allocates on demand
 }
 
 void Individual::print(ostream& out,long start,long end)
@@ -228,12 +208,8 @@ void Individual::setIndividualMatchFile(string chromosome)
 {
 	string ext = ".tsv";
 	string dir = ALL_SAMPLES.individualOutputFolder + "/dog_level_match_files/" + single_id;
-	filesystem::path _dir(dir);
-	if ( !filesystem::exists(_dir) ) {
-		filesystem::create_directories(_dir);
-	}
+	filesystem::create_directories(dir);
 	string fileHandleName = dir + "/chr" + chromosome + ext;
-	// cout << fileHandleName << endl;
 	individualMatchFile = new ofstream(fileHandleName, ofstream::app);
 }
 
@@ -241,12 +217,8 @@ void Individual::setIndividualHomozFile(string chromosome)
 {
 	string ext = ".tsv";
 	string dir = ALL_SAMPLES.individualOutputFolder + "/dog_level_homoz_files/" + single_id;
-	filesystem::path _dir(dir);
-	if ( !filesystem::exists(_dir) ) {
-		filesystem::create_directories(_dir);
-	}
+	filesystem::create_directories(dir);
 	string fileHandleName = dir + "/chr" + chromosome + ext;
-	// cout << fileHandleName << endl;
 	individualHomozFile = new ofstream(fileHandleName, ofstream::app);
 }
 

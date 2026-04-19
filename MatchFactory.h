@@ -15,14 +15,12 @@ struct DynamicBitsetHash
 {
 	size_t operator()(const boost::dynamic_bitset<>& bs) const
 	{
+		using block_type = boost::dynamic_bitset<>::block_type;
 		size_t seed = bs.size();
-		vector<boost::dynamic_bitset<>::block_type> blocks(bs.num_blocks());
-		boost::to_block_range(bs, blocks.begin());
-		for (auto block : blocks)
-		{
-			// Mix using a standard hash combine pattern
-			seed ^= hash<boost::dynamic_bitset<>::block_type>()(block) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-		}
+		block_type blocks[8]; // stack buffer; covers up to 512 bits (MARKER_SET_SIZE <= 128 needs 2)
+		boost::to_block_range(bs, blocks);
+		for ( size_t i = 0; i < bs.num_blocks(); ++i )
+			seed ^= hash<block_type>()(blocks[i]) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
 		return seed;
 	}
 };
