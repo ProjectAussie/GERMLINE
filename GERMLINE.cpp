@@ -2,12 +2,7 @@
 
 #include "GERMLINE.h"
 #include "math.h"
-#include <algorithm>
-#include <cstdlib>
-#include <fstream>
 #include <iostream>
-#include <string>
-#include <vector>
 
 using namespace std;
 
@@ -93,16 +88,10 @@ void GERMLINE::mine( string params )
 	fout.close();
 	MATCH_FILE.close();
 
-	if ( !BINARY_OUT )
-	{
-		string match_path = out + ".match";
-		if ( match_path.find('\'') != string::npos )
-			throw runtime_error( "Cannot sort output file (path contains single quote): " + match_path );
-		string cmd = "LC_ALL=C sort -S 128M -o '" + match_path + "' '" + match_path + "'";
-		int rc = std::system( cmd.c_str() );
-		if ( rc != 0 )
-			throw runtime_error( "sort(1) failed on " + match_path + " (exit=" + to_string(rc) + ")" );
-	}
+	// Match records are written in the order they are finalized, which depends
+	// on hash-map iteration order and is not deterministic across runs or
+	// builds. Downstream consumers that need a canonical ordering should sort
+	// the output themselves.
 
 	if ( BINARY_OUT )
 	{

@@ -40,6 +40,8 @@ Upon completion, GERMLINE generates a .match file in the specified location. The
 * 1 if Individual 1 is homozygous in match; 0 otherwise
 * 1 if Individual 2 is homozygous in match; 0 otherwise
 
+**Output ordering is not stable.** Match records are written in the order they are finalized, which depends on hash-map iteration order and is not deterministic across runs or builds. If your downstream pipeline requires a canonical order, sort the `.match` / per-individual `.tsv` files yourself (`LC_ALL=C sort -o FILE FILE`).
+
 
 ## Embark fork of Germline
 

@@ -116,8 +116,6 @@ private:
 	unordered_map<unsigned int, Match*> all_matches;
 	ofstream* individualMatchFile;
 	ofstream* individualHomozFile;
-	string individualMatchFilePath;
-	string individualHomozFilePath;
 };
 
 

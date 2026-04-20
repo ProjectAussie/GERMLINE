@@ -1,19 +1,7 @@
 // Individual.cpp: An individual with genetic data
 
 #include "Individual.h"
-#include <cstdlib>
-#include <string>
 using namespace std;
-
-static void sortFileInPlace(const string& path)
-{
-	if (path.empty()) return;
-	if (path.find('\'') != string::npos)
-		throw runtime_error("Cannot sort output file (path contains single quote): " + path);
-	string cmd = "LC_ALL=C sort -S 128M -o '" + path + "' '" + path + "'";
-	if (std::system(cmd.c_str()) != 0)
-		throw runtime_error("sort(1) failed on " + path);
-}
 
 Individual::Individual()
 {
@@ -35,9 +23,7 @@ Individual::~Individual()
 	delete[] chromosome;
 	for ( auto& [id, m] : all_matches ) delete m;
 	delete individualMatchFile;
-	sortFileInPlace(individualMatchFilePath);
 	delete individualHomozFile;
-	sortFileInPlace(individualHomozFilePath);
 }
 
 void Individual::freeMatches()
@@ -225,8 +211,7 @@ void Individual::setIndividualMatchFile(string chromosome)
 	string dir = ALL_SAMPLES.individualOutputFolder + "/dog_level_match_files/" + single_id;
 	try { filesystem::create_directories(dir); }
 	catch (const filesystem::filesystem_error& e) { throw runtime_error("Cannot create output directory '" + dir + "': " + e.what()); }
-	individualMatchFilePath = dir + "/chr" + chromosome + ext;
-	individualMatchFile = new ofstream(individualMatchFilePath, ofstream::app);
+	individualMatchFile = new ofstream(dir + "/chr" + chromosome + ext, ofstream::app);
 }
 
 void Individual::setIndividualHomozFile(string chromosome)
@@ -235,8 +220,7 @@ void Individual::setIndividualHomozFile(string chromosome)
 	string dir = ALL_SAMPLES.individualOutputFolder + "/dog_level_homoz_files/" + single_id;
 	try { filesystem::create_directories(dir); }
 	catch (const filesystem::filesystem_error& e) { throw runtime_error("Cannot create output directory '" + dir + "': " + e.what()); }
-	individualHomozFilePath = dir + "/chr" + chromosome + ext;
-	individualHomozFile = new ofstream(individualHomozFilePath, ofstream::app);
+	individualHomozFile = new ofstream(dir + "/chr" + chromosome + ext, ofstream::app);
 }
 
 ofstream* Individual::getIndividualMatchFile()

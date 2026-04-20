@@ -19,7 +19,7 @@ params_file="${output_prefix}_params.txt"
 germline -silent -bits 50 -min_m 1 -err_hom 2 -err_het 0 -w_extend \
   < "${params_file}" &> "${output_prefix}_log.txt"
 
-if diff -q expected_w_extend.match "${output_prefix}.match"; then
+if diff -q <(LC_ALL=C sort expected_w_extend.match) <(LC_ALL=C sort "${output_prefix}.match"); then
   print_green "Diploid + w_extend (unrestricted): PASS"
 else
   print_red "Diploid + w_extend (unrestricted): FAIL"
@@ -40,7 +40,7 @@ germline -silent -bits 50 -min_m 1 -err_hom 2 -err_het 0 -w_extend \
   -samples_to_compare_to old_humans -new_samples new_humans \
   < "${params_file}" &> "${output_prefix}_log.txt"
 
-if diff -q restricted_w_extend.match "${output_prefix}.match"; then
+if diff -q <(LC_ALL=C sort restricted_w_extend.match) <(LC_ALL=C sort "${output_prefix}.match"); then
   print_green "Diploid + w_extend (restricted old vs new): PASS"
 else
   print_red "Diploid + w_extend (restricted old vs new): FAIL"
