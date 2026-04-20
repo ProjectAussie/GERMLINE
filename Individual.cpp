@@ -10,7 +10,7 @@ static void sortFileInPlace(const string& path)
 	if (path.empty()) return;
 	if (path.find('\'') != string::npos)
 		throw runtime_error("Cannot sort output file (path contains single quote): " + path);
-	string cmd = "LC_ALL=C sort -o '" + path + "' '" + path + "'";
+	string cmd = "LC_ALL=C sort -S 128M -o '" + path + "' '" + path + "'";
 	if (std::system(cmd.c_str()) != 0)
 		throw runtime_error("sort(1) failed on " + path);
 }

@@ -98,7 +98,7 @@ void GERMLINE::mine( string params )
 		string match_path = out + ".match";
 		if ( match_path.find('\'') != string::npos )
 			throw runtime_error( "Cannot sort output file (path contains single quote): " + match_path );
-		string cmd = "LC_ALL=C sort -o '" + match_path + "' '" + match_path + "'";
+		string cmd = "LC_ALL=C sort -S 128M -o '" + match_path + "' '" + match_path + "'";
 		int rc = std::system( cmd.c_str() );
 		if ( rc != 0 )
 			throw runtime_error( "sort(1) failed on " + match_path + " (exit=" + to_string(rc) + ")" );
