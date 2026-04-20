@@ -7,3 +7,16 @@ bin
 germline
 *.md5
 .idea
+
+# Proprietary genotype data / benchmark outputs — never commit
+.DS_Store
+all_dogs_chr*
+new_dogs.*
+old_dogs.*
+run_germline.sh
+output/
+dog_level_match_files/
+dog_level_homoz_files/
+bench/small*
+bench/*.ped
+bench/*.plinky

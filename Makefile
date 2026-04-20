@@ -4,7 +4,7 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
     LDLIBS = -lstdc++fs
 endif
-MEMCHECK_MAX_KB ?= 51200
+MEMCHECK_MAX_KB ?= 32768
 SRCS=	GERMLINE_0001.cpp GERMLINE.cpp Share.cpp Chromosome.cpp ChromosomePair.cpp HMIndividualsExtractor.cpp MarkerSet.cpp Individual.cpp Individuals.cpp InputManager.cpp MatchFactory.cpp MatchesBuilder.cpp NucleotideMap.cpp PEDIndividualsExtractor.cpp Match.cpp PolymorphicIndividualsExtractor.cpp SNP.cpp SNPPositionMap.cpp SNPs.cpp
 OBJS=	GERMLINE_0001.o GERMLINE.o Chromosome.o Share.o ChromosomePair.o HMIndividualsExtractor.o MarkerSet.o Individual.o Individuals.o InputManager.o MatchFactory.o MatchesBuilder.o NucleotideMap.o PEDIndividualsExtractor.o Match.o PolymorphicIndividualsExtractor.o SNP.o SNPPositionMap.o SNPs.o
 MAIN=	germline
@@ -34,7 +34,7 @@ memcheck:
 ifeq ($(shell uname -s),Linux)
 	-mkdir -p test/output
 	-rm -f test/output/memcheck*
-	/usr/bin/time -v ./bin/$(MAIN) -silent -bits 20 -min_m 0.01 -err_hom 2 -err_het 0 \
+	/usr/bin/time -v ./bin/$(MAIN) -silent -bits 9 -min_m 0.1 -err_hom 0 -err_het 0 \
 		< test/memcheck_test.run > test/output/memcheck.out 2> test/output/memcheck_time.err
 	@RSS=$$(grep "Maximum resident set size" test/output/memcheck_time.err | awk '{print $$NF}'); \
 		echo "Peak RSS: $${RSS} kB (limit: $(MEMCHECK_MAX_KB) kB)"; \

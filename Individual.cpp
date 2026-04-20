@@ -1,20 +1,18 @@
 // Individual.cpp: An individual with genetic data
 
 #include "Individual.h"
-#include <algorithm>
-#include <fstream>
+#include <cstdlib>
 #include <string>
-#include <vector>
 using namespace std;
 
 static void sortFileInPlace(const string& path)
 {
 	if (path.empty()) return;
-	vector<string> lines;
-	{ ifstream fin(path); string line; while (getline(fin, line)) lines.push_back(move(line)); }
-	sort(lines.begin(), lines.end());
-	ofstream fout(path);
-	for (auto& l : lines) fout << l << '\n';
+	if (path.find('\'') != string::npos)
+		throw runtime_error("Cannot sort output file (path contains single quote): " + path);
+	string cmd = "LC_ALL=C sort -o '" + path + "' '" + path + "'";
+	if (std::system(cmd.c_str()) != 0)
+		throw runtime_error("sort(1) failed on " + path);
 }
 
 Individual::Individual()

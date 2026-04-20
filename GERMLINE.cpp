@@ -3,6 +3,7 @@
 #include "GERMLINE.h"
 #include "math.h"
 #include <algorithm>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -95,11 +96,12 @@ void GERMLINE::mine( string params )
 	if ( !BINARY_OUT )
 	{
 		string match_path = out + ".match";
-		vector<string> lines;
-		{ ifstream fin(match_path); string line; while (getline(fin, line)) lines.push_back(move(line)); }
-		sort(lines.begin(), lines.end());
-		ofstream fout_sort(match_path);
-		for (auto& l : lines) fout_sort << l << '\n';
+		if ( match_path.find('\'') != string::npos )
+			throw runtime_error( "Cannot sort output file (path contains single quote): " + match_path );
+		string cmd = "LC_ALL=C sort -o '" + match_path + "' '" + match_path + "'";
+		int rc = std::system( cmd.c_str() );
+		if ( rc != 0 )
+			throw runtime_error( "sort(1) failed on " + match_path + " (exit=" + to_string(rc) + ")" );
 	}
 
 	if ( BINARY_OUT )
