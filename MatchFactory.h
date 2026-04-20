@@ -17,10 +17,25 @@ struct DynamicBitsetHash
 	{
 		using block_type = boost::dynamic_bitset<>::block_type;
 		size_t seed = bs.size();
-		vector<block_type> blocks(bs.num_blocks());
-		boost::to_block_range(bs, blocks.begin());
-		for ( auto block : blocks )
-			seed ^= hash<block_type>()(block) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+		size_t n = bs.num_blocks();
+		// Stack buffer covers -bits up to 1024 (16 × 64-bit blocks).
+		// Default -bits 128 uses 2 blocks; -bits 512 uses 8 blocks.
+		// Falls back to heap for unusually large word sizes.
+		constexpr size_t MAX_STACK_BLOCKS = 16;
+		if ( n <= MAX_STACK_BLOCKS )
+		{
+			block_type buf[MAX_STACK_BLOCKS];
+			boost::to_block_range(bs, buf);
+			for ( size_t i = 0; i < n; ++i )
+				seed ^= hash<block_type>()(buf[i]) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+		}
+		else
+		{
+			vector<block_type> blocks(n);
+			boost::to_block_range(bs, blocks.begin());
+			for ( auto block : blocks )
+				seed ^= hash<block_type>()(block) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+		}
 		return seed;
 	}
 };

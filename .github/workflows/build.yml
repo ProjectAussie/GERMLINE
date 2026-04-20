@@ -31,6 +31,8 @@ jobs:
         run: make clean germline
       - name: Test
         run: make test
+      - name: Memory regression check
+        run: make memcheck
       - name: Version
         id: germline-version
         run: |
