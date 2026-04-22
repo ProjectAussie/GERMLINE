@@ -27,6 +27,14 @@ void Chromosome::clear()
 void Chromosome::addMarkerSet(MarkerSet * marker_set)
 {
 	if (DEBUG) cout << "Chromosome.addMarkerSet called" << endl;
+	// Pre-reserve capacity on first insert of a load so the vector doesn't
+	// reallocate (and move every prior MarkerSet) as marker sets stream in.
+	// num_sets is the marker-set count for the current chromosome, set in
+	// GERMLINE::mine before buildMatches runs. Vector::clear() keeps
+	// capacity, so subsequent chromosomes only reserve again if they are
+	// larger than any previously seen one.
+	if (chromosome.empty() && num_sets > chromosome.capacity())
+		chromosome.reserve(num_sets);
 	chromosome.push_back(std::move(*marker_set));
 	delete marker_set;
 }

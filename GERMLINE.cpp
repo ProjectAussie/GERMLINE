@@ -2,7 +2,10 @@
 
 #include "GERMLINE.h"
 #include "math.h"
+#include <cstdlib>
 #include <iostream>
+#include <stdexcept>
+#include <string>
 
 using namespace std;
 
@@ -88,10 +91,24 @@ void GERMLINE::mine( string params )
 	fout.close();
 	MATCH_FILE.close();
 
-	// Match records are written in the order they are finalized, which depends
-	// on hash-map iteration order and is not deterministic across runs or
-	// builds. Downstream consumers that need a canonical ordering should sort
-	// the output themselves.
+	// Match records are finalized in hash-map iteration order, which is not
+	// stable across runs. Sort the text .match file in place so downstream
+	// consumers see a deterministic, byte-identical output. The sort buffer
+	// is capped (-S 128M) so the subprocess RSS cannot swamp germline's
+	// steady-state footprint on large cohorts. The binary .bmatch format is
+	// left untouched (sorting raw record bytes would be meaningless).
+	// Callers that prefer the unsorted fast path (lower peak RSS, matches
+	// the hash-map write order) can pass -unsorted_output.
+	if ( !BINARY_OUT && !UNSORTED_OUTPUT )
+	{
+		string match_path = out + ".match";
+		if ( match_path.find('\'') != string::npos )
+			throw runtime_error( "Cannot sort output file (path contains single quote): " + match_path );
+		string cmd = "LC_ALL=C sort -S 128M -o '" + match_path + "' '" + match_path + "'";
+		int rc = std::system( cmd.c_str() );
+		if ( rc != 0 )
+			throw runtime_error( "sort(1) failed on " + match_path + " (exit=" + to_string(rc) + ")" );
+	}
 
 	if ( BINARY_OUT )
 	{

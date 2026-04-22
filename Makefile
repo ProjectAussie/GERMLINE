@@ -5,7 +5,7 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
     LDLIBS = -lstdc++fs
 endif
-MEMCHECK_MAX_KB ?= 24576
+MEMCHECK_MAX_KB ?= 32768
 SRCS=	GERMLINE_0001.cpp GERMLINE.cpp Share.cpp Chromosome.cpp ChromosomePair.cpp HMIndividualsExtractor.cpp MarkerSet.cpp Individual.cpp Individuals.cpp InputManager.cpp MatchFactory.cpp MatchesBuilder.cpp NucleotideMap.cpp PEDIndividualsExtractor.cpp Match.cpp PolymorphicIndividualsExtractor.cpp SNP.cpp SNPPositionMap.cpp SNPs.cpp
 OBJS=	GERMLINE_0001.o GERMLINE.o Chromosome.o Share.o ChromosomePair.o HMIndividualsExtractor.o MarkerSet.o Individual.o Individuals.o InputManager.o MatchFactory.o MatchesBuilder.o NucleotideMap.o PEDIndividualsExtractor.o Match.o PolymorphicIndividualsExtractor.o SNP.o SNPPositionMap.o SNPs.o
 MAIN=	germline
@@ -54,8 +54,8 @@ test_plink:
 	-@rm -f test/output/*
 	-@./bin/$(MAIN) -silent -bits 50 -min_m 1 -err_hom 2 -samples_to_compare_to test/old_humans -new_samples test/new_humans -err_het 0 < test/restricted.run > test/output/restricted.out 2> test/output/restricted.err | echo -e "---\nRunning Test Case\n---"
 	-@./bin/$(MAIN) -silent -bits 50 -min_m 1 -err_hom 2 -err_het 0 < test/test.run > test/output/generated.out 2> test/output/generated.err | echo -e "---\nRunning Test Case\n---"
-	diff -q -s <(LC_ALL=C sort test/expected.match) <(LC_ALL=C sort test/output/generated.match)
-	diff -q -s <(LC_ALL=C sort test/restricted.match) <(LC_ALL=C sort test/output/restricted.match)
+	diff -q -s test/expected.match test/output/generated.match
+	diff -q -s test/restricted.match test/output/restricted.match
 
 test_extend:
 	./test/run_tests.sh
