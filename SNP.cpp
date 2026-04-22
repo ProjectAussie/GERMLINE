@@ -19,7 +19,7 @@ void SNP::setCentimorgan( float cm )
 	centimorgan = cm;
 }
 
-float SNP::getCentimorgan()
+float SNP::getCentimorgan() const
 {
 	return centimorgan;
 }
@@ -108,7 +108,7 @@ void SNP::setMarkerNumber( unsigned int i )
 	num = i;
 }
 
-unsigned int SNP::getMarkerNumber()
+unsigned int SNP::getMarkerNumber() const
 {
 	return num;
 }
