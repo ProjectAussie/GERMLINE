@@ -62,7 +62,7 @@ int SNP::mapNucleotide(char nt)
 }
 
 // getSNPID(): accessor for SNPID
-const string& SNP::getSNPID() const
+string SNP::getSNPID() const
 {
 	return SNPID;
 }
@@ -74,7 +74,7 @@ long SNP::getPhysPos() const
 	return physPos;
 }
 
-const string& SNP::getChr() const
+string SNP::getChr() const 
 {
 	return chr;
 }

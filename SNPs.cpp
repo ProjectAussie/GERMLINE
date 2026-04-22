@@ -130,12 +130,10 @@ void SNPs::loadGeneticDistanceMap(string f)
 	}
 }
 
-// getSNP(): accessor for SNPS. Returns a const reference so callers can
-// chain `.getChr()` / `.getPhysPos()` without forcing a copy of the full
-// SNP record (two std::string members).
-const SNP& SNPs::getSNP(unsigned int markerPosition) const
+// getSNP(): accessor for SNPS.
+SNP SNPs::getSNP(unsigned int markerPosition) const
 {
-	if (!chromosome->second.empty() && markerPosition < chromosome->second.size())
+	if (!chromosome->second.empty() && markerPosition >= 0 && markerPosition < chromosome->second.size())
 		return chromosome->second[markerPosition];
 	else
 	{
