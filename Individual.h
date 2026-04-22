@@ -118,6 +118,11 @@ private:
 	ofstream* individualHomozFile;
 	string individualMatchFilePath;
 	string individualHomozFilePath;
+	// 32 KB userspace write buffers for the two per-individual ofstreams.
+	// Attached before open() and owned by this Individual so the buffer
+	// lifetime exceeds the filebuf's.
+	vector<char> individualMatchFileBuffer;
+	vector<char> individualHomozFileBuffer;
 };
 
 

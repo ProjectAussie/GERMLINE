@@ -224,6 +224,19 @@ ostream& operator<<(ostream &fout, Individual& ind)
 	return fout;
 }
 
+// Userspace buffer size for per-individual ofstreams. The default
+// libstdc++ filebuf is ~8 KB; at 14 GB of per-chromosome output
+// distributed across potentially thousands of files, that's hundreds
+// of thousands of write() syscalls. 32 KB keeps syscall count and RSS
+// growth (per_stream * n_individuals * 2 files) in balance.
+static constexpr size_t INDIV_FILE_BUF_SIZE = 32 * 1024;
+
+static void attachLargeBuffer(ofstream* ofs, vector<char>& buffer)
+{
+	buffer.resize(INDIV_FILE_BUF_SIZE);
+	ofs->rdbuf()->pubsetbuf(buffer.data(), buffer.size());
+}
+
 void Individual::setIndividualMatchFile(string chromosome)
 {
 	string ext = ".tsv";
@@ -231,7 +244,9 @@ void Individual::setIndividualMatchFile(string chromosome)
 	try { filesystem::create_directories(dir); }
 	catch (const filesystem::filesystem_error& e) { throw runtime_error("Cannot create output directory '" + dir + "': " + e.what()); }
 	individualMatchFilePath = dir + "/chr" + chromosome + ext;
-	individualMatchFile = new ofstream(individualMatchFilePath, ofstream::app);
+	individualMatchFile = new ofstream();
+	attachLargeBuffer(individualMatchFile, individualMatchFileBuffer);
+	individualMatchFile->open(individualMatchFilePath, ofstream::app);
 }
 
 void Individual::setIndividualHomozFile(string chromosome)
@@ -241,7 +256,9 @@ void Individual::setIndividualHomozFile(string chromosome)
 	try { filesystem::create_directories(dir); }
 	catch (const filesystem::filesystem_error& e) { throw runtime_error("Cannot create output directory '" + dir + "': " + e.what()); }
 	individualHomozFilePath = dir + "/chr" + chromosome + ext;
-	individualHomozFile = new ofstream(individualHomozFilePath, ofstream::app);
+	individualHomozFile = new ofstream();
+	attachLargeBuffer(individualHomozFile, individualHomozFileBuffer);
+	individualHomozFile->open(individualHomozFilePath, ofstream::app);
 }
 
 ofstream* Individual::getIndividualMatchFile()
