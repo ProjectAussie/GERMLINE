@@ -350,7 +350,7 @@ void Match::print( ostream& fout )
 				ofs = node[0]->getIndividualHomozFile();
 				if (!ofs || !ofs->is_open()) throw runtime_error("Homoz file not open for individual " + node[0]->single_id);
 				join(oline, '\t', joined_oline);
-				*ofs << joined_oline << endl;
+				*ofs << joined_oline << '\n';
 			}
 			// key1 is new, key2 is old
 			else if ( key1 > key2 && node[0]->is_new ) {
@@ -364,7 +364,7 @@ void Match::print( ostream& fout )
 				ofs = node[0]->getIndividualMatchFile();
 				if (!ofs || !ofs->is_open()) throw runtime_error("Match file not open for individual " + node[0]->single_id);
 				join(oline, '\t', joined_oline);
-				*ofs << joined_oline << endl;
+				*ofs << joined_oline << '\n';
 			}
 			// key2 is new, key1 is old
 			else if ( key2 > key1 && node[1]->is_new ) {
@@ -378,7 +378,7 @@ void Match::print( ostream& fout )
 				ofs = node[1]->getIndividualMatchFile();
 				if (!ofs || !ofs->is_open()) throw runtime_error("Match file not open for individual " + node[1]->single_id);
 				join(oline, '\t', joined_oline);
-				*ofs << joined_oline << endl;
+				*ofs << joined_oline << '\n';
 			}
 			// newdog : newdog comparison, write out same record twice
 			else if ( node[0]->is_new  &&  node[1]->is_new  && key1 != key2 ) {
@@ -392,7 +392,7 @@ void Match::print( ostream& fout )
 				ofs = node[0]->getIndividualMatchFile();
 				if (!ofs || !ofs->is_open()) throw runtime_error("Match file not open for individual " + node[0]->single_id);
 				join(oline, '\t', joined_oline);
-				*ofs << joined_oline << endl;
+				*ofs << joined_oline << '\n';
 
 				oline.push_back(node[1]->single_id);
 				oline.push_back(node[1]->haplotype);
@@ -404,7 +404,7 @@ void Match::print( ostream& fout )
 				ofs = node[1]->getIndividualMatchFile();
 				if (!ofs || !ofs->is_open()) throw runtime_error("Match file not open for individual " + node[1]->single_id);
 				join(oline, '\t', joined_oline);
-				*ofs << joined_oline << endl;
+				*ofs << joined_oline << '\n';
 			}
 			else {
 				throw runtime_error("Unable to process match");
@@ -426,7 +426,7 @@ void Match::print( ostream& fout )
 			fout << dif;
 			for ( int n = 0 ; n < 2 ; n++ )
 				if ( hom[n] ) fout << '\t' << 1; else fout << '\t' << 0;
-			fout << endl;
+			fout << '\n';
 		}
 	}
 	num_matches++;

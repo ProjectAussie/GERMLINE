@@ -46,6 +46,15 @@ void GERMLINE::mine( string params )
 	fout << " Run 'germline -version' to view version number." << endl;
 	fout << setw(65) << setfill('-') << ' ' << endl << setfill(' ');
 	
+	// Use a larger output buffer (1 MiB) on the main match file so record
+	// writes amortize into a handful of write() syscalls per chunk rather
+	// than one per ~8 KB of data. On a multi-GB .match this turns hundreds
+	// of millions of syscalls (one per match record when combined with the
+	// switch away from std::endl) into thousands — dropping kernel time
+	// dramatically on large cohorts. The buffer lives for the duration of
+	// the stream; leak is bounded and freed when MATCH_FILE destructs.
+	static char match_file_buffer[1 << 20];
+	MATCH_FILE.rdbuf()->pubsetbuf(match_file_buffer, sizeof(match_file_buffer));
 	if ( BINARY_OUT ) MATCH_FILE.open( ( out + ".bmatch" ).c_str() , ios::binary );
 	else MATCH_FILE.open( ( out + ".match" ).c_str() );
 	if ( !MATCH_FILE ) throw runtime_error( "Cannot open match output file: " + out + ( BINARY_OUT ? ".bmatch" : ".match" ) );
