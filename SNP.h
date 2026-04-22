@@ -58,10 +58,10 @@ public:
 	void setChr(const string& c);
 	
 	void setCentimorgan( float cm );
-	float getCentimorgan() const;
+	float getCentimorgan();
 
 	void setMarkerNumber( unsigned int );
-	unsigned int getMarkerNumber() const;
+	unsigned int getMarkerNumber();
 
 private:
 
