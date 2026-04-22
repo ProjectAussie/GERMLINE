@@ -21,13 +21,6 @@ int MAX_ERR_HET = 1;
 // main(): runs GERMLINE
 int main(int argc, char* argv[])
 {
-	// germline never reads from stdin via scanf/getchar once parameters
-	// are parsed, and it never writes match output via C stdio. Drop the
-	// libstdc++ iostream<->stdio synchronization so every `<<` skips the
-	// per-op lock / shared-buffer check. On write-heavy runs this is
-	// often a multi-x speedup of the formatting path.
-	std::ios_base::sync_with_stdio(false);
-
 	// parse arguments
 	string rs_range[2], map, samples_to_compare_to, new_samples, chromosome;
 	samples_to_compare_to = "";
