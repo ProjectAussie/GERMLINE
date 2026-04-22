@@ -23,14 +23,14 @@ public:
 	// getSNPID(): accessor for SNPID
 	// Precondition: None.
 	// Postcondition: Returns SNPID.
-	string getSNPID() const;
+	const string& getSNPID() const;
 
 	// getPhysPos(): accessor for physPos
 	// Precondition: None.
 	// Postcondition: Returns physPos.
 	long getPhysPos() const;
 
-	string getChr() const;
+	const string& getChr() const;
 
 	// getVariant(): accessor for variants
 	// Precondition: None.

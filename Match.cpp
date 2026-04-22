@@ -307,7 +307,7 @@ void Match::print( ostream& fout )
 		for ( int n = 0 ; n < 2 ; n++ )
 		{
 			hom[n] = true;
-			for ( unsigned int i = start_ms ; i<= end_ms && hom ; i++ )
+			for ( unsigned int i = start_ms ; i <= end_ms && hom[n] ; i++ )
 			{
 				hom[n] = isHom( n , i );
 			}
@@ -332,84 +332,56 @@ void Match::print( ostream& fout )
 	} else
 	{
 		if ( ALL_SAMPLES.useEmbarkRFGermlineOutput ) {
+			// Hot per-match write path. Stream directly to the individual's
+			// ofstream: compared to building a vector<string> + join() per
+			// record, this skips 7-8 heap allocations per match and leans
+			// on the ofstream's internal buffer instead. getSNP now returns
+			// const SNP&, so .getChr() / .getPhysPos() are cheap references
+			// rather than full SNP-record copies.
 			int key1 = stoi(node[0]->single_id);
 			int key2 = stoi(node[1]->single_id);
-			vector<string> oline;
-			string joined_oline;
+			const SNP& snp_at_start = ALL_SNPS.getSNP(snp_start);
+			const SNP& snp_at_end   = ALL_SNPS.getSNP(snp_end);
+			const string& chromosome = snp_at_start.getChr();
+			long start_pos = snp_at_start.getPhysPos();
+			long end_pos   = snp_at_end.getPhysPos();
 			ofstream* ofs;
-			string chromosome = ALL_SNPS.getSNP(snp_start).getChr();
-			string start_pos = to_string(ALL_SNPS.getSNP(snp_start).getPhysPos());
-			string end_pos = to_string(ALL_SNPS.getSNP(snp_end).getPhysPos());
-			
+
+			auto write_match_row = [&](Individual* first, Individual* second) {
+				ofs = first->getIndividualMatchFile();
+				if (!ofs || !ofs->is_open()) throw runtime_error("Match file not open for individual " + first->single_id);
+				*ofs << first->single_id  << '\t'
+				     << first->haplotype  << '\t'
+				     << second->single_id << '\t'
+				     << second->haplotype << '\t'
+				     << chromosome        << '\t'
+				     << start_pos         << '\t'
+				     << end_pos           << '\n';
+			};
+
 			// homoz
 			if ( key1 == key2 && node[0]->is_new ) {
-				// cout << "Writing out homoz" << endl;
-				oline.push_back(chromosome);
-				oline.push_back(start_pos);
-				oline.push_back(end_pos);
 				ofs = node[0]->getIndividualHomozFile();
 				if (!ofs || !ofs->is_open()) throw runtime_error("Homoz file not open for individual " + node[0]->single_id);
-				join(oline, '\t', joined_oline);
-				*ofs << joined_oline << '\n';
+				*ofs << chromosome << '\t' << start_pos << '\t' << end_pos << '\n';
 			}
 			// key1 is new, key2 is old
 			else if ( key1 > key2 && node[0]->is_new ) {
-				oline.push_back(node[0]->single_id);
-				oline.push_back(node[0]->haplotype);
-				oline.push_back(node[1]->single_id);
-				oline.push_back(node[1]->haplotype);
-				oline.push_back(chromosome);
-				oline.push_back(start_pos);
-				oline.push_back(end_pos);
-				ofs = node[0]->getIndividualMatchFile();
-				if (!ofs || !ofs->is_open()) throw runtime_error("Match file not open for individual " + node[0]->single_id);
-				join(oline, '\t', joined_oline);
-				*ofs << joined_oline << '\n';
+				write_match_row(node[0], node[1]);
 			}
 			// key2 is new, key1 is old
 			else if ( key2 > key1 && node[1]->is_new ) {
-				oline.push_back(node[1]->single_id);
-				oline.push_back(node[1]->haplotype);
-				oline.push_back(node[0]->single_id);
-				oline.push_back(node[0]->haplotype);
-				oline.push_back(chromosome);
-				oline.push_back(start_pos);
-				oline.push_back(end_pos);
-				ofs = node[1]->getIndividualMatchFile();
-				if (!ofs || !ofs->is_open()) throw runtime_error("Match file not open for individual " + node[1]->single_id);
-				join(oline, '\t', joined_oline);
-				*ofs << joined_oline << '\n';
+				write_match_row(node[1], node[0]);
 			}
 			// newdog : newdog comparison, write out same record twice
 			else if ( node[0]->is_new  &&  node[1]->is_new  && key1 != key2 ) {
-				oline.push_back(node[0]->single_id);
-				oline.push_back(node[0]->haplotype);
-				oline.push_back(node[1]->single_id);
-				oline.push_back(node[1]->haplotype);
-				oline.push_back(chromosome);
-				oline.push_back(start_pos);
-				oline.push_back(end_pos);
-				ofs = node[0]->getIndividualMatchFile();
-				if (!ofs || !ofs->is_open()) throw runtime_error("Match file not open for individual " + node[0]->single_id);
-				join(oline, '\t', joined_oline);
-				*ofs << joined_oline << '\n';
-
-				oline.push_back(node[1]->single_id);
-				oline.push_back(node[1]->haplotype);
-				oline.push_back(node[0]->single_id);
-				oline.push_back(node[0]->haplotype);
-				oline.push_back(chromosome);
-				oline.push_back(start_pos);
-				oline.push_back(end_pos);
-				ofs = node[1]->getIndividualMatchFile();
-				if (!ofs || !ofs->is_open()) throw runtime_error("Match file not open for individual " + node[1]->single_id);
-				join(oline, '\t', joined_oline);
-				*ofs << joined_oline << '\n';
+				write_match_row(node[0], node[1]);
+				write_match_row(node[1], node[0]);
 			}
 			else {
 				throw runtime_error("Unable to process match");
 			}
-		} 
+		}
 		// Generate regular germline outputs for matches against ref panel or other use cases
 		else { 
 			

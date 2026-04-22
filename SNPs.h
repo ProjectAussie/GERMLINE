@@ -40,7 +40,7 @@ public:
 	// Postcondition: If snps has been populated and if markerPosition
 	//  is within bounds of snps, then returns the SNP in markerPosition
 	//  position of snps; otherwise issues a warning and returns an inactive SNP.
-	SNP getSNP(unsigned int markerPosition) const;
+	const SNP& getSNP(unsigned int markerPosition) const;
 	
 	// Returns genetic distance if possible, otherwise returns physical distance (in MB)
 	float getDistance(unsigned int , unsigned int);
