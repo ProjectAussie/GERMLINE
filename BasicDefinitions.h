@@ -32,6 +32,7 @@ extern bool HOM_ONLY;
 extern bool SILENT;
 extern bool DEBUG;
 extern bool BINARY_OUT;
+extern bool UNSORTED_OUTPUT;
 
 class SNPs;
 class Individuals;

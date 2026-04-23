@@ -2,7 +2,10 @@
 
 #include "GERMLINE.h"
 #include "math.h"
+#include <cstdlib>
 #include <iostream>
+#include <stdexcept>
+#include <string>
 
 using namespace std;
 
@@ -43,8 +46,18 @@ void GERMLINE::mine( string params )
 	fout << " Run 'germline -version' to view version number." << endl;
 	fout << setw(65) << setfill('-') << ' ' << endl << setfill(' ');
 	
+	// Use a larger output buffer (1 MiB) on the main match file so record
+	// writes amortize into a handful of write() syscalls per chunk rather
+	// than one per ~8 KB of data. On a multi-GB .match this turns hundreds
+	// of millions of syscalls (one per match record when combined with the
+	// switch away from std::endl) into thousands — dropping kernel time
+	// dramatically on large cohorts. The buffer lives for the duration of
+	// the stream; leak is bounded and freed when MATCH_FILE destructs.
+	static char match_file_buffer[1 << 20];
+	MATCH_FILE.rdbuf()->pubsetbuf(match_file_buffer, sizeof(match_file_buffer));
 	if ( BINARY_OUT ) MATCH_FILE.open( ( out + ".bmatch" ).c_str() , ios::binary );
 	else MATCH_FILE.open( ( out + ".match" ).c_str() );
+	if ( !MATCH_FILE ) throw runtime_error( "Cannot open match output file: " + out + ( BINARY_OUT ? ".bmatch" : ".match" ) );
 	
 	fout << params << endl;
 	fout << setw(65) << setfill('-') << ' ' << endl << setfill(' ');
@@ -86,6 +99,25 @@ void GERMLINE::mine( string params )
 	fout << setw(50) << "Total runtime (sec): " << difftime( timer[1] , timer[0] ) << endl;
 	fout.close();
 	MATCH_FILE.close();
+
+	// Match records are finalized in hash-map iteration order, which is not
+	// stable across runs. Sort the text .match file in place so downstream
+	// consumers see a deterministic, byte-identical output. The sort buffer
+	// is capped (-S 128M) so the subprocess RSS cannot swamp germline's
+	// steady-state footprint on large cohorts. The binary .bmatch format is
+	// left untouched (sorting raw record bytes would be meaningless).
+	// Callers that prefer the unsorted fast path (lower peak RSS, matches
+	// the hash-map write order) can pass -unsorted_output.
+	if ( !BINARY_OUT && !UNSORTED_OUTPUT )
+	{
+		string match_path = out + ".match";
+		if ( match_path.find('\'') != string::npos )
+			throw runtime_error( "Cannot sort output file (path contains single quote): " + match_path );
+		string cmd = "LC_ALL=C sort -S 128M -o '" + match_path + "' '" + match_path + "'";
+		int rc = std::system( cmd.c_str() );
+		if ( rc != 0 )
+			throw runtime_error( "sort(1) failed on " + match_path + " (exit=" + to_string(rc) + ")" );
+	}
 
 	if ( BINARY_OUT )
 	{

@@ -1,5 +1,11 @@
 CC=	g++
 OPT=	-std=c++17 -O3 -I include
+SHELL := /bin/bash
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+    LDLIBS = -lstdc++fs
+endif
+MEMCHECK_MAX_KB ?= 32768
 SRCS=	GERMLINE_0001.cpp GERMLINE.cpp Share.cpp Chromosome.cpp ChromosomePair.cpp HMIndividualsExtractor.cpp MarkerSet.cpp Individual.cpp Individuals.cpp InputManager.cpp MatchFactory.cpp MatchesBuilder.cpp NucleotideMap.cpp PEDIndividualsExtractor.cpp Match.cpp PolymorphicIndividualsExtractor.cpp SNP.cpp SNPPositionMap.cpp SNPs.cpp
 OBJS=	GERMLINE_0001.o GERMLINE.o Chromosome.o Share.o ChromosomePair.o HMIndividualsExtractor.o MarkerSet.o Individual.o Individuals.o InputManager.o MatchFactory.o MatchesBuilder.o NucleotideMap.o PEDIndividualsExtractor.o Match.o PolymorphicIndividualsExtractor.o SNP.o SNPPositionMap.o SNPs.o
 MAIN=	germline
@@ -15,7 +21,7 @@ $(OBJS): $(SRCS)
 	$(CC) $(OPT) -c $*.cpp
 
 germline: $(OBJS) setup
-	$(CC) $(OPT) -o bin/$(MAIN) $(OBJS) -lstdc++fs
+	$(CC) $(OPT) -o bin/$(MAIN) $(OBJS) $(LDLIBS)
 	md5sum bin/$(MAIN) > $(MAIN).md5
 
 setup:
@@ -24,6 +30,24 @@ setup:
 clean:
 	-rm -f *.o bin/$(MAIN) $(BMATCH) test/generated.match test/generated.log test/generated.err test/generated.out
 test: test_plink test_extend
+
+memcheck:
+ifeq ($(shell uname -s),Linux)
+	-mkdir -p test/output
+	-rm -f test/output/memcheck*
+	/usr/bin/time -v ./bin/$(MAIN) -silent -bits 9 -min_m 0.1 -err_hom 0 -err_het 0 \
+		< test/memcheck_test.run > test/output/memcheck.out 2> test/output/memcheck_time.err
+	@RSS=$$(grep "Maximum resident set size" test/output/memcheck_time.err | awk '{print $$NF}'); \
+		echo "Peak RSS: $${RSS} kB (limit: $(MEMCHECK_MAX_KB) kB)"; \
+		if [ "$${RSS}" -gt $(MEMCHECK_MAX_KB) ]; then \
+			echo "FAIL: peak RSS $${RSS} kB exceeds $(MEMCHECK_MAX_KB) kB — likely memory regression"; \
+			exit 1; \
+		else \
+			echo "PASS"; \
+		fi
+else
+	@echo "memcheck requires Linux (/usr/bin/time -v). Use Docker: docker compose run germline make memcheck"
+endif
 
 test_plink:
 	-mkdir -p test/output

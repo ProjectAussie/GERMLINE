@@ -1,9 +1,21 @@
 // Individual.cpp: An individual with genetic data
 
 #include "Individual.h"
+#include <cstdlib>
+#include <stdexcept>
+#include <string>
 using namespace std;
 
-// Individual(): default constructor
+static void sortFileInPlace(const string& path)
+{
+	if (path.empty()) return;
+	if (path.find('\'') != string::npos)
+		throw runtime_error("Cannot sort output file (path contains single quote): " + path);
+	string cmd = "LC_ALL=C sort -S 128M -o '" + path + "' '" + path + "'";
+	if (std::system(cmd.c_str()) != 0)
+		throw runtime_error("sort(1) failed on " + path);
+}
+
 Individual::Individual()
 {
 	if ( HAPLOID ) {
@@ -13,37 +25,50 @@ Individual::Individual()
 		chromosome = new Chromosome[2];
 	}
 	numeric_id = 0;
+	is_new = false;
+	is_old = false;
+	individualMatchFile = nullptr;
+	individualHomozFile = nullptr;
 }
 
 Individual::~Individual()
 {
 	delete[] chromosome;
-	delete[] all_matches;
+	for ( auto& [id, m] : all_matches ) delete m;
+	// Per-individual TSVs are written in hash-map order (same as MATCH_FILE).
+	// Sort them in place after the stream flushes so each individual's match
+	// / homoz file is deterministic for downstream consumers. Skipped when
+	// -unsorted_output is set, matching the global .match behavior.
+	delete individualMatchFile;
+	if ( !UNSORTED_OUTPUT ) sortFileInPlace(individualMatchFilePath);
+	delete individualHomozFile;
+	if ( !UNSORTED_OUTPUT ) sortFileInPlace(individualHomozFilePath);
 }
 
 void Individual::freeMatches()
 {
-	for ( size_t iter = 0 ; iter < num_samples ; iter++ )
-		if ( all_matches[ iter ] != NULL ) deleteMatch( iter );
+	for ( auto& [id, m] : all_matches ) { m->print( MATCH_FILE ); delete m; }
+	all_matches.clear();
 }
 
 Match * Individual::getMatch( size_t id )
 {
-	return all_matches[ id ];
+	auto it = all_matches.find( (unsigned int)id );
+	if ( it != all_matches.end() ) return it->second;
+	return nullptr;
 }
 
 void Individual::assertHomozygous()
 {
-	size_t iter = this->getNumericID();
+	unsigned int iter = this->getNumericID();
 	Match * m;
-	if ( all_matches[ iter ] != NULL )
+	auto it = all_matches.find( iter );
+	if ( it != all_matches.end() )
 	{
-		// increment this match
-		all_matches[ iter ]->end_ms = position_ms;
+		it->second->end_ms = position_ms;
 
 	} else
-	{	
-		// this is a new match
+	{
 		m = new Match();
 		if (DEBUG) cout << "new Match() in Individual.cpp::assertHomozygous, assigning start_ms and end_ms to " << position_ms << endl;
 		m->end_ms = m->start_ms = position_ms;
@@ -56,45 +81,27 @@ void Individual::assertHomozygous()
 
 void Individual::assertShares()
 {
-	Match * m;
-	set<Individual*>::iterator cip;
-
-	// try to extend previous matches that did not match currently
-	for( size_t iter = 0 ; iter < num_samples ; iter++ )
+	auto it = all_matches.begin();
+	while ( it != all_matches.end() )
 	{
-		if ( all_matches[ iter ] == NULL ) continue;
-
-		m = all_matches[ iter ];
-		// Can we increment?
-		if ( m->approxEqual() ) m->end_ms = position_ms;
-		else deleteMatch( iter );
+		if ( it->second->approxEqual() ) { it->second->end_ms = position_ms; ++it; }
+		else { it->second->print( MATCH_FILE ); delete it->second; it = all_matches.erase( it ); }
 	}
 }
 
-void Individual::clearMatch( size_t id )
-{
-	all_matches[ id ] = NULL;
-}
 void Individual::deleteMatch( size_t id )
 {
-	// try to print it
-	// cout << "Writing results for: " << single_id << endl;
-	all_matches[ id ]->print( MATCH_FILE );
-	delete all_matches[ id ];
-
-	// erase from the list
-	clearMatch( id );
+	auto it = all_matches.find( (unsigned int)id );
+	if ( it == all_matches.end() ) { if (DEBUG) cerr << "deleteMatch: id " << id << " not found" << endl; return; }
+	it->second->print( MATCH_FILE );
+	delete it->second;
+	all_matches.erase( it );
 }
 
 void Individual::addMatch( size_t id , Match * m)
 {
-	all_matches[ id ] = m;
-}
-
-void Individual::reserveMemory()
-{
-	all_matches = new Match * [ num_samples ];
-	for ( size_t i = 0 ; i < num_samples ; i++ ) all_matches[ i ] = NULL;
+	auto [ it, inserted ] = all_matches.emplace( (unsigned int)id, m );
+	if ( !inserted ) { delete it->second; it->second = m; }
 }
 
 void Individual::print(ostream& out,long start,long end)
@@ -221,26 +228,20 @@ void Individual::setIndividualMatchFile(string chromosome)
 {
 	string ext = ".tsv";
 	string dir = ALL_SAMPLES.individualOutputFolder + "/dog_level_match_files/" + single_id;
-	experimental::filesystem::path _dir(dir);
-	if ( !experimental::filesystem::exists(_dir) ) {
-		experimental::filesystem::create_directories(_dir);
-	}
-	string fileHandleName = dir + "/chr" + chromosome + ext;
-	// cout << fileHandleName << endl;
-	individualMatchFile = new ofstream(fileHandleName, ofstream::app);
+	try { filesystem::create_directories(dir); }
+	catch (const filesystem::filesystem_error& e) { throw runtime_error("Cannot create output directory '" + dir + "': " + e.what()); }
+	individualMatchFilePath = dir + "/chr" + chromosome + ext;
+	individualMatchFile = new ofstream(individualMatchFilePath, ofstream::app);
 }
 
 void Individual::setIndividualHomozFile(string chromosome)
 {
 	string ext = ".tsv";
 	string dir = ALL_SAMPLES.individualOutputFolder + "/dog_level_homoz_files/" + single_id;
-	experimental::filesystem::path _dir(dir);
-	if ( !experimental::filesystem::exists(_dir) ) {
-		experimental::filesystem::create_directories(_dir);
-	}
-	string fileHandleName = dir + "/chr" + chromosome + ext;
-	// cout << fileHandleName << endl;
-	individualHomozFile = new ofstream(fileHandleName, ofstream::app);
+	try { filesystem::create_directories(dir); }
+	catch (const filesystem::filesystem_error& e) { throw runtime_error("Cannot create output directory '" + dir + "': " + e.what()); }
+	individualHomozFilePath = dir + "/chr" + chromosome + ext;
+	individualHomozFile = new ofstream(individualHomozFilePath, ofstream::app);
 }
 
 ofstream* Individual::getIndividualMatchFile()

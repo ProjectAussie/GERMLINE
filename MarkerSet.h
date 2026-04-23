@@ -18,6 +18,9 @@ public:
 	// Postcondition: all markers have been initialized to 0.
 	MarkerSet();
 	MarkerSet(const MarkerSet&);
+	MarkerSet(MarkerSet&&) noexcept;
+	MarkerSet& operator=(const MarkerSet&) = default;
+	MarkerSet& operator=(MarkerSet&&) noexcept;
 
 	void clear();
 	void set( int , bool );

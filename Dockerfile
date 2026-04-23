@@ -8,6 +8,7 @@ RUN apt update \
   && apt install -y \
     build-essential \
     g++ \
-    gcc
+    gcc \
+    time
 
 COPY . /build

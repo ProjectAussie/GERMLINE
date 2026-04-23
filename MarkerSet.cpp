@@ -16,6 +16,20 @@ MarkerSet::MarkerSet(const MarkerSet& copy)
 	markers = copy.markers; // copy.getMarkerBits();
 }
 
+// Explicit noexcept move ops so vector<MarkerSet> reallocation moves instead
+// of copying the underlying dynamic_bitset buffer. Required because the
+// user-defined copy ctor above suppresses implicit move generation.
+MarkerSet::MarkerSet(MarkerSet&& other) noexcept
+	: markers(std::move(other.markers))
+{
+}
+
+MarkerSet& MarkerSet::operator=(MarkerSet&& other) noexcept
+{
+	markers = std::move(other.markers);
+	return *this;
+}
+
 void MarkerSet::clear()
 {
 	markers.reset();

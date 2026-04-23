@@ -1,7 +1,7 @@
 #include "GERMLINE.h"
 #include <string.h>
 
-const std::string VERSION = "1.6.0-embark";
+const std::string VERSION = "1.7.0-embark";
 double MIN_MATCH_LEN = 3;
 int MARKER_SET_SIZE = 128;
 bool PRINT_MATCH_HAPS = false;
@@ -14,6 +14,7 @@ bool HAPLOID = false;
 bool SILENT = false;
 bool DEBUG = false;
 bool BINARY_OUT = false;
+bool UNSORTED_OUTPUT = false;
 int MAX_ERR_HOM = 4;
 int MAX_ERR_HET = 1;
 
@@ -75,6 +76,9 @@ int main(int argc, char* argv[])
 		else if (strncmp(argv[i], "-bin_out", strlen("-bin_out")) == 0 ) {
 			BINARY_OUT = true;
 		}
+		else if (strncmp(argv[i], "-unsorted_output", strlen("-unsorted_output")) == 0 ) {
+			UNSORTED_OUTPUT = true;
+		}
 		else if (strncmp(argv[i], "-haploid", strlen("-haploid")) == 0 ) {
 			HAPLOID = true;
 			HAP_EXT = true;
@@ -129,6 +133,7 @@ int main(int argc, char* argv[])
 		<< '\t' << "-version" << '\t' << "Print version information." << endl
 		<< '\t' << "-silent" << '\t' << "Suppress all output except for warnings and prompts." << endl
 		<< '\t' << "-bin_out" << '\t' << "Output in binary format to save space." << endl
+		<< '\t' << "-unsorted_output" << '\t' << "Skip the post-run sort of .match / per-individual TSV outputs.\n\t\tOutput order becomes non-deterministic (hash-map order), but peak RSS is lower." << endl
 		<< '\t' << "-min_m" << '\t' << "Minimum length for match to be used for imputation (in cM or MB)." << endl
 		<< '\t' << "-err_hom" << '\t' << "Maximum number of mismatching homozygous markers (per slice)." << endl
 		<< '\t' << "-err_het" << '\t' << "Maximum number of mismatching heterozygous markers (per slice)." << endl
