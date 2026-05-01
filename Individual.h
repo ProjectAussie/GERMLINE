@@ -7,13 +7,13 @@
 #include "Chromosome.h"
 #include "Match.h"
 #include "Individuals.h"
+#include <fstream>
 #include <string>
 #include <map>
 #include <unordered_map>
 #include <set>
 #include <vector>
 #include <iostream>
-#include <filesystem>
 
 using namespace std;
 
@@ -92,8 +92,12 @@ public:
 	// clearMarkers(): clears all MarkerSets from this individual
 	void clearMarkers();
 
-	void setIndividualMatchFile(string chromosome);
-	void setIndividualHomozFile(string chromosome);
+	// Per-dog match/homoz ofstreams are owned and lifecycle-managed by
+	// Individuals (see Individuals.h). Setters here just store a non-owning
+	// pointer; in haploid mode the same pointer is shared between the .0 and
+	// .1 haplotype Individuals so a single buffer guards each on-disk file.
+	void setIndividualMatchFile(ofstream* ofs);
+	void setIndividualHomozFile(ofstream* ofs);
 	ofstream* getIndividualMatchFile();
 	ofstream* getIndividualHomozFile();
 
@@ -114,10 +118,9 @@ private:
 	streamoff offset;
 	
 	unordered_map<unsigned int, Match*> all_matches;
+	// Non-owning. See setIndividualMatchFile / Individuals::initializeOutputFileHandles.
 	ofstream* individualMatchFile;
 	ofstream* individualHomozFile;
-	string individualMatchFilePath;
-	string individualHomozFilePath;
 };
 
 

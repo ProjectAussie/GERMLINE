@@ -394,6 +394,11 @@ void Match::print( ostream& fout )
 				join(oline, '\t', joined_oline);
 				*ofs << joined_oline << '\n';
 
+				// Reset oline before composing the second record so it stays
+				// 7 fields wide. (Currently only reachable when restrictions
+				// are off — Share::assertMatches gates new-vs-new pairs out
+				// when both -new_samples and -samples_to_compare_to are set.)
+				oline.clear();
 				oline.push_back(node[1]->single_id);
 				oline.push_back(node[1]->haplotype);
 				oline.push_back(node[0]->single_id);

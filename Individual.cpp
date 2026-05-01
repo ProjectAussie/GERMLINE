@@ -1,20 +1,8 @@
 // Individual.cpp: An individual with genetic data
 
 #include "Individual.h"
-#include <cstdlib>
-#include <stdexcept>
 #include <string>
 using namespace std;
-
-static void sortFileInPlace(const string& path)
-{
-	if (path.empty()) return;
-	if (path.find('\'') != string::npos)
-		throw runtime_error("Cannot sort output file (path contains single quote): " + path);
-	string cmd = "LC_ALL=C sort -S 128M -o '" + path + "' '" + path + "'";
-	if (std::system(cmd.c_str()) != 0)
-		throw runtime_error("sort(1) failed on " + path);
-}
 
 Individual::Individual()
 {
@@ -35,14 +23,9 @@ Individual::~Individual()
 {
 	delete[] chromosome;
 	for ( auto& [id, m] : all_matches ) delete m;
-	// Per-individual TSVs are written in hash-map order (same as MATCH_FILE).
-	// Sort them in place after the stream flushes so each individual's match
-	// / homoz file is deterministic for downstream consumers. Skipped when
-	// -unsorted_output is set, matching the global .match behavior.
-	delete individualMatchFile;
-	if ( !UNSORTED_OUTPUT ) sortFileInPlace(individualMatchFilePath);
-	delete individualHomozFile;
-	if ( !UNSORTED_OUTPUT ) sortFileInPlace(individualHomozFilePath);
+	// individualMatchFile / individualHomozFile are non-owning pointers shared
+	// across haplotype Individuals; closure + sort are handled centrally by
+	// Individuals::closeOutputFileHandles().
 }
 
 void Individual::freeMatches()
@@ -224,24 +207,14 @@ ostream& operator<<(ostream &fout, Individual& ind)
 	return fout;
 }
 
-void Individual::setIndividualMatchFile(string chromosome)
+void Individual::setIndividualMatchFile(ofstream* ofs)
 {
-	string ext = ".tsv";
-	string dir = ALL_SAMPLES.individualOutputFolder + "/dog_level_match_files/" + single_id;
-	try { filesystem::create_directories(dir); }
-	catch (const filesystem::filesystem_error& e) { throw runtime_error("Cannot create output directory '" + dir + "': " + e.what()); }
-	individualMatchFilePath = dir + "/chr" + chromosome + ext;
-	individualMatchFile = new ofstream(individualMatchFilePath, ofstream::app);
+	individualMatchFile = ofs;
 }
 
-void Individual::setIndividualHomozFile(string chromosome)
+void Individual::setIndividualHomozFile(ofstream* ofs)
 {
-	string ext = ".tsv";
-	string dir = ALL_SAMPLES.individualOutputFolder + "/dog_level_homoz_files/" + single_id;
-	try { filesystem::create_directories(dir); }
-	catch (const filesystem::filesystem_error& e) { throw runtime_error("Cannot create output directory '" + dir + "': " + e.what()); }
-	individualHomozFilePath = dir + "/chr" + chromosome + ext;
-	individualHomozFile = new ofstream(individualHomozFilePath, ofstream::app);
+	individualHomozFile = ofs;
 }
 
 ofstream* Individual::getIndividualMatchFile()

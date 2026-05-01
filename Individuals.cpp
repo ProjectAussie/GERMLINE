@@ -1,9 +1,42 @@
 // Individuals.cpp: A collection of individuals
 
 #include "Individuals.h"
+#include <cstdlib>
+#include <filesystem>
 #include <iostream>
+#include <stdexcept>
 using namespace std;
 
+
+static void sortFileInPlace(const string& path)
+{
+	if (path.empty()) return;
+	if (path.find('\'') != string::npos)
+		throw runtime_error("Cannot sort output file (path contains single quote): " + path);
+	string cmd = "LC_ALL=C sort -S 128M -o '" + path + "' '" + path + "'";
+	if (std::system(cmd.c_str()) != 0)
+		throw runtime_error("sort(1) failed on " + path);
+}
+
+static ofstream* openPerDogFile(const string& root,
+                                const string& subdir,
+                                const string& single_id,
+                                const string& chromosome,
+                                string& out_path)
+{
+	string dir = root + "/" + subdir + "/" + single_id;
+	try { filesystem::create_directories(dir); }
+	catch (const filesystem::filesystem_error& e) {
+		throw runtime_error("Cannot create output directory '" + dir + "': " + e.what());
+	}
+	out_path = dir + "/chr" + chromosome + ".tsv";
+	auto* ofs = new ofstream(out_path, ofstream::app);
+	if (!ofs->is_open()) {
+		delete ofs;
+		throw runtime_error("Cannot open per-dog output file: " + out_path);
+	}
+	return ofs;
+}
 
 // Individuals(): default constructor
 Individuals::Individuals()
@@ -11,6 +44,7 @@ Individuals::Individuals()
 
 Individuals::~Individuals()
 {
+	closeOutputFileHandles();
 	for(begin();more();next())
 		delete pedigree[ iter ];
 }
@@ -21,11 +55,61 @@ void Individuals::initialize()
 
 void Individuals::initializeOutputFileHandles(string chromosome)
 {
+	// Dedup ofstream allocation by single_id: in haploid mode the pedigree
+	// holds two Individual objects per dog with the same single_id. Both
+	// haplotypes share the underlying file, so they must share one ofstream
+	// (and one userspace buffer). Independent buffers writing through O_APPEND
+	// fds produced the NF=13 / NF=0 corruption in v1.7 (SCICO-1236).
 	for ( iter = 0 ; iter < pedigree.size() ; iter++ ) {
-		if ( pedigree[ iter ]->is_new ) {
-			pedigree[ iter ]->setIndividualMatchFile(chromosome);
-			pedigree[ iter ]->setIndividualHomozFile(chromosome);
+		if ( !pedigree[ iter ]->is_new ) continue;
+		const string& sid = pedigree[ iter ]->single_id;
+
+		auto match_it = match_file_by_single_id.find(sid);
+		if (match_it == match_file_by_single_id.end()) {
+			string path;
+			ofstream* ofs = openPerDogFile(individualOutputFolder, "dog_level_match_files", sid, chromosome, path);
+			match_file_by_single_id[sid] = ofs;
+			match_path_by_single_id[sid] = path;
+			match_it = match_file_by_single_id.find(sid);
 		}
+		pedigree[ iter ]->setIndividualMatchFile(match_it->second);
+
+		auto homoz_it = homoz_file_by_single_id.find(sid);
+		if (homoz_it == homoz_file_by_single_id.end()) {
+			string path;
+			ofstream* ofs = openPerDogFile(individualOutputFolder, "dog_level_homoz_files", sid, chromosome, path);
+			homoz_file_by_single_id[sid] = ofs;
+			homoz_path_by_single_id[sid] = path;
+			homoz_it = homoz_file_by_single_id.find(sid);
+		}
+		pedigree[ iter ]->setIndividualHomozFile(homoz_it->second);
+	}
+}
+
+void Individuals::closeOutputFileHandles()
+{
+	// Close (and thus flush) each ofstream before sorting, so sort sees the
+	// final on-disk content. One sort per dog regardless of haplotype count.
+	for (auto& [sid, ofs] : match_file_by_single_id) {
+		delete ofs;
+		if (!UNSORTED_OUTPUT) sortFileInPlace(match_path_by_single_id[sid]);
+	}
+	match_file_by_single_id.clear();
+	match_path_by_single_id.clear();
+
+	for (auto& [sid, ofs] : homoz_file_by_single_id) {
+		delete ofs;
+		if (!UNSORTED_OUTPUT) sortFileInPlace(homoz_path_by_single_id[sid]);
+	}
+	homoz_file_by_single_id.clear();
+	homoz_path_by_single_id.clear();
+
+	// Drop dangling pointers in pedigree so ~Individual can't accidentally
+	// dereference a freed ofstream (it doesn't today, but defensive).
+	for (auto* ind : pedigree) {
+		if (!ind) continue;
+		ind->setIndividualMatchFile(nullptr);
+		ind->setIndividualHomozFile(nullptr);
 	}
 }
 
