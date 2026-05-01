@@ -9,7 +9,6 @@ RUN apt update \
     build-essential \
     g++ \
     gcc \
-    libboost-dev \
     time
 
 COPY . /build

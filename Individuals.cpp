@@ -44,7 +44,10 @@ Individuals::Individuals()
 
 Individuals::~Individuals()
 {
-	closeOutputFileHandles();
+	// Safety net only — GERMLINE::mine() should call closeOutputFileHandles()
+	// on the clean path so a sort(1) failure surfaces as a runtime error
+	// instead of being swallowed during global teardown.
+	try { closeOutputFileHandles(); } catch (...) {}
 	for(begin();more();next())
 		delete pedigree[ iter ];
 }
@@ -88,29 +91,41 @@ void Individuals::initializeOutputFileHandles(string chromosome)
 
 void Individuals::closeOutputFileHandles()
 {
-	// Close (and thus flush) each ofstream before sorting, so sort sees the
-	// final on-disk content. One sort per dog regardless of haplotype count.
+	// Idempotent best-effort close. Two callers: an explicit drive-by from
+	// GERMLINE::mine (the clean path that surfaces sort failures) and the
+	// destructor (the safety net). The destructor cannot throw, so any
+	// sortFileInPlace failure is captured here, the rest of the cleanup
+	// proceeds, and the first stored exception is rethrown only after every
+	// stream is closed and every map is cleared.
+	std::exception_ptr stored;
+
+	auto run_sort = [&](const string& path) {
+		if (UNSORTED_OUTPUT) return;
+		try { sortFileInPlace(path); }
+		catch (...) { if (!stored) stored = std::current_exception(); }
+	};
+
 	for (auto& [sid, ofs] : match_file_by_single_id) {
 		delete ofs;
-		if (!UNSORTED_OUTPUT) sortFileInPlace(match_path_by_single_id[sid]);
+		run_sort(match_path_by_single_id[sid]);
 	}
 	match_file_by_single_id.clear();
 	match_path_by_single_id.clear();
 
 	for (auto& [sid, ofs] : homoz_file_by_single_id) {
 		delete ofs;
-		if (!UNSORTED_OUTPUT) sortFileInPlace(homoz_path_by_single_id[sid]);
+		run_sort(homoz_path_by_single_id[sid]);
 	}
 	homoz_file_by_single_id.clear();
 	homoz_path_by_single_id.clear();
 
-	// Drop dangling pointers in pedigree so ~Individual can't accidentally
-	// dereference a freed ofstream (it doesn't today, but defensive).
 	for (auto* ind : pedigree) {
 		if (!ind) continue;
 		ind->setIndividualMatchFile(nullptr);
 		ind->setIndividualHomozFile(nullptr);
 	}
+
+	if (stored) std::rethrow_exception(stored);
 }
 
 void Individuals::freeMatches()

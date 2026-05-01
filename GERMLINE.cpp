@@ -100,6 +100,11 @@ void GERMLINE::mine( string params )
 	fout.close();
 	MATCH_FILE.close();
 
+	// Drive per-dog ofstream close + per-dog sort here so any sort(1) failure
+	// surfaces as a runtime error rather than being swallowed by the global
+	// destructor at process teardown.
+	ALL_SAMPLES.closeOutputFileHandles();
+
 	// Match records are finalized in hash-map iteration order, which is not
 	// stable across runs. Sort the text .match file in place so downstream
 	// consumers see a deterministic, byte-identical output. The sort buffer
