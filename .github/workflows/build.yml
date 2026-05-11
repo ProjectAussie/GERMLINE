@@ -22,7 +22,7 @@ jobs:
       TERM: xterm
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Build with sanitizers
         run: make germline OPT="-std=c++17 -O1 -g -fsanitize=address,undefined -I include"
       - name: Test with sanitizers
@@ -39,7 +39,7 @@ jobs:
           VERSION="$(bin/germline -version)"
           echo "version=${VERSION/version /v}" >> $GITHUB_OUTPUT
       - name: Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3.0.0
         if: inputs.make_release
         with:
           files: |
